@@ -48,17 +48,19 @@ class CreateBaseTables < ActiveRecord::Migration[7.1]
       t.index :powerup_value
     end
 
-    create_table_unless_exists :game_sessions_cards do |t|
-      t.integer :game_session_id, null: false
+
+
+    create_table_unless_exists :games_cards do |t|
+      t.integer :game_id, null: false
       t.integer :card_id, null: false
       t.integer :user_id
       t.integer :deck_order, default: 0
-      t.index :game_session_id
-      t.index [:game_session_id, :user_id]
-      t.index [:game_session_id, :deck_order], unique: true
+      t.index :game_id
+      t.index [:game_id, :user_id]
+      t.index [:game_id, :deck_order], unique: true
     end
 
-    create_table_unless_exists :game_sessions do |t|
+    create_table_unless_exists :games do |t|
       t.integer :board_id
       t.integer :winner_user_id
       t.string :status, default: 0
@@ -66,25 +68,25 @@ class CreateBaseTables < ActiveRecord::Migration[7.1]
       t.index :created_at
     end
 
-    create_table_unless_exists :game_sessions_users do |t|  # join table
-      t.integer :game_session_id
+    create_table_unless_exists :games_users do |t|  # join table
+      t.integer :game_id
       t.integer :user_id
       t.integer :move_order, default: 0
       t.timestamps
-      t.index :game_session_id
-      t.index [:game_session_id, :user_id]
+      t.index :game_id
+      t.index [:game_id, :user_id]
     end
 
-    create_table_unless_exists :game_session_moves do |t|
-      t.integer :game_session_id
+    create_table_unless_exists :game_moves do |t|
+      t.integer :game_id
       t.integer :user_id
       t.integer :board_spot_id
       t.integer :card_id
       t.integer :move_order, default: 0
       t.timestamps
-      t.index :game_session_id
-      t.index [:game_session_id, :user_id]
-      t.index [:game_session_id, :move_order]
+      t.index :game_id
+      t.index [:game_id, :user_id]
+      t.index [:game_id, :move_order]
     end
   end
 
@@ -94,9 +96,9 @@ class CreateBaseTables < ActiveRecord::Migration[7.1]
     drop_table_if_exists :board_spots
     drop_table_if_exists :board_spots_cards
     drop_table_if_exists :cards
-    drop_table_if_exists :game_sessions_cards
-    drop_table_if_exists :game_sessions
-    drop_table_if_exists :game_sessions_users
-    drop_table_if_exists :game_sessions_moves
+    drop_table_if_exists :games_cards
+    drop_table_if_exists :games
+    drop_table_if_exists :games_users
+    drop_table_if_exists :games_moves
   end
 end
