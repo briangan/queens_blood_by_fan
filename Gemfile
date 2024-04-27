@@ -12,7 +12,7 @@ gem 'puma', '~> 6.0'
 ###################
 # Backend
 
-# gem 'sqlite3', '~> 1.4'
+gem 'sqlite3', '~> 1.4'
 gem 'mysql2'
 
 ###############
