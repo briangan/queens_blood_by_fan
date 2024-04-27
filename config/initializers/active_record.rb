@@ -1,0 +1,1 @@
+::ActiveSupport::Cache.format_version = 7.1
