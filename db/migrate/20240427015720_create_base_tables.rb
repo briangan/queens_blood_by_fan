@@ -18,24 +18,24 @@ class CreateBaseTables < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
-    create_table_unless_exists :board_spots do |t|
+    create_table_unless_exists :board_types do |t|
       t.integer :board_id
       t.integer :column
       t.integer :row
       t.integer :pawn_value, default: 0
-      t.integer :powerup_value, default: 0
+      t.integer :power_value, default: 0
       t.integer :current_card_id
       t.index :board_id
       t.index [:board_id, :column, :row]
     end
 
-    create_table_unless_exists :board_spots_cards do |t|
-      t.integer :board_spot_id
+    create_table_unless_exists :board_types_cards do |t|
+      t.integer :board_type_id
       t.integer :user_id
       t.integer :card_id
       t.integer :spot_order, default: 0
-      t.index :board_spot_id
-      t.index [:board_spot_id, :spot_order], unique: true
+      t.index :board_type_id
+      t.index [:board_type_id, :spot_order], unique: true
     end
 
     create_table_unless_exists :cards do |t|
@@ -44,11 +44,11 @@ class CreateBaseTables < ActiveRecord::Migration[7.1]
       t.integer :card_number
       t.text :description
       t.integer :pawn_value, default: -1, null: false
-      t.integer :powerup_value, default: 0
+      t.integer :power_value, default: 0
       t.index :name
       t.index :card_number
       t.index :pawn_value
-      t.index :powerup_value
+      t.index :power_value
     end
 
 
@@ -83,7 +83,7 @@ class CreateBaseTables < ActiveRecord::Migration[7.1]
     create_table_unless_exists :game_moves do |t|
       t.integer :game_id
       t.integer :user_id
-      t.integer :board_spot_id
+      t.integer :board_type_id
       t.integer :card_id
       t.integer :move_order, default: 0
       t.timestamps
@@ -96,8 +96,8 @@ class CreateBaseTables < ActiveRecord::Migration[7.1]
   def down
     drop_table_if_exists :users
     drop_table_if_exists :boards
-    drop_table_if_exists :board_spots
-    drop_table_if_exists :board_spots_cards
+    drop_table_if_exists :board_types
+    drop_table_if_exists :board_types_cards
     drop_table_if_exists :cards
     drop_table_if_exists :games_cards
     drop_table_if_exists :games

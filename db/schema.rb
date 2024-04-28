@@ -16,7 +16,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_27_015720) do
     t.integer "column"
     t.integer "row"
     t.integer "pawn_value", default: 0
-    t.integer "powerup_value", default: 0
+    t.integer "power_value", default: 0
     t.integer "current_card_id"
     t.index ["board_id", "column", "row"], name: "index_board_spots_on_board_id_and_column_and_row"
     t.index ["board_id"], name: "index_board_spots_on_board_id"
@@ -44,11 +44,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_27_015720) do
     t.integer "card_number"
     t.text "description"
     t.integer "pawn_value", default: -1, null: false
-    t.integer "powerup_value", default: 0
+    t.integer "power_value", default: 0
     t.index ["card_number"], name: "index_cards_on_card_number"
     t.index ["name"], name: "index_cards_on_name"
     t.index ["pawn_value"], name: "index_cards_on_pawn_value"
-    t.index ["powerup_value"], name: "index_cards_on_powerup_value"
+    t.index ["power_value"], name: "index_cards_on_power_value"
   end
 
   create_table "game_moves", force: :cascade do |t|
