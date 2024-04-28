@@ -39,6 +39,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_27_015720) do
   end
 
   create_table "cards", force: :cascade do |t|
+    t.string "type", limit: 32, default: "Card"
     t.string "name", limit: 64, null: false
     t.integer "card_number"
     t.text "description"
@@ -106,8 +107,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_27_015720) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.string "type", limit: 32, default: "User"
     t.string "email", limit: 100
     t.string "username", limit: 64, null: false
+    t.string "password", limit: 127
     t.integer "rank", default: 0
     t.float "rating", default: 0.0
     t.datetime "created_at", null: false

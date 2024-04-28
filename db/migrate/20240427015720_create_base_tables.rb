@@ -1,8 +1,10 @@
 class CreateBaseTables < ActiveRecord::Migration[7.1]
   def up
     create_table_unless_exists :users do |t|
+      t.string :type, limit: 32, default:'User'
       t.string :email, limit: 100
       t.string :username, limit: 64, null: false
+      t.string :password, limit: 127
       t.integer :rank, default: 0
       t.float :rating, default: 0.0
       t.timestamps
@@ -37,6 +39,7 @@ class CreateBaseTables < ActiveRecord::Migration[7.1]
     end
 
     create_table_unless_exists :cards do |t|
+      t.string :type, limit: 32, default:'Card'
       t.string :name, limit: 64, null: false
       t.integer :card_number
       t.text :description
