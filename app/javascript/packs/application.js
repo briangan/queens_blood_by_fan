@@ -7,23 +7,28 @@ import Rails from "@rails/ujs"
 import Turbolinks from "turbolinks"
 import * as ActiveStorage from "@rails/activestorage"
 import "channels"
+import jQuery from "jquery"
+import "jquery-ui/ui/widgets/draggable"
+import "jquery-ui/ui/widgets/droppable"
+//import "./controllers"
+import * as bootstrap from 'bootstrap'
 
 Rails.start()
 Turbolinks.start()
 ActiveStorage.start()
+window.jQuery = jQuery
+window.$ = jQuery
 
-const findOverflows = () => {
-  const documentWidth = document.documentElement.offsetWidth;
 
-  document.querySelectorAll('.board-spot').forEach(element => {
-      const box = element.getBoundingClientRect();
+$(function() {
+  $(".draggable").draggable({ containment:"#board-wrapper", "opacity": 0.35, snap: ".board-spot", snapMode: "inner", snapTolerance: 20 });
+});
 
-      if (box.left < 0 || box.right > documentWidth) {
-          console.log(element);
-          element.style.border = '1px solid red';
-      }
-  });
-};
+$(document).on("dragstart", "card", function (event) {
+  console.log("Card dragging " + $(this).attr('id') );
 
-// Execute findOverflows to find overflows on the page.
-findOverflows();
+});
+$(document).on("dragstop", "card", function (event) {
+  console.log("Card dragged " + $(this).attr('id') );
+
+});

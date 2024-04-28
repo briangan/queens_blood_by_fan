@@ -1,1 +1,68 @@
+- content_for :more_head do
+  :css
+    .board-spot {
+      width: 150px;
+      height: 220px;
+      display: inline-block;
+      border: solid 0.2em #999999;
+      margin: 0.2em 0.1em;
+      padding: 0.2em;
+    }
+    .board-spot:nth-child(odd) {
+      background-color: #f0f0f0;
+    }
+    .card {
+      width: 150px;
+      height: 220px;
+      display: inline-block;
+      border: solid 0.2em blue;
+      cursor: grab;
+    }
+    .card-dropped {
+      background: transparent;
+    }
+    .highlight {
+      background-color: red !important;
+    }
+
+  :javascript
+    $(function() {
+      $(".draggable").draggable({ 
+        "opacity": 0.35, 
+        snap: ".board-spot", snapMode: "inner", snapTolerance: 15,
+        stack: ".draggable" 
+      });
+      $(".droppable").droppable({
+        drop: function(event, ui) {
+          $(this).addClass("highlight");
+          $(this).text(ui.draggable.attr('id'));
+        }
+      });
+    });
+
+    $(document).on("dragstart", "card", function (event) {
+      console.log("Card dragging " + $(this).attr('id') );
+
+    });
+    $(document).on("dragstop", "card", function (event) {
+      console.log("Card dragged " + $(this).attr('id') );
+      $(this).addClass("card-dropped");
+    });
+
 %h1= app_name
+
+.card-wrapper
+  %card.card.draggable(id="card-1")
+    %h2 Card 1
+  %card.card.draggable(id="card-2")
+    %h2 Card 2
+  %card.card.draggable(id="card-3")
+    %h2 Card 3
+%hr
+.card-wrapper.board-wrapper
+  - 1.upto(3) do |row|
+    %div(class="board-row")
+      - 1.upto(5) do |col|
+        %div(class="board-spot droppable" data-spot="#{col},#{row}")= "#{col}, #{row}"
+
+

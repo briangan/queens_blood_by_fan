@@ -18,6 +18,10 @@ gem 'mysql2'
 ###############
 # Fontend
 
+gem 'jquery-rails'
+gem 'bootstrap'
+gem 'sassc-rails'
+
 gem 'haml-rails'
 
 # Use SCSS for stylesheets
