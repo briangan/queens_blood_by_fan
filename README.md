@@ -8,13 +8,14 @@ This application is a similation of Queen's Blood inside Square Enix's RPG game,
 * Database
 * Deployment
 * Contributions
+* TODOs
 
 # Technologies
 It's developed in Ruby on Rails platform based in Unix/Linux operating system.  You can try on other RoR compatible systems.
-* Ruby version: 3.3 tested
-* Rails version: 7.1
-* JQuery: 3.7
-* JQuery-UI: 1.13
+* Ruby: v3.3 tested
+* Rails: v7.1
+* JQuery: v3.7
+* JQuery-UI: v1.13
 
 # Resources
 * Graphics
@@ -34,10 +35,26 @@ It's developed in Ruby on Rails platform based in Unix/Linux operating system.  
 * If using the MySQL database, ensure that's running.
 
 # Contributions
-Currently this is a publicly free to access source code repository, so you are free to download or clone the codes.  It'd best if you are willing to participate by programming or preparing other parts of the project.  So you are welcomed to help out.
-Here are the upcoming TODOs:
-* Crop out card bare images
-  - Inside folder public/cards there are downloaded images of 145 cards from .  But each card image includes the explanation of card behaviors (which is great for data) on the right side.  
+Currently this is a publicly free to access source code repository, so you are free to download or clone the codes.  It'd best if you are willing to participate by programming or preparing other parts of the project.  So you are welcomed to help out by doing some TODOs or share new ideas.
+
+
+# TODOs:
+## Cards
+* Images: Crop out card bare images
+  - Inside folder public/cards there are downloaded images of 145 cards.  But each card image includes the explanation of card behaviors (which is great for data) on the right side.  
   - I created a Photoshop file that has another layer with shape of only bare card without any BG, text or graphics.  So editor can load the selection by using the card shape, and copy image content only within the selection; open new image pasted with the bare card graphics, turn off background to keep cornders transparent and export as PNG file.
-* Write out data, abilities and affected of each card into data/cards.yml file.  Can refer to card images inside public/cards that have explanations exactly from the game.  The attributes are type, name, card_number, abilities, pawn_tiles, and affected_tiles.  Each ability has attributes type, description, when, which, and action.  Each pawn_tile or affected_tile should have joint x & y positions away from center of the card, either positive or negative, for example, "0,1" being on the same column (x tile horizontally) and 1 row above (y tile veritically).  Negative values means going either left or below direction.
-* Ideal UI tool to set the affected_tiles of a card would be grid of tiles for selection, and output into raw data like JSON or save into database table.
+* Data entry of cards
+  - Enter attributes, abilities and tiles of each card into data/cards.yml file.  This would be valid values into DB table.
+  - Can refer to card images inside public/cards that have explanations exactly from the game.  
+  - The attributes are type, name, category, card_number, description, pawn_rank, power, abilities, raise_pawn_rank, pawn_tiles, and affected_tiles.  
+  - Each ability has attributes type, description, when, which, and action.  
+  - Each pawn_tile or affected_tile should have array of x & y positions away from center of the card, either positive or negative, for example, "[0,1]" being on the same column (x tile horizontally) and 1 row above (y tile veritically).  Negative values means going either left or below direction.
+  - Questionable behaviors of affective_tiles: do the affected tiles claim or raise pawn rank of each tile also?  For example, Card #83, all red affected tiles are dotted; yet for instance, Card #86 Cloud has all red affected tiles dotted except one being solid red.
+  - Fetch data of added card when triggered, such as Card #94 Vincent.  Added card is not in numbered card list.  Thus, how to save the condition in data/DB to interpret adding or spawning which card.
+## Front End
+* Playing Cards
+  - Different CSS styles for player 1 and player 2
+* Board Tiles
+  - Claimed tile would have different CSS based on player 1 or player 2
+* Admins
+  - Ideal UI tool to set the affected_tiles of a card would be grid of tiles for selection, and output into raw data like JSON or save into database table.
