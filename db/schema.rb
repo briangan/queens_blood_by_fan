@@ -31,6 +31,26 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_27_015720) do
     t.index ["board_spot_id"], name: "index_board_spots_cards_on_board_spot_id"
   end
 
+  create_table "board_tiles", force: :cascade do |t|
+    t.integer "board_id"
+    t.integer "column"
+    t.integer "row"
+    t.integer "total_pawns", default: 0
+    t.integer "total_power", default: 0
+    t.integer "current_card_id"
+    t.index ["board_id", "column", "row"], name: "index_board_tiles_on_board_id_and_column_and_row"
+    t.index ["board_id"], name: "index_board_tiles_on_board_id"
+  end
+
+  create_table "board_tiles_cards", force: :cascade do |t|
+    t.integer "board_tile_id"
+    t.integer "user_id"
+    t.integer "card_id"
+    t.integer "spot_order", default: 0
+    t.index ["board_tile_id", "spot_order"], name: "index_board_tiles_cards_on_board_tile_id_and_spot_order", unique: true
+    t.index ["board_tile_id"], name: "index_board_tiles_cards_on_board_tile_id"
+  end
+
   create_table "boards", force: :cascade do |t|
     t.integer "columns", default: 5
     t.integer "rows", default: 3
@@ -43,12 +63,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_27_015720) do
     t.string "name", limit: 64, null: false
     t.integer "card_number"
     t.text "description"
-    t.integer "pawn_value", default: -1, null: false
-    t.integer "power_value", default: 0
+    t.integer "pawns", default: -1, null: false
+    t.integer "power", default: 0
     t.index ["card_number"], name: "index_cards_on_card_number"
     t.index ["name"], name: "index_cards_on_name"
-    t.index ["pawn_value"], name: "index_cards_on_pawn_value"
-    t.index ["power_value"], name: "index_cards_on_power_value"
+    t.index ["pawns"], name: "index_cards_on_pawns"
+    t.index ["power"], name: "index_cards_on_power"
   end
 
   create_table "game_moves", force: :cascade do |t|
