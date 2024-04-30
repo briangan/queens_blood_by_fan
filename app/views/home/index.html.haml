@@ -5,69 +5,170 @@
 
 - content_for :more_head do
   :css
-    .board-spot {
-      width: 150px;
-      height: 220px;
+    .board-tile {
+      width: 166px;
+      height: 218px;
       display: inline-block;
-      border: solid 0.2em #999999;
+      border: solid 0.4em #999999;
       margin: 0.2em 0.1em;
-      padding: 0.2em;
+      padding: 0;
+      text-align: center;
     }
-    .board-spot:nth-child(odd) {
+    .board-tile:nth-child(odd) {
       background-color: #f0f0f0;
     }
+    .board-tile[data-claiming-player="1"] {
+      background-color: blue;
+      border-color: blue;
+    }
+    .board-tile[data-claiming-player="2"] {
+      background-color: red;
+      border-color: red;
+    }
+    .card .card-extra-image {
+      overflow: hidden;
+    }
+    .card .card-extra-image img {
+      width: 544px;
+      position: relative;
+      left: -36px;
+      top: -28px;
+    }
+    .card .bi {
+      font-size: 4em;
+      color: #e0e0e0;
+      opacity: 0.7;
+      position: relative;
+    }
     .card {
-      width: 150px;
-      height: 220px;
-      display: inline-block;
-      border: solid 0.2em blue;
+      width: 155px;
+      height: 206px;
+      border-width: 0.4em;
+      margin: 0.2em 0.1em;
       cursor: grab;
+      float: left;
+      text-align: center;
+      overflow: hidden;
+    }
+    .card > image {
+      width: auto;
+      max-width: 100%;
+    }
+    .card[data-player="1"] {
+      border-color: blue;
+    }
+    .card[data-player="2"] {
+      border-color: red;
     }
     .card-dropped {
       background: transparent;
+      position:'relative' !important;
+      margin: 0 !important;
+      top: 0 !important;
+      left: 0 !important;
+      max-width: 100% !important;
+      max-height': 100% !important;
+    }
+    .card-drop-hover[data-player="1"] {
+      background-color: #d0e0ff;
+    }
+    .card-drop-hover[data-player="2"] {
+      background-color: #ffe0e0;
     }
     .highlight {
-      background-color: red !important;
+      background-color: yellow !important;
     }
 
   :javascript
+    function isCardAcceptableToTile(card, tile) {
+      /////////console.log("Card accept? " + card.data('player') + " vs " + tile.data('claiming-player') );
+      /////////return card.data('player') == tile.data('claiming-player');
+      return true;
+    }
+    function shouldDragRevertDragToTile() {
+      //////////console.log("Should revert? " + $(this).attr('id') + " w/ " + $(this).attr('class') );
+      return !$(this).hasClass('card-dropped');
+    }
+    function shouldAcceptDrop(ui) {
+      var shouldAccept = isCardAcceptableToTile( ui.draggable, $(this));
+      ////// console.log("Card accept? " + $(ui).attr("data-player") + " vs " + $(this).attr("data-claiming-player") + " => " + shouldAccept);
+      return shouldAccept;
+    }
+    function dropCardHandler(event, ui) {
+      var shouldAccept = isCardAcceptableToTile( ui.draggable, $(this));
+      /////// console.log("Card dropped " + ui.draggable.attr('id') + " on " + $(this).attr('id') + " => "+ shouldAccept );
+
+      if (shouldAccept) {
+        ui.draggable.data('board-tile-id', $(this).attr('id') );
+        ui.draggable.draggable( 'disable' );
+        //$(this).droppable( 'disable' );
+        //ui.draggable.position( { of: $(this), my: 'left top', at: 'left top' } );
+        $(this).html('');
+        $(ui.draggable).detach().appendTo( $(this) );
+        ui.draggable.addClass('card-dropped');
+
+        ui.draggable.draggable( 'option', 'revert', false );
+
+        $(this).attr('data-claiming-player', ui.draggable.data('player') );
+      }
+    }
+
     $(function() {
       $(".draggable").draggable({ 
-        "opacity": 0.35, 
-        snap: ".board-spot", snapMode: "inner", snapTolerance: 15,
-        stack: ".draggable" 
+        "opacity": 0.35, revert: false,
+        snap: ".board-tile", snapMode: "inner", snapTolerance: 30,
+        stack: ".card-wrapper div",
+        revert: shouldDragRevertDragToTile
       });
       $(".droppable").droppable({
-        drop: function(event, ui) {
-          $(this).addClass("highlight");
-          $(this).text(ui.draggable.attr('id'));
-        }
+        hoverClass: "card-drop-hover",
+        accept: '.card',
+        drop: dropCardHandler, 
+        over: function(event, ui) {
+          /////// console.log("Card over " + $(this).attr('id'));
+          $(ui.draggable).children(".bi").removeClass('d-none');
+        },
       });
     });
 
-    $(document).on("dragstart", "card", function (event) {
+    /* $(document).on("dragstart", "card", function (event) {
       console.log("Card dragging " + $(this).attr('id') );
 
-    });
-    $(document).on("dragstop", "card", function (event) {
-      console.log("Card dragged " + $(this).attr('id') );
-      $(this).addClass("card-dropped");
+    }); */
+    $(document).on("dragstop", ".card", function (event) {
+      $(this).children(".bi").addClass('d-none');
+      // $(this).addClass("card-dropped");
     });
 
 %h1= app_name
 
-.card-wrapper
-  %card.card.draggable(id="card-1")
-    %h2 Card 1
-  %card.card.draggable(id="card-2")
-    %h2 Card 2
-  %card.card.draggable(id="card-3")
-    %h2 Card 3
+:ruby
+  ## Pick random cards for each player
+  card_numbers = (1..145).to_a.shuffle
+  card_index = 1
+.row
+  .col.card-wrapper
+    - 1.upto(3) do |i|
+      .card.draggable(id="player_1_card_#{i}" data-player="1")
+        .card-extra-image 
+          %img(src="/cards/#{card_index}.jpg" alt="Card #{i}")
+        %i.bi.bi-slash-circle.d-none
+      - card_index += 1
+    .clearfix
+  .col.card-wrapper
+    - 1.upto(3) do |i|
+      .card.draggable(id="player_2_card_#{i}" data-player="2")
+        .card-extra-image
+          %img(src="/cards/#{card_index}.jpg" alt="Card #{i}")
+        %i.bi.bi-slash-circle.d-none
+      - card_index += 1
+    .clearfix
 %hr
-.card-wrapper.board-wrapper
+.board-wrapper
   - 1.upto(3) do |row|
     %div(class="board-row")
       - 1.upto(5) do |col|
-        %div(class="board-spot droppable" data-spot="#{col},#{row}")= "#{col}, #{row}"
+        %div(class="board-tile droppable" id="board_tile_#{col}_#{row}" data-tile-position="#{col},#{row}")
+          = # %p= col % 2 + 1
 
 

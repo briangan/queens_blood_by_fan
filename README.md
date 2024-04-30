@@ -19,7 +19,7 @@ It's developed in Ruby on Rails platform based in Unix/Linux operating system.  
 
 # Resources
 * Graphics
-  - Card images downloaded from 
+  - Card images downloaded from https://www.powerpyx.com/final-fantasy-7-vii-rebirth-all-queens-blood-card-locations/
 
 # Configuration
 * Before running database migrations, ensure your database server has the necessary database/repository according to running Rails environment, and authentication.

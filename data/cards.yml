@@ -45,7 +45,7 @@
   power: 1
   description: "Raise the power of allied cards on affected tiles by 3 while this card is in play."
   abilities:
-  - type: EnfeebleAbility
+  - type: EnhanceAbility
     when: played
     which: allies_on_affected_tiles
     action: power + 3
