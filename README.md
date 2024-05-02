@@ -51,9 +51,15 @@ Currently this is a publicly free to access source code repository, so you are f
   - Each pawn_tile or affected_tile should have array of x & y positions away from center of the card, either positive or negative, for example, "[0,1]" being on the same column (x tile horizontally) and 1 row above (y tile veritically).  Negative values means going either left or below direction.
   - Questionable behaviors of affective_tiles: do the affected tiles claim or raise pawn rank of each tile also?  For example, Card #83, all red affected tiles are dotted; yet for instance, Card #86 Cloud has all red affected tiles dotted except one being solid red.
   - Fetch data of added card when triggered, such as Card #94 Vincent.  Added card is not in numbered card list.  Thus, how to save the condition in data/DB to interpret adding or spawning which card.
+
+## Game Play
+* While watching opponent's making a move, disable any action by this player.
+* Allow third person view only on existing game in play by other 2 players.
+
 ## Front End
 * Playing Cards
   - Different CSS styles for player 1 and player 2
+* Realtime replay of player actions using ActionCable.  Most basic action to track is placement of card.  Extra actions to track could include selection of card, or even segments of card's path.
 * Board Tiles
   - Claimed tile would have different CSS based on player 1 or player 2
 * Admins

@@ -1,0 +1,5 @@
+-# Required locals: card, which_player
+.card.draggable(id="player_#{which_player}_card_#{card.card_number}" data-player="#{which_player}" data-pawn-tiles="#{card.pawn_tiles_data.as_json}")
+  .card-extra-image
+    %img(src="/cards/#{card.card_number}.jpg" title="Card ##{card.card_number}")
+  %i.bi.bi-slash-circle.d-none

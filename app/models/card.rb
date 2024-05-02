@@ -5,8 +5,13 @@ class Card < ApplicationRecord
   has_many :card_ability, dependent: :destroy
   has_many :card_tiles, dependent: :destroy
 
-  validate_presence_of :name
+  validates_presence_of :name
 
   TYPES = %w[Card ReplacementCard]
   CATEGORIES = %w[Standard Legendary]
+
+  def pawn_tiles_data
+    # card_tiles.map { |tile| [tile.x, tile.y] }
+    [ [0, 1], [1, 0], [0, -1], [-1, 0] ] # TODO: sample data
+  end
 end
