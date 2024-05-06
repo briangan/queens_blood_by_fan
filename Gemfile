@@ -12,6 +12,7 @@ gem 'puma', '~> 6.0'
 ###################
 # Backend
 
+gem 'inherited_resources'
 gem 'sqlite3', '~> 1.4'
 gem 'mysql2'
 
@@ -39,6 +40,13 @@ gem 'jbuilder', '~> 2.7'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
+
+gem 'kaminari'
+gem 'kaminari-bootstrap'
+gem "best_in_place", git: "https://github.com/mmotherwell/best_in_place"
+
+####################
+# Server
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
