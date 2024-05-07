@@ -1,5 +1,9 @@
--# Required locals: card, which_player
-.card.draggable(id="player_#{which_player}_card_#{card.card_number}" data-player="#{which_player}" data-pawn-tiles="#{card.pawn_tiles_data.as_json}")
+:ruby
+  # Required locals: card
+  # Optional: which_player
+  which_player = 1 unless defined?(which_player)
+= content_tag(:div, class: "card draggable", id: "player_#{which_player}_card_#{card.card_number}", data: card_data_attr(card).merge({ player: which_player}) ) do
+  %i.bi.bi-slash-circle.d-none
   .card-extra-image
     %img(src="/cards/#{card.card_number}.jpg" title="Card ##{card.card_number}")
   %i.bi.bi-slash-circle.d-none

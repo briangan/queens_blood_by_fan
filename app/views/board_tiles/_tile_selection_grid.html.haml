@@ -1,0 +1,22 @@
+:ruby
+  # Required locals: (card:)
+  tiles_map = card.tiles_map
+%form(method="post" action="/board_tiles" id="card_#{card.card_number}_form" class="tile-selector-form")
+  %div.d-flex.flow-row.mb-3
+    %table.tile-selector
+      %tbody
+        - 2.downto(-2) do|y|
+          %tr
+            - -2.upto(2) do|x|
+              %td(class="#{x == 0 && y == 0 ? 'self-tile' : ''}")
+                - if x != 0 || y != 0
+                  - k = [x,y]
+                  - cur_tile_value = tiles_map[k]
+                  - args = { id: "tile_#{card.card_number}_#{x}_#{y}", value: "#{cur_tile_value}", class: "form-check-input tile-checkbox", data:{card_number: card.card_number } }
+                  - args.merge!(checked: true) if cur_tile_value.present?
+                  = check_box_tag("tile_#{x}_#{y}", args)
+    %div.p-2.tile-selector(style="border: solid 0.2em #333333; background-color: #e0e0e0;")
+      %h6 
+        Choose color and  which tiles to affect
+      = radio_button_tag("tile_type_"+ card.card_number.to_s, "pawn", true, class: "form-check-input tile-checkbox", data:{card_number: card.card_number})
+      = radio_button_tag("tile_type_"+ card.card_number.to_s, "affected", false, class: "form-check-input tile-checkbox", data:{card_number: card.card_number})

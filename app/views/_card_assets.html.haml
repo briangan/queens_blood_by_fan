@@ -1,0 +1,238 @@
+:css
+  :root {
+    --player-1-color: #44a1fe;
+    --player-2-color: #a71528;
+    --highlight-card-border-color: #73eac3;
+    --highlight-tile-background-color: #bed5cb;
+    --tile-card-width: 156px;
+    --tile-card-height: 208px
+  }
+  .board-wrapper {
+    background-color: #999999;
+    text-align: center;
+  }
+  .board-tile {
+    width: var(--tile-card-width);
+    height: var(--tile-card-height);
+    display: inline-block;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+  .board-tile-odd {
+    background-color: #4d5878;
+  }
+  .board-tile-even {
+    background-color: #c4daef;
+  }
+  .board-tile[data-claiming-player="1"] {
+    background-color: var(--player-1-color);
+    border-color: var(--player-1-color);
+  }
+  .board-tile[data-claiming-player="2"] {
+    background-color: var(--player-2-color);
+    border-color: var(--player-2-color);
+  }
+  .board-tile > .card-wrapper {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0.8;
+    overflow: hidden;
+  }
+  .board-tile .preview-effect-label, .board-tile .effect-label {
+    position: relative;
+    top: 42%;
+    left: 0;
+    font-weight: 700;
+    z-index: 100;
+  }
+  .board-tile .powerup-effect {
+    color: green;
+  }
+  .board-tile .powerdown-effect {
+    color: purple;
+  }
+  .card-extra-image {
+    overflow: hidden;
+  }
+  .card-extra-image img {
+    width: 544px;
+    position: relative;
+    left: -36px;
+    top: -28px;
+  }
+  .card .bi {
+    font-size: 4em;
+    color: #e0e0e0;
+    opacity: 0.7;
+    position: relative;
+  }
+  .card {
+    width: var(--tile-card-width);
+    height: var(--tile-card-height);
+    border-width: 0.4em;
+    margin: 0.2em 0.1em;
+    cursor: grab;
+    display: inline-block;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .card[data-player="1"], .card-wrapper[data-player="1"] {
+    border-color: var(--player-1-color);
+  }
+  .card[data-player="2"], .card-wrapper[data-player="2"] {
+    border-color: var(--player-2-color);
+  }
+  .card-dropped {
+    background: transparent;
+    position: relative !important;
+    margin: 0 !important;
+    top: 0 !important;
+    left: 0 !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+  }
+  .card-drop-hover[data-player="1"] {
+    background-color: #d0e0ff;
+  }
+  .card-drop-hover[data-player="2"] {
+    background-color: #ffe0e0;
+  }
+  .highlight-tile .card {
+    border-color: var(--highlight-card-border-color);
+  }
+  .highlight-tile {
+    background-color: var(--highlight-tile-background-color);
+  }
+  .center-tile > .card-wrapper {
+    border: solid 0.4em #ddc568;
+    background-color: #e0e0e0;
+  }
+
+:javascript
+  var mainBoard = null;
+  function getMainBoard() {
+    if (mainBoard){ return mainBoard; }
+    mainBoard = $(".board-wrapper").first();
+    return mainBoard;
+  }
+  function isCardAcceptableToTile(card, tile) {
+    /////////console.log("Card accept? " + card.data('player') + " vs " + tile.data('claiming-player') );
+    /////////return card.data('player') == tile.data('claiming-player');
+    return true;
+  }
+  function shouldDragRevertDragToTile() {
+    //////////console.log("Should revert? " + $(this).attr('id') + " w/ " + $(this).attr('class') );
+    return !$(this).hasClass('card-dropped');
+  }
+  function shouldAcceptDrop(ui) {
+    var shouldAccept = isCardAcceptableToTile( ui.draggable, $(this));
+    ////// console.log("Card accept? " + $(ui).attr("data-player") + " vs " + $(this).attr("data-claiming-player") + " => " + shouldAccept);
+    return shouldAccept;
+  }
+  function dropCardHandler(event, ui) {
+    var shouldAccept = isCardAcceptableToTile( ui.draggable, $(this));
+    /////// console.log("Card dropped " + ui.draggable.attr('id') + " on " + $(this).attr('id') + " => "+ shouldAccept );
+
+    if (shouldAccept) {
+      ui.draggable.data('board-tile-id', $(this).attr('id') );
+      ui.draggable.draggable( 'disable' );
+      //$(this).droppable( 'disable' );
+      //ui.draggable.position( { of: $(this), my: 'left top', at: 'left top' } );
+      var whichPlayer = ui.draggable.data('player');
+      $(this).html('');
+      $(ui.draggable).detach().appendTo( $(this) );
+      ui.draggable.addClass('card-dropped');
+
+      ui.draggable.draggable( 'option', 'revert', false );
+
+      $(this).attr('data-claiming-player', whichPlayer );
+      resetHLTiles();
+    }
+  }
+  function previewCardPlacementEffect(board, whichTile, card) {
+    var pawnTiles = card.data('pawn-tiles');
+    var affectedTiles = card.data('affected-tiles');
+    var abilities = card.data('ability-effects');
+    if (typeof(abilities) == 'string' && abilities !='' ){ 
+      abilities = eval(abilities); 
+    }
+    
+    whichTile.addClass('center-tile');
+    var tileX = parseInt(whichTile.data('tile-position').split(',')[0]);
+    var tileY = parseInt(whichTile.data('tile-position').split(',')[1]);
+    if (typeof(pawnTiles) == 'string'){ pawnTiles = eval(pawnTiles); }
+    pawnTiles.forEach(function(pawnTile) {
+      var col = tileX + pawnTile[0];
+      var row = tileY + pawnTile[1];
+      var targetTile = board.find('.board-tile[data-tile-position="' + col + ',' + row + '"]');
+      if (targetTile.length > 0) {
+        targetTile.addClass('highlight-tile');
+        targetTile.children('.card').addClass('highlight-tile');
+      }
+    } );
+    if (typeof(affectedTiles) == 'string'){ affectedTiles = eval(affectedTiles); }
+    affectedTiles.forEach(function(aTile) {
+      var col = tileX + aTile[0];
+      var row = tileY + aTile[1];
+      var targetTile = board.find('.board-tile[data-tile-position="' + col + ',' + row + '"]');
+      if (targetTile.length > 0) {
+        abilities.forEach(function(ability) {
+          console.log("Apply ability effect to " + targetTile.attr('id') + " => " + ability['action'] );
+          applyAbilityEffectTo(targetTile, ability);
+        });
+      }
+    } );
+  }
+  function resetHLTiles() {
+    var board = getMainBoard();
+    board.find('.highlight-tile').removeClass('highlight-tile');
+    board.find('.center-tile').removeClass('center-tile');
+    board.find('.preview-effect-label').each(function(n){ $(this).remove() })
+  }
+  function applyAbilityEffectTo(targetTile, ability) {
+    var actionParts = ability['action'].match(/^\s*(power)\s*([\+\-]+)\s*(\d+)/);
+    if (actionParts == null) { return; }
+    if (actionParts[1] == 'power' && actionParts[2] == '+') {
+      targetTile.children().append("<h3 class='preview-effect-label powerup-effect'>" + actionParts[2] + actionParts[3] + "</h3>")
+    } else if (actionParts[1] == 'power' && actionParts[2] == '-') {
+      targetTile.children().append("<h3 class='preview-effect-label powerdown-effect'>" + actionParts[2] + actionParts[3] + "</h3>")
+    }
+  }
+
+  // Initialization
+  $(function() {
+    $(".draggable").draggable({ 
+      "opacity": 0.35, revert: false,
+      snap: ".board-tile", snapMode: "inner", snapTolerance: 30,
+      stack: ".card-wrapper div",
+      revert: shouldDragRevertDragToTile
+    });
+    $(".droppable").droppable({
+      hoverClass: "card-drop-hover",
+      accept: '.card',
+      drop: dropCardHandler, 
+      over: function(event, ui) {
+        /////// console.log("Card over " + $(this).attr('id'));
+        //$(ui.draggable).children(".bi").removeClass('d-none');
+        $(this).addClass('center-tile');
+        previewCardPlacementEffect( getMainBoard(), $(this), $(ui.draggable) );
+      },
+      out: function(event, ui) {
+        /////// console.log("Card out " + $(this).attr('id'));
+        //$(ui.draggable).children(".bi").addClass('d-none');
+        resetHLTiles();
+      }
+    });
+  });
+
+  /* $(document).on("dragstart", "card", function (event) {
+    console.log("Card dragging " + $(this).attr('id') );
+
+  }); */
+  $(document).on("dragstop", ".card", function (event) {
+    $(this).children(".bi").addClass('d-none');
+  });

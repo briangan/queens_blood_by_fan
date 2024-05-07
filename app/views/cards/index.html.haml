@@ -1,0 +1,127 @@
+- content_for :more_head do
+  = render partial:'/card_assets'
+  :css
+    :root {
+      --pawn-checkbox-color: #ffcb69;
+      --affected-checkbox-color: #a83a18;
+    }
+    .accordion-item > div {
+      display: inline-block;
+    }
+    .tile-selector {
+      background-color: #846b6b;
+      border: solid 0.35em #333333;
+    }
+    .tile-selector input[type="checkbox"], .tile-selector input[type="radio"] {
+
+    }
+    .tile-selector input[type="checkbox"] {
+      margin: 0 0.05em;
+      opacity: 0.2;
+      cursor: pointer;
+    }
+    .tile-selector input[type="checkbox"]:hover {
+      opacity: 0.8;
+    }
+    .tile-selector input[type="checkbox"]:checked, .tile-selector input[type="radio"] {
+      opacity: 1.0;
+    }
+    .tile-selector input[value="pawn"]:checked, .tile-selector input[type="radio"][value="pawn"] {
+      color: var(--pawn-checkbox-color);
+      background-color: var(--pawn-checkbox-color);
+      opacity: 1.0;
+      border: 0;
+    }
+    .tile-selector input[value="affected"]:checked, .tile-selector input[type="radio"][value="affected"] {
+      color: var(--affected-checkbox-color);
+      background-color: var(--affected-checkbox-color);
+      opacity: 1.0;
+      border: 0;
+    }
+    .tile-selector input[type="radio"] {
+      width: 1.5em;
+      height: 1.5em;
+    }
+    .tile-selector .self-tile {
+      background-color: white;
+    }
+    .tile-selector tr {
+      line-height: 1.0em;
+      min-height: 1.0em;
+      margin: 0;
+    }
+    .tile-selector td {
+      border: solid 0.2em #333333;
+    }
+
+  :javascript
+    $(document).ready(function() {
+      $('.tile-selector input[type="checkbox"]').change(function() {
+        var whichType = $('input[name="tile_type_' + $(this).data('card-number') + '"][value="affected"]').is(':checked') ? 'affected' : 'pawn';
+        console.log("Checkbox clicked for card "+ $(this).data('card-number') + ", type "+ whichType);
+        if ( $(this).prop('checked') == true ) {
+          $(this).val( whichType );
+        } else {
+          $(this).val('');
+        }
+      });
+
+      $('button[data-collapse-card]').click(function() {
+        var cardNumber = $(this).data('collapse-card');
+        if ( $("#card_cropped_" + cardNumber).hasClass('d-none') == false ) {
+          $(this).removeClass('bi-arrow-bar-right');
+          $(this).addClass('bi-arrow-bar-left');
+          $("#card_cropped_" + cardNumber ).addClass('d-none');
+          $("#card_full_" + cardNumber ).removeClass('d-none');
+        } else {
+          $(this).removeClass('bi-arrow-bar-left');
+          $(this).addClass('bi-arrow-bar-right');
+          $("#card_cropped_" + cardNumber ).removeClass('d-none');
+          $("#card_full_" + cardNumber ).addClass('d-none');
+        }
+      } );
+    });
+
+%div(class="accordion container" id="cards_accordion")
+  - @cards.each do|card|
+    = form_for(card, url: card_path(card), remote: true, method:'put' ) do |f|
+      = hidden_field_tag :authenticity_token, form_authenticity_token
+      %div.accordion-item.d-flex.flow-row
+        .align-self-center
+          .card(id="card_cropped_#{card.card_number}" data-card-number="#{card.card_number}")
+            .card-extra-image
+              %img(src="/cards/#{card.card_number}.jpg" title="Card ##{card.card_number}")
+          .align-left.d-none(id="card_full_#{card.card_number}" data-card-number="#{card.card_number}")
+            %img(src="/cards/#{card.card_number}.jpg" title="Card ##{card.card_number}")
+        .align-self-center.align-left
+          %button(type="button" class="btn p-0 align-top bi bi-arrow-bar-right" data-collapse-card="#{card.card_number}" title="Show detailed image" data-bs-toggle="tooltip") &nbsp;
+        .align-self-center.p-3
+          .row.mb-3
+            .col-auto
+              = f.label :card_number, class:'form-label-sm'
+            .col-auto
+              = f.text_field :card_number, class: 'form-control-sm'
+            .col-auto
+              = f.select :category, options_for_select(['Standard', 'Legendary']), class: 'form-control-sm'
+          .row.mb-3
+            .col-auto
+              = f.label :name, class:'form-label-sm'
+            .col-auto
+              = f.text_field :name, class: 'form-control-sm'
+          .row-mb-3
+            .col.align-right
+              = f.submit 'Update', class: 'btn btn-primary btn-sm'
+        .align-self-center.p-3.ml-5
+          %div
+            = render partial:'board_tiles/tile_selection_grid', locals: {card: card}
+          %div
+            - if card.card_abilities.present?
+              %h6 Abilities
+              %ul.list-group
+                - card.card_abilities.each do|ability|
+                  %li.list-group-item= ability.attributes
+            - else
+              %p No abilities
+.container
+  .align-center.mt-3
+    = paginate @cards
