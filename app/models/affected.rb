@@ -1,0 +1,2 @@
+class Affected < CardTile
+end

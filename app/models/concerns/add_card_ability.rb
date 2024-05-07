@@ -1,0 +1,2 @@
+class AddCardAbility < CardAbility
+end

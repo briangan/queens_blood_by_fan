@@ -1,0 +1,2 @@
+class ReplacementCard < Card
+end

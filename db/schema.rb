@@ -39,7 +39,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_27_015720) do
     t.integer "total_power", default: 0
     t.integer "current_card_id"
     t.integer "claming_user_id"
+    t.datetime "claimed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["board_id", "claming_user_id"], name: "index_board_tiles_on_board_id_and_claming_user_id"
     t.index ["board_id", "column", "row"], name: "index_board_tiles_on_board_id_and_column_and_row"
+    t.index ["board_id", "updated_at"], name: "index_board_tiles_on_board_id_and_updated_at"
     t.index ["board_id"], name: "index_board_tiles_on_board_id"
   end
 
@@ -59,13 +64,33 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_27_015720) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "card_abilities", force: :cascade do |t|
+    t.integer "card_id", null: false
+    t.string "type", limit: 32, null: false
+    t.string "when", limit: 32
+    t.string "which", limit: 64
+    t.string "action", limit: 128
+    t.index ["card_id"], name: "index_card_abilities_on_card_id"
+  end
+
+  create_table "card_tiles", force: :cascade do |t|
+    t.integer "card_id", null: false
+    t.string "type", limit: 32, null: false
+    t.integer "x", null: false
+    t.integer "y", null: false
+    t.index ["card_id", "x", "y"], name: "index_card_tiles_on_card_id_and_x_and_y"
+    t.index ["card_id"], name: "index_card_tiles_on_card_id"
+  end
+
   create_table "cards", force: :cascade do |t|
     t.string "type", limit: 32, default: "Card"
     t.string "name", limit: 64, null: false
+    t.string "category", limit: 32, default: "Standard"
     t.integer "card_number"
     t.text "description"
     t.integer "pawn_rank", default: -1, null: false
     t.integer "power", default: 0
+    t.integer "raise_pawn_rank", default: 1
     t.index ["card_number"], name: "index_cards_on_card_number"
     t.index ["name"], name: "index_cards_on_name"
     t.index ["pawn_rank"], name: "index_cards_on_pawn_rank"
@@ -99,7 +124,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_27_015720) do
   end
 
   create_table "games", force: :cascade do |t|
-    t.integer "board_id"
+    t.integer "board_id", null: false
     t.integer "winner_user_id"
     t.string "status", default: "0"
     t.datetime "created_at", null: false

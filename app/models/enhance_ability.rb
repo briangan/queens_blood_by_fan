@@ -1,0 +1,2 @@
+class EnhanceAbility < CardAbility
+end

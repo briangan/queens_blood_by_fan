@@ -1,0 +1,2 @@
+class SpawnAbility < CardAbility
+end

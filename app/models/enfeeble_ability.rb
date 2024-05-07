@@ -1,0 +1,2 @@
+class EnfeebleAbility < CardAbility
+end

@@ -73,6 +73,7 @@ class CreateBaseTables < ActiveRecord::Migration[7.1]
       t.integer :x, null: false
       t.integer :y, null: false
       t.index :card_id
+      t.index [:card_id, :x, :y]
     end
 
     create_table_unless_exists :games_cards do |t|
@@ -86,7 +87,7 @@ class CreateBaseTables < ActiveRecord::Migration[7.1]
     end
 
     create_table_unless_exists :games do |t|
-      t.integer :board_id, not_null: true
+      t.integer :board_id, null: false
       t.integer :winner_user_id
       t.string :status, default: 0
       t.timestamps

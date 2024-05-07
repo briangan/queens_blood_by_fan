@@ -103,7 +103,7 @@
   affected_tiles: []
 - type: Card
   name: Vincent
-  card_number: 93
+  card_number: 94
   category: "Legendary"
   pawn_rank: 1
   power: 2

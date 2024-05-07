@@ -1,0 +1,2 @@
+class DestroyCardAbility < CardAbility
+end
