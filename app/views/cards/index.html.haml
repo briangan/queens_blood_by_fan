@@ -5,6 +5,9 @@
       --pawn-checkbox-color: #ffcb69;
       --affected-checkbox-color: #a83a18;
     }
+    .few-chars {
+      width: 3.0em;
+    }
     .accordion-item > div {
       display: inline-block;
     }
@@ -55,7 +58,10 @@
     }
 
   :javascript
-    $(document).ready(function() {
+    function setCardInteractions() 
+    {
+      $('[data-bs-toggle="tooltip"]').tooltip();
+
       $('.tile-selector input[type="checkbox"]').change(function() {
         var whichType = $('input[name="tile_type_' + $(this).data('card-number') + '"][value="affected"]').is(':checked') ? 'affected' : 'pawn';
         console.log("Checkbox clicked for card "+ $(this).data('card-number') + ", type "+ whichType);
@@ -71,16 +77,22 @@
         if ( $("#card_cropped_" + cardNumber).hasClass('d-none') == false ) {
           $(this).removeClass('bi-arrow-bar-right');
           $(this).addClass('bi-arrow-bar-left');
+          //$(this).attr('title', 'Hide detailed image');
+          $(this).attr('data-bs-original-title', 'Hide detailed image');
           $("#card_cropped_" + cardNumber ).addClass('d-none');
           $("#card_full_" + cardNumber ).removeClass('d-none');
         } else {
           $(this).removeClass('bi-arrow-bar-left');
           $(this).addClass('bi-arrow-bar-right');
+          //$(this).attr('title', 'Show detailed image');
+          $(this).attr('data-bs-original-title', 'Show detailed image');
           $("#card_cropped_" + cardNumber ).removeClass('d-none');
           $("#card_full_" + cardNumber ).addClass('d-none');
         }
       } );
-    });
+    }
+
+    $(document).ready(setCardInteractions);
 
 %div(class="accordion container" id="cards_accordion")
   - @cards.each do|card|
@@ -96,20 +108,33 @@
         .align-self-center.align-left
           %button(type="button" class="btn p-0 align-top bi bi-arrow-bar-right" data-collapse-card="#{card.card_number}" title="Show detailed image" data-bs-toggle="tooltip") &nbsp;
         .align-self-center.p-3
-          .row.mb-3
-            .col-auto
-              = f.label :card_number, class:'form-label-sm'
-            .col-auto
-              = f.text_field :card_number, class: 'form-control-sm'
-            .col-auto
-              = f.select :category, options_for_select(['Standard', 'Legendary']), class: 'form-control-sm'
-          .row.mb-3
-            .col-auto
-              = f.label :name, class:'form-label-sm'
-            .col-auto
-              = f.text_field :name, class: 'form-control-sm'
-          .row-mb-3
-            .col.align-right
+          .row
+            .col-auto.align-middle.mb-3
+              = f.label :card_number, class:' align-middle'
+              = f.text_field :card_number, class: 'form-control-sm few-chars align-middle'
+            .col-auto.align-middle.mb-3
+              = f.label :category, class:' align-middle'
+              = f.select :category, options_for_select(['Standard', 'Legendary'], card.category), {}, class: 'form-control-sm', title:'Category', data:{ 'bs-toggle'=>'tooltip'}
+          .row
+            .col-auto.mb-3
+              = f.label :name
+              = f.text_field :name, class: 'form-control-sm align-middle'
+            .col-auto.mb-3.align-middle
+              = f.label :type
+              = f.select :type, options_for_select([ ['Normal','Card'], ['Replacement','ReplacementCard'] ], card.type), {}, class: 'form-control-sm', title:'Card Type', data:{ 'bs-toggle'=>'tooltip'}
+          .row
+            .col-auto.mb-3
+              = f.label :pawn_rank
+              = f.select :pawn_rank, options_for_select([ ['1',1], ['2',2], ['3',3], ['---',-1] ], card.pawn_rank), {}, class: 'form-control-sm', title:'Pawn Rank: 1-3 or Replacement Card', data:{ 'bs-toggle'=>'tooltip'}
+            .col-auto.mb-3.align-middle
+              = f.label :power
+              = f.select :power, options_for_select( 1.upto(10).collect{|p| [p,p]}, card.power), {}, class: 'form-control-sm', title:'Power Increase for Own Tile', data:{ 'bs-toggle'=>'tooltip'}
+          .row
+            .col-auto.mb-3
+              = f.label :description, class:'align-top'
+              = f.text_area :description, class: 'form-control-sm align-middle'
+          .row
+            .col.mb-3.align-right
               = f.submit 'Update', class: 'btn btn-primary btn-sm'
         .align-self-center.p-3.ml-5
           %div

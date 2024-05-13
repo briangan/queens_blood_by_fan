@@ -1,0 +1,4 @@
+$("#edit_card_<%= @card.id %> input[type='submit']").attr('disabled', true);
+window.setTimeout(function() {
+  $("#edit_card_<%= @card.id %> input[type='submit']").attr('disabled', false);
+}, 3000);
