@@ -9,6 +9,8 @@ class Card < ApplicationRecord
 
   validates_presence_of :name
 
+  before_save :normalize_data
+
   TYPES = %w[Card ReplacementCard]
   CATEGORIES = %w[Standard Legendary]
 
@@ -80,6 +82,13 @@ class Card < ApplicationRecord
         end
       end
     end
+  end
+
+  private
+
+  def normalize_data
+    self.type ||= 'Card'
+    self.pawn_rank = -1 if pawn_rank.nil? || type == 'ReplacementCard'
   end
 end
 
