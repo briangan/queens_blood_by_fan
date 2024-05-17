@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_27_015720) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_17_020149) do
   create_table "board_spots", force: :cascade do |t|
     t.integer "board_id"
     t.integer "column"
@@ -38,11 +38,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_27_015720) do
     t.integer "pawn_rank", default: 0
     t.integer "total_power", default: 0
     t.integer "current_card_id"
-    t.integer "claming_user_id"
+    t.integer "claiming_user_id"
     t.datetime "claimed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["board_id", "claming_user_id"], name: "index_board_tiles_on_board_id_and_claming_user_id"
+    t.index ["board_id", "claiming_user_id"], name: "index_board_tiles_on_board_id_and_claiming_user_id"
     t.index ["board_id", "column", "row"], name: "index_board_tiles_on_board_id_and_column_and_row"
     t.index ["board_id", "updated_at"], name: "index_board_tiles_on_board_id_and_updated_at"
     t.index ["board_id"], name: "index_board_tiles_on_board_id"

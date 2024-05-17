@@ -25,7 +25,7 @@ class CreateBaseTables < ActiveRecord::Migration[7.1]
       t.integer :pawn_rank, default: 0
       t.integer :total_power, default: 0
       t.integer :current_card_id
-      t.integer :claming_user_id
+      t.integer :claming_user_id # will be renamed to claiming_user_id
       t.datetime :claimed_at
       t.timestamps
       t.index :board_id
