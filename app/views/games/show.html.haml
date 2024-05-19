@@ -1,0 +1,19 @@
+:ruby
+  cards_per_player_count = 4 ######### 15
+  
+- content_for :more_head do
+  = render partial:'/card_assets'
+.row
+  .col.card-wrapper
+    - card_numbers_1 = (1..145).to_a ####### .shuffle
+    - 0.upto(cards_per_player_count - 1) do |i|
+      = render 'cards/card', card: Card.new(card_number: card_numbers_1[i]), which_player: 1
+    .clearfix
+  .col.card-wrapper
+    - card_numbers_2 = (1..145).to_a #### .shuffle
+    - 0.upto(cards_per_player_count - 1) do |i|
+      = render 'cards/card', card: Card.new(card_number: card_numbers_2[i]), which_player: 2
+    .clearfix
+%hr
+= render partial:'boards/board', locals:{ board: @game.board }
+

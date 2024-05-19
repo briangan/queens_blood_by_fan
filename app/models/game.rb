@@ -8,4 +8,13 @@ class Game < ActiveRecord::Base
   belongs_to :board
 
   has_many :game_moves
+
+  delegate :columns, :rows, to: :board
+
+  validates_presence_of :board
+
+  def pick_pawns_for_players!
+    raise 'Game must have 2 players' if users.size < 2
+    board.pick_pawns_for_players!(users)
+  end
 end

@@ -2,6 +2,8 @@
   :root {
     --player-1-color: #44a1fe;
     --player-2-color: #a71528;
+    --player-1-pawn-color: #69d75f;
+    --player-2-pawn-color: #cc6572;
     --highlight-card-border-color: #73eac3;
     --highlight-tile-background-color: #bed5cb;
     --tile-card-width: 156px;
@@ -37,10 +39,26 @@
   .board-tile > .card-wrapper {
     width: 100%;
     height: 100%;
-    margin: 0;
+    padding-top: 50%;
     opacity: 0.8;
     overflow: hidden;
+    text-align: center;
+    vertical-align: middle;
   }
+  .pawn-icon {
+    font-size: 2.5em;
+    color: #e0e0e0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .board-tile[data-player="1"] .pawn-icon {
+    color: var(--player-1-pawn-color);
+  }
+  .board-tile[data-player="2"] .pawn-icon {
+    color: var(--player-2-pawn-color);
+  }
+
   .board-tile .preview-effect-label, .board-tile .effect-label {
     position: relative;
     top: 42%;

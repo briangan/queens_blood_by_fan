@@ -2,37 +2,15 @@
   # Reference guides:
   # https://api.jqueryui.com/draggable/
   # https://codepen.io/wedugo/pen/yjVvBg
-  col_count = 6
-  row_count = 5
-  cards_per_player_count = 4 ######### 15
 
-- content_for :more_head do
-  = render partial:'/card_assets'
 
 %h1= app_name
 
-:ruby
-  ## Pick random cards for each player
-.row
-  .col.card-wrapper
-    - card_numbers_1 = (1..145).to_a ####### .shuffle
-    - 0.upto(cards_per_player_count - 1) do |i|
-      = render 'cards/card', card: Card.new(card_number: card_numbers_1[i]), which_player: 1
-    .clearfix
-  .col.card-wrapper
-    - card_numbers_2 = (1..145).to_a #### .shuffle
-    - 0.upto(cards_per_player_count - 1) do |i|
-      = render 'cards/card', card: Card.new(card_number: card_numbers_2[i]), which_player: 2
-    .clearfix
-%hr
-.board-wrapper
-  - board_tile_index = 0
-  - 1.upto(row_count) do |row|
-    %div(class="board-row")
-      - 1.upto(col_count) do |col|
-        - board_tile_index += 1
-        %div(class="board-tile #{board_tile_index % 2 == 1 ? 'board-tile-odd' : 'board-tile-even'} droppable" id="board_tile_#{col}_#{row}" data-tile-position="#{col},#{row}")
-          .card-wrapper(title="#{col}, #{row}" data-bs-toggle="tooltip" data-bs-placement="top")
-            %i.bi.bi-slash-circle.d-none
-
-
+.card
+  .card-header Games
+  = render partial:'games/games', locals:{ games: @games }
+%br
+%br
+.card
+  .card-header
+    = link_to 'Cards', cards_path

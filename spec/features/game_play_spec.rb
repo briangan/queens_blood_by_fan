@@ -4,7 +4,7 @@ RSpec.describe Game, type: :feature do
 
   it 'should have a board' do
     game = prepare_game(:game, 5, 3)
-    game.board.pick_pawns_for_players!(game.users)
+    game.pick_pawns_for_players!
     check_pawn_rank_and_claiming_user_id(game.users, game.board)
   end
 
@@ -27,13 +27,30 @@ RSpec.describe Game, type: :feature do
   end
 
   def check_pawn_rank_and_claiming_user_id(players, board)
-    player1 = game.users.first
-    player2 = game.users.last
+    player1 = players.first
+    player2 = players[1]
+    pick = board.range_to_pick(board.rows)
     board.board_tiles.each do |tile|
-      if tile.column == 1
+      if tile.column == 1 && pick.include?(tile.row)
         expect(tile.claiming_user_id).to eq(player1.id)
-      elsif tile.column == 5
+      elsif tile.column == 5 && pick.include?(tile.row)
         expect(tile.claiming_user_id).to eq(player2.id)
+      end
+    end
+
+    check_range_to_pick(board)
+  end
+
+  def check_range_to_pick(board)
+    1.upto(4) do |i|
+      expect(board.range_to_pick(i)).to eq(1..i)
+    end
+    5.upto(10) do |i|
+      pick = board.range_to_pick(i)
+      if i % 2 == 0
+        expect(pick).to eq( (i / 2)..(i / 2 + 1))
+      else
+        expect(pick).to eq( (i / 2)..(i / 2 + 2) )
       end
     end
   end

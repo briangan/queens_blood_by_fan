@@ -1,0 +1,7 @@
+:ruby
+  # Required locals:
+  #   :games <Array<Game>>
+%ul(class="list-group list-group-flush")
+  - games.each do |game|
+    %li(class="list-group-item")
+      = link_to "Game #{game.columns} x #{game.rows}", game_path(game)

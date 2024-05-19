@@ -4,14 +4,10 @@ module ApplicationHelper
   end
 
   ##
-  # Parts joined together: $app_name - ($collection or $record_name)
+  # Parts joined together: $app_name - @page_title_suffix
   def full_page_title
     s = app_name
-    if respond_to?(:collection) && (first_of_collection = collection.first)
-      s << " - #{first_of_collection.class.model_name.plural.titleize}, Page #{collection.current_page}"
-    elsif respond_to?(:resource) && resource
-      s << " - #{resource.class.model_name.human}"
-    end
+    s << " - #{@page_title_suffix}" if @page_title_suffix.present?
     s
   end
 end

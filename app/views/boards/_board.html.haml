@@ -1,0 +1,24 @@
+:ruby
+  # Required locals:
+  #   board <Board>
+.board-wrapper
+  - board_tile_index = 0
+  - player_user_ids = [nil]
+  - current_user_id = nil
+  - 1.upto(board.rows) do |row|
+    %div(class="board-row")
+      - 1.upto(board.columns) do |col|
+        - board_tile_index += 1
+        - board_tile = board.find_tile(col, row)
+        - player_number = nil
+        - if board_tile.claiming_user_id 
+          -if current_user_id != board_tile.claiming_user_id
+            - player_user_ids << board_tile.claiming_user_id
+            - current_user_id = board_tile.claiming_user_id
+          - player_number = player_user_ids.index(board_tile.claiming_user_id)
+        %div(class="board-tile #{board_tile_index % 2 == 1 ? 'board-tile-odd' : 'board-tile-even'} droppable" id="board_tile_#{col}_#{row}" data-tile-position="#{col},#{row}" data-player="#{player_number}" data-claiming-user-id="#{board_tile.claiming_user_id}")
+          .card-wrapper(title="#{col},#{row}" data-bs-toggle="tooltip" data-bs-placement="top")
+            - if board_tile.claiming_user_id && board_tile.pawn_rank.to_i > 0
+              - board_tile.pawn_rank.to_i.times do
+                %i(class="bi bi-cone pawn-icon")
+            %i.bi.bi-slash-circle.d-none
