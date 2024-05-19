@@ -4,8 +4,10 @@
 class Card < ApplicationRecord
   has_many :card_abilities, dependent: :destroy
   has_many :card_tiles, dependent: :destroy
+  has_many :pawn_tiles, -> { where(type: 'Pawn') }, class_name: 'Pawn'
+  has_many :affected_tiles, -> { where(type: 'Affected') }, class_name: 'Affected'
 
-  attr_accessor :pawn_tiles, :affected_tiles, :ability_effects
+  attr_accessor :ability_effects
 
   validates_presence_of :name
 

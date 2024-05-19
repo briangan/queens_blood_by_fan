@@ -1,11 +1,13 @@
 require 'rails_helper'
 
-RSpec.describe Game, type: :feature do
+describe Game, type: :feature do
 
-  it 'should have a board' do
-    game = prepare_game(:game, 5, 3)
-    game.pick_pawns_for_players!
-    check_pawn_rank_and_claiming_user_id(game.users, game.board)
+  context 'When creating a game' do
+    it 'Should have a board and board tiles' do
+      game = prepare_game(:game, 5, 3)
+      game.pick_pawns_for_players!
+      check_pawn_rank_and_claiming_user_id(game.users, game.board)
+    end
   end
 
   private 

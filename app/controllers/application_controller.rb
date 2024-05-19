@@ -1,4 +1,7 @@
 class ApplicationController < ActionController::Base
+  ##
+  # @page_title_suffix is used to append to the end of the page title in layouts/application.
+  # 
   def set_page_title_suffix(resource_or_collection)
 
     if resource_or_collection.is_a?(ActiveRecord::Base)
