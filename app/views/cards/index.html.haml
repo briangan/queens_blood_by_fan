@@ -3,57 +3,65 @@
   :css
     :root {
       --pawn-checkbox-color: #ffcb69;
-      --affected-checkbox-color: #a83a18;
+      --affected-checkbox-color: #dd623d;
     }
     .few-chars {
       width: 3.0em;
     }
+    .bg-light-box {
+      border: solid 0.2em #333333; 
+      background-color: #c0c0c0 !important;
+    }
     .accordion-item > div {
       display: inline-block;
     }
-    .tile-selector {
+    .card-tile-selector {
       background-color: #846b6b;
       border: solid 0.35em #333333;
     }
-    .tile-selector input[type="checkbox"], .tile-selector input[type="radio"] {
+    .card-tile-selector input[type="checkbox"], .card-tile-selector input[type="radio"] {
 
     }
-    .tile-selector input[type="checkbox"] {
+    .card-tile-selector input[type="checkbox"] {
       margin: 0 0.05em;
       opacity: 0.2;
       cursor: pointer;
     }
-    .tile-selector input[type="checkbox"]:hover {
+    .card-tile-selector input[type="checkbox"]:hover {
       opacity: 0.8;
     }
-    .tile-selector input[type="checkbox"]:checked, .tile-selector input[type="radio"] {
+    .card-tile-selector input[type="checkbox"]:checked, .card-tile-selector input[type="radio"] {
       opacity: 1.0;
     }
-    .tile-selector input[value="pawn"]:checked, .tile-selector input[type="radio"][value="pawn"] {
+    .card-tile-selector input[value="pawn"]:checked, .card-tile-selector input[type="radio"][value="pawn"] {
       color: var(--pawn-checkbox-color);
       background-color: var(--pawn-checkbox-color);
       opacity: 1.0;
       border: 0;
     }
-    .tile-selector input[value="affected"]:checked, .tile-selector input[type="radio"][value="affected"] {
+    .card-tile-selector input[value="affected"]:checked, .card-tile-selector input[type="radio"][value="affected"] {
       color: var(--affected-checkbox-color);
       background-color: var(--affected-checkbox-color);
       opacity: 1.0;
       border: 0;
     }
-    .tile-selector input[type="radio"] {
+    .card-tile-selector input[type="radio"]:checked {
+      border: solid 0.3em rgba(0, 151, 255, 0.6);
+      outline: 2px solid rgba(0, 151, 255, 0.4)
+    }
+    .card-tile-selector input[type="radio"] {
       width: 1.5em;
       height: 1.5em;
     }
-    .tile-selector .self-tile {
+    .card-tile-selector .self-tile {
       background-color: white;
     }
-    .tile-selector tr {
+    .card-tile-selector tr {
       line-height: 1.0em;
       min-height: 1.0em;
       margin: 0;
     }
-    .tile-selector td {
+    .card-tile-selector td {
       border: solid 0.2em #333333;
     }
 
@@ -62,9 +70,9 @@
     {
       $('[data-bs-toggle="tooltip"]').tooltip();
 
-      $('.tile-selector input[type="checkbox"]').change(function() {
-        var whichType = $('input[name="tile_type_' + $(this).data('card-number') + '"][value="affected"]').is(':checked') ? 'affected' : 'pawn';
-        console.log("Checkbox clicked for card "+ $(this).data('card-number') + ", type "+ whichType);
+      $('.card-tile-selector input[type="checkbox"]').change(function() {
+        var whichType = $('input[name="card_tile_type_' + $(this).data('card-number') + '"][value="affected"]').is(':checked') ? 'affected' : 'pawn';
+        ///////////console.log("Checkbox clicked for card "+ $(this).data('card-number') + ", type "+ whichType);
         if ( $(this).prop('checked') == true ) {
           $(this).val( whichType );
         } else {
@@ -96,7 +104,7 @@
 
 %div(class="accordion container" id="cards_accordion")
   - @cards.each do|card|
-    = form_for(card, url: card_path(card), remote: true, method:'put' ) do |f|
+    = form_for(card, url: card_path(card), as: 'card', remote: true, method:'put' ) do |f|
       = hidden_field_tag :authenticity_token, form_authenticity_token
       %div.accordion-item.d-flex.flow-row
         .align-self-center
@@ -138,7 +146,11 @@
               = f.submit 'Update', class: 'btn btn-primary btn-sm'
         .align-self-center.p-3.ml-5
           %div
-            = render partial:'board_tiles/tile_selection_grid', locals: {card: card}
+            = render partial:'cards/card_tile_selection_grid', locals: {card: card}
+          %div
+            = card.pawn_tiles_data
+          %div
+            = card.affected_tiles_data
           %div
             - if card.card_abilities.present?
               %h6 Abilities

@@ -16,24 +16,24 @@ class Card < ApplicationRecord
   TYPES = %w[Card ReplacementCard]
   CATEGORIES = %w[Standard Legendary]
 
+  ##
+  # @return [Array] of [x, y] coordinates of pawn tiles
   def pawn_tiles_data
-    # card_tiles.map { |tile| [tile.x, tile.y] }
-    pawn_tiles.is_a?(Array) ? pawn_tiles :
-      [ [0, 1], [1, 0], [0, -1], [-1, 0] ] # TODO: sample data
+    pawn_tiles.map { |tile| [tile.x, tile.y] }
   end
 
+  ##
+  # @return [Array] of [x, y] coordinates of affected tiles
   def affected_tiles_data
-    affected_tiles.is_a?(Array) ? affected_tiles :
-      [ [1, 1], [2, 0] ] # TODO: sample data
+    affected_tiles.map { |tile| [tile.x, tile.y] }
   end
 
-  def tiles_map
+  ##
+  # @return [Hash] with keys as [x, y] and values as tile type downcased
+  def card_tiles_map
     m = {}
-    pawn_tiles_data.each do|pair|
-      m[pair] = 'pawn'
-    end
-    affected_tiles_data.each do|pair|
-      m[pair] = 'affected'
+    card_tiles.each do|tile|
+      m[[tile.x, tile.y]] = tile.type.underscore
     end
     m
   end
@@ -41,6 +41,15 @@ class Card < ApplicationRecord
   def ability_effects_data
     # card_ability.map { |ability| ability.attributes }
     [ { type: 'EnhancementAbility', when: 'initiated', which: 'allies_on_affected_tiles', action: 'power + 3' } ]
+  end
+
+  def update_card_tile_selections(tile_data)
+    return unless tile_data.is_a?(ActionController::Parameters) || tile_data.is_a?(Hash)
+    card_tiles.delete_all
+    tile_data.each_pair do |k, v|
+      x, y = k.split('_').map(&:to_i)
+      card_tiles.create(type: v.classify, x: x, y: y)
+    end
   end
 
   ###########################
