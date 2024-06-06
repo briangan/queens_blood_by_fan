@@ -43,13 +43,30 @@ class Card < ApplicationRecord
     [ { type: 'EnhancementAbility', when: 'initiated', which: 'allies_on_affected_tiles', action: 'power + 3' } ]
   end
 
+  ##
+  # @tile_data <Hash or ActionController::Parameters> with keys as [x, y] and values as tile type downcased
   def update_card_tile_selections(tile_data)
     return unless tile_data.is_a?(ActionController::Parameters) || tile_data.is_a?(Hash)
-    card_tiles.delete_all
     tile_data.each_pair do |k, v|
       x, y = k.split('_').map(&:to_i)
       card_tiles.create(type: v.classify, x: x, y: y)
     end
+  end
+
+  ##
+  # @ability_data <Hash or ActionController::Parameters> with keys as [x, y] and values as tile type downcased.
+  #   action can be represented either directly by 'action' => 'power + 3' or by 'action_type' => 'power_up' and 'action_value' => '3'
+  def update_card_ability(ability_data, erase_existing = true)
+    return unless ability_data.is_a?(ActionController::Parameters) || ability_data.is_a?(Hash)
+    if erase_existing
+      self.card_abilities.delete_all
+    end
+    ability = self.card_abilities.new(ability_data.slice(:type, :when, :which, :action, :action_type, :action_value))
+    if ability.action.blank? && ability_data[:action_type].present?
+      ability.action_type = ability_data[:action_type]
+      ability.action_value = ability_data[:action_value]
+    end
+    ability.save
   end
 
   ###########################

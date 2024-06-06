@@ -1,4 +1,6 @@
 class CardsController < InheritedResources::Base
+  helper CardAbilitiesHelper
+  
   def index
     @cards = Card.includes(:card_tiles, :card_abilities).order(:card_number).page(params[:page])
     set_page_title_suffix(@cards, 'card')

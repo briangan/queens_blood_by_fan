@@ -2,7 +2,7 @@
   cards_per_player_count = 4 ######### 15
   
 - content_for :more_head do
-  = render partial:'/card_assets'
+  = render partial:'/cards/card_assets'
 .row
   .col.card-wrapper
     - card_numbers_1 = (1..145).to_a ####### .shuffle

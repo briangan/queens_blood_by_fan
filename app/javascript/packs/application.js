@@ -21,14 +21,4 @@ window.$ = jQuery
 
 
 $(function() {
-  $(".draggable").draggable({ containment:"#board-wrapper", "opacity": 0.35, snap: ".board-spot", snapMode: "inner", snapTolerance: 20 });
-});
-
-$(document).on("dragstart", "card", function (event) {
-  console.log("Card dragging " + $(this).attr('id') );
-
-});
-$(document).on("dragstop", "card", function (event) {
-  console.log("Card dragged " + $(this).attr('id') );
-
 });

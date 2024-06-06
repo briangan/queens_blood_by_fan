@@ -1,0 +1,107 @@
+:ruby
+  # Specific CSS and JS for editing cards.
+:css
+  :root {
+    --pawn-checkbox-color: #ffcb69;
+    --affected-checkbox-color: #dd623d;
+  }
+  .few-chars {
+    width: 3.0em;
+  }
+  .bg-light-box {
+    border: solid 0.2em #333333; 
+    background-color: #c0c0c0 !important;
+  }
+  .accordion-item > div {
+    display: inline-block;
+  }
+  .card-tile-selector {
+    background-color: #846b6b;
+    border: solid 0.35em #333333;
+  }
+  .card-tile-selector input[type="checkbox"], .card-tile-selector input[type="radio"] {
+
+  }
+  .card-tile-selector input[type="checkbox"] {
+    margin: 0 0.05em;
+    opacity: 0.2;
+    cursor: pointer;
+  }
+  .card-tile-selector input[type="checkbox"]:hover {
+    opacity: 0.8;
+  }
+  .card-tile-selector input[type="checkbox"]:checked, .card-tile-selector input[type="radio"] {
+    opacity: 1.0;
+  }
+  .card-tile-selector input[value="pawn"]:checked, .card-tile-selector input[type="radio"][value="pawn"] {
+    color: var(--pawn-checkbox-color);
+    background-color: var(--pawn-checkbox-color);
+    opacity: 1.0;
+    border: 0;
+  }
+  .card-tile-selector input[value="affected"]:checked, .card-tile-selector input[type="radio"][value="affected"] {
+    color: var(--affected-checkbox-color);
+    background-color: var(--affected-checkbox-color);
+    opacity: 1.0;
+    border: 0;
+  }
+  .card-tile-selector input[type="radio"]:checked {
+    border: solid 0.3em rgba(0, 151, 255, 0.6);
+    outline: 2px solid rgba(0, 151, 255, 0.4)
+  }
+  .card-tile-selector input[type="radio"] {
+    width: 1.5em;
+    height: 1.5em;
+  }
+  .card-tile-selector .self-tile {
+    background-color: white;
+  }
+  .card-tile-selector tr {
+    line-height: 1.0em;
+    min-height: 1.0em;
+    margin: 0;
+  }
+  .card-tile-selector td {
+    border: solid 0.2em #333333;
+  }
+
+:javascript
+  function setCardInteractions() 
+  {
+    $('[data-bs-toggle="tooltip"]').tooltip();
+
+    $('.card-tile-selector input[type="checkbox"]').change(function() {
+      var whichType = $('input[name="card_tile_type_' + $(this).data('card-number') + '"][value="affected"]').is(':checked') ? 'affected' : 'pawn';
+      ///////////console.log("Checkbox clicked for card "+ $(this).data('card-number') + ", type "+ whichType);
+      if ( $(this).prop('checked') == true ) {
+        $(this).val( whichType );
+      } else {
+        $(this).val('');
+      }
+    });
+
+    $('button[data-collapse-card]').click(flipCardDetailedImage );
+    
+  } // setCardInteractions
+
+  function flipCardDetailedImage()
+  {
+    var cardNumber = $(this).data('collapse-card');
+    if ( $("#card_cropped_" + cardNumber).hasClass('d-none') == false ) {
+      $(this).removeClass('bi-arrow-bar-right');
+      $(this).addClass('bi-arrow-bar-left');
+      //$(this).attr('title', 'Hide detailed image');
+      $(this).attr('data-bs-original-title', 'Hide detailed image');
+      $("#card_cropped_" + cardNumber ).addClass('d-none');
+      $("#card_full_" + cardNumber ).removeClass('d-none');
+    } else {
+      $(this).removeClass('bi-arrow-bar-left');
+      $(this).addClass('bi-arrow-bar-right');
+      //$(this).attr('title', 'Show detailed image');
+      $(this).attr('data-bs-original-title', 'Show detailed image');
+      $("#card_cropped_" + cardNumber ).removeClass('d-none');
+      $("#card_full_" + cardNumber ).addClass('d-none');
+    }
+  } // flipCardDetailedImage
+
+  $(document).ready(setCardInteractions);

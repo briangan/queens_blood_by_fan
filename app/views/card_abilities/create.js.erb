@@ -1,0 +1,4 @@
+<% if @card -%>
+<% else -%>
+  alert("<%= flash[:warning] || 'Card not found' %>");
+<% end %>
