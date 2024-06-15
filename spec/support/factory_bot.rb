@@ -1,4 +1,6 @@
-
+RSpec.configure do |config|
+  config.include FactoryBot::Syntax::Methods
+end
 
 def find_or_create(factory_key, primary_search_attribute = :name, *other_traits, &block)
   new_obj = build(factory_key, *other_traits)

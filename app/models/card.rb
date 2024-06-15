@@ -38,9 +38,11 @@ class Card < ApplicationRecord
     m
   end
 
+  ##
+  # Only for testing.
   def ability_effects_data
-    # card_ability.map { |ability| ability.attributes }
-    [ { type: 'EnhancementAbility', when: 'initiated', which: 'allies_on_affected_tiles', action: 'power + 3' } ]
+    card_ability.map { |ability| ability.attributes }
+    # [ { type: 'EnhancementAbility', when: 'initiated', which: 'allies_on_affected_tiles', action: 'power + 3' } ]
   end
 
   ##
@@ -54,19 +56,18 @@ class Card < ApplicationRecord
   end
 
   ##
-  # @ability_data <Hash or ActionController::Parameters> with keys as [x, y] and values as tile type downcased.
+  # @abilities_data <Array of Hash> with keys as [][x, y] and values as tile type downcased.
   #   action can be represented either directly by 'action' => 'power + 3' or by 'action_type' => 'power_up' and 'action_value' => '3'
-  def update_card_ability(ability_data, erase_existing = true)
-    return unless ability_data.is_a?(ActionController::Parameters) || ability_data.is_a?(Hash)
+  def update_card_abilities(abilities_data, erase_existing = true)
+    return 0 unless abilities_data.is_a?(ActionController::Parameters) || abilities_data.present?
     if erase_existing
       self.card_abilities.delete_all
     end
-    ability = self.card_abilities.new(ability_data.slice(:type, :when, :which, :action, :action_type, :action_value))
-    if ability.action.blank? && ability_data[:action_type].present?
-      ability.action_type = ability_data[:action_type]
-      ability.action_value = ability_data[:action_value]
+    abilities_data.collect do |ability_data|
+      ability = self.card_abilities.new(ability_data.slice(:type, :when, :which, :action_type, :action_value))
+      ability.normalize_data
+      ability.save
     end
-    ability.save
   end
 
   ###########################

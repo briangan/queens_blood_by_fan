@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_17_020149) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_15_214224) do
   create_table "board_spots", force: :cascade do |t|
     t.integer "board_id"
     t.integer "column"
@@ -69,7 +69,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_17_020149) do
     t.string "type", limit: 32, null: false
     t.string "when", limit: 32
     t.string "which", limit: 64
-    t.string "action", limit: 128
+    t.string "action_type", limit: 64
+    t.string "action_value", limit: 64
     t.index ["card_id"], name: "index_card_abilities_on_card_id"
   end
 

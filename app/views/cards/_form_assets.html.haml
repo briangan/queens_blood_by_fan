@@ -81,6 +81,7 @@
     });
 
     $('button[data-collapse-card]').click(flipCardDetailedImage );
+    $('button[data-expand-all-cards]').click(expandAllDetailImages);
     
   } // setCardInteractions
 
@@ -103,5 +104,12 @@
       $("#card_full_" + cardNumber ).addClass('d-none');
     }
   } // flipCardDetailedImage
+
+  function expandAllDetailImages()
+  {
+    $('button[data-collapse-card]').each(function() {
+      flipCardDetailedImage.call(this);
+    });
+  } // expandAllDetailImages
 
   $(document).ready(setCardInteractions);

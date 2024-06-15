@@ -2,3 +2,4 @@ $("#edit_card_<%= @card.id %> input[type='submit']").attr('disabled', true);
 window.setTimeout(function() {
   $("#edit_card_<%= @card.id %> input[type='submit']").attr('disabled', false);
 }, 3000);
+$("#card_abilities_<%= @card.id %>").html("<%= escape_javascript(render( partial:'card_abilities/form', collection: @card.card_abilities, as: :card_ability, locals: { field_prefix:'card_abilities[]' } ) ) %>").fadeIn();

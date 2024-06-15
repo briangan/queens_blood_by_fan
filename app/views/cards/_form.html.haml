@@ -5,9 +5,9 @@
       .card(id="card_cropped_#{card.card_number}" data-card-number="#{card.card_number}")
         .card-extra-image
           %img(src="/cards/#{card.card_number}.jpg" title="Card ##{card.card_number}")
-      .align-left.d-none(id="card_full_#{card.card_number}" data-card-number="#{card.card_number}")
+      .text-start.d-none(id="card_full_#{card.card_number}" data-card-number="#{card.card_number}")
         %img(src="/cards/#{card.card_number}.jpg" title="Card ##{card.card_number}")
-    .align-self-center.align-left
+    .align-self-center.text-start
       %button(type="button" class="btn p-0 align-top bi bi-arrow-bar-right" data-collapse-card="#{card.card_number}" title="Show detailed image" data-bs-toggle="tooltip") &nbsp;
     .align-self-center.p-3
       .row
@@ -36,18 +36,16 @@
           = f.label :description, class:'align-top'
           = f.text_area :description, class: 'form-control-sm align-middle'
       .row
-        .col.mb-3.align-right
+        .col.mb-3.text-end
           = f.submit 'Update', class: 'btn btn-primary btn-sm'
+          = link_to 'Edit', edit_card_path(card), class: 'btn btn-secondary btn-sm'
     .align-self-center.p-3.ml-5
       %div
         = render partial:'cards/card_tile_selection_grid', locals: {card: card}
       %div(id="card_ability_form_#{card.id}")
-        - if card.card_abilities.present?
-          %h6 Abilities
-          = render partial:'card_abilities/form', collection: card.card_abilities, as: :card_ability, locals: {card: card }
-        - else
-          %p
-            %button(type="button" class="btn btn-sm btn-outline-secondary bi bi-plus" data-bs-toggle="collapse" data-bs-target="#card_ability_form_#{card.id}_new" title="Add Ability")
-            &nbsp; No abilities
-          %div.collapse(id="card_ability_form_#{card.id}_new")
-            = render partial:'card_abilities/form', locals: {card: card, card_ability: CardAbility.new, field_suffix: card.id }
+        %h6 Abilities
+        - abilities = card.card_abilities.all.to_a 
+        - abilities = [CardAbility.new(card_id: card.id) ] if abilities.blank?
+        %div(id="card_abilities_#{card.id}")
+          - abilities.each_with_index do|card_ability|
+            = render partial:'card_abilities/form', locals: {card_ability: card_ability, field_prefix:'card_abilities[]' }

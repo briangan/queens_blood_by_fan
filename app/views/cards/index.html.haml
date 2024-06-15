@@ -3,6 +3,9 @@
   = render partial:'form_assets'
 
 %div(class="accordion container" id="cards_accordion")
+  %div.text-end.mr-3
+    = button_tag('Expand All Cards', class:'btn btn-sm btn-primary', data:{'expand-all-cards'=>true})
+  %br/
   = render partial:'cards/form', collection: @cards, as: :card
     
 .container

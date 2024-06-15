@@ -216,7 +216,7 @@
       var targetTile = board.find('.board-tile[data-tile-position="' + col + ',' + row + '"]');
       if (targetTile.length > 0) {
         abilities.forEach(function(ability) {
-          console.log("Preview ability effect to " + targetTile.attr('id') + " => " + ability['action'] );
+          console.log("Preview ability effect to " + targetTile.attr('id') + " => " + ability['action_typeß'] );
           previewVisualEffectTo(tile, targetTile, ability);
         });
       }
@@ -234,12 +234,10 @@
   */
   function previewVisualEffectTo(sourceTile, targetTile, ability) 
   {
-    var actionParts = ability['action'].match(/^\s*(power)\s*([\+\-]+)\s*(\d+)/);
-    if (actionParts == null) { return; }
-    if (actionParts[1] == 'power' && actionParts[2] == '+') {
-      targetTile.children().append("<h3 class='preview-effect-label powerup-effect'>" + actionParts[2] + actionParts[3] + "</h3>")
-    } else if (actionParts[1] == 'power' && actionParts[2] == '-') {
-      targetTile.children().append("<h3 class='preview-effect-label powerdown-effect'>" + actionParts[2] + actionParts[3] + "</h3>")
+    if (ability['action_type'] == 'power_up') {
+      targetTile.children().append("<h3 class='preview-effect-label powerup-effect'> +" + ability['action_value'] + "</h3>")
+    } else if (ability['action_type'] == 'power_down') {
+      targetTile.children().append("<h3 class='preview-effect-label powerdown-effect'> -" + ability['action_value'] + "</h3>")
     }
   }
 
