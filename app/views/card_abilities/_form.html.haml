@@ -9,24 +9,25 @@
   card = card_ability.card unless defined?(card)
   field_prefix = 'card_ability' unless defined?(field_prefix)
 
-.form-control.clearfix
-  %span.float-start
-    = label_tag "#{field_prefix}[type]", 'Ability Type'
-    = select_tag "#{field_prefix}[type]", options_for_select(card_ability_type_select_options, card_ability.type), class: 'form-control-sm', title: 'Ability Type', data: { 'bs-toggle' => 'tooltip' }
-  %span.float-end
-    -#= af.submit(card_ability.id ? 'Update' : 'Create', class: 'btn btn-primary btn-sm')
-    -#%button(type='submit' class='border-0 p-0' style='line-height:initial;' title='Save Ability' data-bs-toggle='tooltip')
-      -#%i.bi.bi-save-fill.text-primary.fs-4
-.form-control
-  = label_tag "#{field_prefix}[when]", 'When Takes Effect'
-  = select_tag "#{field_prefix}[when]", options_for_select(card_ability_when_select_options, card_ability.when || 'played'), class: 'form-control-sm', title: 'Ability Target', data: { 'bs-toggle' => 'tooltip' }
-.form-control
-  = label_tag "#{field_prefix}[which]", 'Which Cards Affected'
-  = select_tag "#{field_prefix}[which]", options_for_select(card_ability_which_select_options, card_ability.which), class: 'form-control-sm', title: 'Ability Effect', data: { 'bs-toggle' => 'tooltip' }
-.form-control
-  = label_tag "#{field_prefix}[action_type]", 'Effect'
-  = select_tag "#{field_prefix}[action_type]", options_for_select(card_ability_action_type_select_options, card_ability.action_type || 'power_down'), class: 'form-control-sm', title: 'Ability Action', data: { 'bs-toggle' => 'tooltip' }
-  &nbsp;
-  = label_tag "#{field_prefix}[action_value]", 'Value'
-  = text_field_tag "#{field_prefix}[action_value]", card_ability.action_value || '3', class: 'form-control-sm', title: 'Ability Action Value', data: { 'bs-toggle' => 'tooltip' }
-  
+%div(class="border#{' border-primary' if card_ability&.id}#{' border-danger' if card_ability.errors.any?}")
+  .form-control.clearfix
+    %span.float-start
+      = label_tag "#{field_prefix}[type]", 'Ability Type'
+      = select_tag "#{field_prefix}[type]", options_for_select(card_ability_type_select_options, card_ability.type), class: 'form-control-sm', title: 'Ability Type', data: { 'bs-toggle' => 'tooltip' }
+    %span.float-end
+      -#= af.submit(card_ability.id ? 'Update' : 'Create', class: 'btn btn-primary btn-sm')
+      -#%button(type='submit' class='border-0 p-0' style='line-height:initial;' title='Save Ability' data-bs-toggle='tooltip')
+        -#%i.bi.bi-save-fill.text-primary.fs-4
+  .form-control
+    = label_tag "#{field_prefix}[when]", 'When Takes Effect'
+    = select_tag "#{field_prefix}[when]", options_for_select(card_ability_when_select_options, card_ability.when || 'played'), class: 'form-control-sm', title: 'Ability Target', data: { 'bs-toggle' => 'tooltip' }
+  .form-control
+    = label_tag "#{field_prefix}[which]", 'Which Cards Affected'
+    = select_tag "#{field_prefix}[which]", options_for_select(card_ability_which_select_options, card_ability.which), class: 'form-control-sm', title: 'Ability Effect', data: { 'bs-toggle' => 'tooltip' }
+  %div(class="form-control#{' is-invalid' if card_ability.errors[:action_value].any? }")
+    = label_tag "#{field_prefix}[action_type]", 'Effect'
+    = select_tag "#{field_prefix}[action_type]", options_for_select(card_ability_action_type_select_options, card_ability.action_type), class: 'form-control-sm', title: 'Ability Action', data: { 'bs-toggle' => 'tooltip' }
+    &nbsp;
+    = label_tag "#{field_prefix}[action_value]", 'Value'
+    = text_field_tag "#{field_prefix}[action_value]", card_ability.action_value, class: 'form-control-sm', title: 'Ability Action Value', data: { 'bs-toggle' => 'tooltip' }
+    

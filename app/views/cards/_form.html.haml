@@ -38,14 +38,21 @@
       .row
         .col.mb-3.text-end
           = f.submit 'Update', class: 'btn btn-primary btn-sm'
-          = link_to 'Edit', edit_card_path(card), class: 'btn btn-secondary btn-sm'
+          = link_to 'Edit', edit_card_path(card), class: 'btn btn-secondary btn-sm' unless request.path == edit_card_path(card)
     .align-self-center.p-3.ml-5
       %div
         = render partial:'cards/card_tile_selection_grid', locals: {card: card}
       %div(id="card_ability_form_#{card.id}")
-        %h6 Abilities
-        - abilities = card.card_abilities.all.to_a 
-        - abilities = [CardAbility.new(card_id: card.id) ] if abilities.blank?
+        %h6 
+          Abilities
+        - abilities = card.card_abilities.to_a
         %div(id="card_abilities_#{card.id}")
-          - abilities.each_with_index do|card_ability|
-            = render partial:'card_abilities/form', locals: {card_ability: card_ability, field_prefix:'card_abilities[]' }
+          - if abilities.blank?
+            %p.ms-3.text-secondary
+              No abilities defined.
+              %button(class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#new_card_ability_form_#{card.id}" aria-expanded="false" aria-controls="#new_card_ability_form_#{card.id}")
+                %i(class="bi bi-plus-circle" data-bs-toggle="tooltip" title="Show form to add ability") &nbsp;
+            %div(id="new_card_ability_form_#{card.id}" class="collapse")
+              = render partial:'card_abilities/form', locals: { card_ability: CardAbility.new(card: card), field_prefix:'card_abilities[]' }
+          - else
+            = render partial:'card_abilities/form', collection: abilities, as: :card_ability, locals: { field_prefix:'card_abilities[]' }

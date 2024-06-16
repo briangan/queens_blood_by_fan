@@ -66,8 +66,10 @@
   }
 
 :javascript
+  var cardInteractionsLoaded = false;
   function setCardInteractions() 
   {
+    if (cardInteractionsLoaded) { return false; }
     $('[data-bs-toggle="tooltip"]').tooltip();
 
     $('.card-tile-selector input[type="checkbox"]').change(function() {
@@ -83,6 +85,8 @@
     $('button[data-collapse-card]').click(flipCardDetailedImage );
     $('button[data-expand-all-cards]').click(expandAllDetailImages);
     
+    cardInteractionsLoaded = true;
+    return true;
   } // setCardInteractions
 
   function flipCardDetailedImage()
@@ -113,3 +117,6 @@
   } // expandAllDetailImages
 
   $(document).ready(setCardInteractions);
+  $(window).on('load', function() {
+    setCardInteractions();
+  });

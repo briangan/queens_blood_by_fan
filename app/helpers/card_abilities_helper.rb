@@ -8,7 +8,7 @@ module CardAbilitiesHelper
   end
 
   def card_ability_which_select_options
-    CardAbility::WHICH_VALUES.map { |t| [t.titleize, t] }
+    [['', '']] + CardAbility::WHICH_VALUES.map { |t| [t.titleize, t] }
   end
 
   def card_ability_action_type_select_options

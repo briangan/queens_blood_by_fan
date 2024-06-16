@@ -1,6 +1,11 @@
 ##
 # Record that represents a card to be used by a player with attributes like name, card_number, pawn_rank, and power.
 # Associations include tiles and abilities.
+# Cards TODOs:
+# [ ] Add Mandragora Minion card
+# [ ] Add Heatseeker Minion card
+# [ ] Add Grangalan Minion card
+# [ ] Add Resurrected Amalgam card
 class Card < ApplicationRecord
   has_many :card_abilities, dependent: :destroy
   has_many :card_tiles, dependent: :destroy
@@ -66,6 +71,7 @@ class Card < ApplicationRecord
     abilities_data.collect do |ability_data|
       ability = self.card_abilities.new(ability_data.slice(:type, :when, :which, :action_type, :action_value))
       ability.normalize_data
+      logger.debug("> #{ability.class} valid? #{ ability.valid? }")
       ability.save
     end
   end
