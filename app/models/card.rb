@@ -6,6 +6,16 @@
 # [ ] Add Heatseeker Minion card
 # [ ] Add Grangalan Minion card
 # [ ] Add Resurrected Amalgam card
+# [ ] Add Moogle card
+# [ ] Add Tiny Bronco card
+# [ ] Add Galian Beast card
+# [ ] Add Diamond Dust card, can be power 2, 4, or 6
+# [ ] Add Elemental card
+# [ ] Add Moogle Mage card
+# [ ] Add Moogle Bard cards
+# [ ] Add Cacneo card
+# [ ] Add Donberry card
+# [ ] Add Hype Johnny card
 class Card < ApplicationRecord
   has_many :card_abilities, dependent: :destroy
   has_many :card_tiles, dependent: :destroy

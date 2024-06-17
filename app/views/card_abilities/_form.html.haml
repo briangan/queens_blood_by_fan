@@ -5,11 +5,11 @@
   #   card <Card> (default: nil)
   #   card_ability <CardAbility> (default: nil)
   #   field_prefix: <String> (default: '') Depends on how the controller handles the form data.
-  card_ability = CardAbility.new unless defined?(card_ability)
-  card = card_ability.card unless defined?(card)
+  card_ability = CardAbility.new unless defined?(card_ability) && !card_ability.nil?
+  card = card_ability.card unless defined?(card) && !card.nil?
   field_prefix = 'card_ability' unless defined?(field_prefix)
 
-%div(class="border#{' border-primary' if card_ability&.id}#{' border-danger' if card_ability.errors.any?}")
+%div(class="mb-3 border#{' border-primary' if card_ability&.id}#{' border-danger' if card_ability.errors.any?}")
   .form-control.clearfix
     %span.float-start
       = label_tag "#{field_prefix}[type]", 'Ability Type'

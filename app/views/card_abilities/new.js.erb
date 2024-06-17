@@ -1,0 +1,4 @@
+<% # Optional params:
+  # :container_selector  The selector of the container to append the new card ability form to, for example: "#card_abilities_#{@card.id || 'new'}"
+-%>
+$("<%= params[:container_selector] || '#card_abilities' %>").append("<span class='text-success'>New</span><br/><%= escape_javascript( render( partial:'card_abilities/form', locals: { field_prefix:'card_abilities[]' } ) ) %>");

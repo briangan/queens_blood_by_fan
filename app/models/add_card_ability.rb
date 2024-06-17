@@ -15,7 +15,7 @@ class AddCardAbility < CardAbility
 
   def normalize_data
     super()
-    self.when = 'played'
+    self.when = 'played' if self.when.blank?
     self.action_type ||= 'add' if action_type.blank?
   end
 end
