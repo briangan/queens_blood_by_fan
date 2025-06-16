@@ -12,7 +12,7 @@ This application is a similation of Queen's Blood inside Square Enix's RPG game,
 
 # Technologies
 It's developed in Ruby on Rails platform based in Unix/Linux operating system.  You can try on other RoR compatible systems.
-* Ruby: v3.3 tested
+* Ruby: v3.3.8 tested
 * Rails: v7.1
 * JQuery: v3.7
 * JQuery-UI: v1.13

@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.3.1'
+ruby '3.3.8'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 7.1'
@@ -15,6 +15,8 @@ gem 'puma', '~> 6.0'
 gem 'inherited_resources'
 gem 'sqlite3', '~> 1.4'
 gem 'mysql2'
+
+gem 'paper_trail', '~> 15.0'
 
 ###############
 # Fontend

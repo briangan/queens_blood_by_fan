@@ -56,17 +56,20 @@ class Card < ApplicationRecord
   ##
   # Only for testing.
   def ability_effects_data
-    card_ability.map { |ability| ability.attributes }
+    card_abilities.map { |ability| ability.attributes }
     # [ { type: 'EnhancementAbility', when: 'initiated', which: 'allies_on_affected_tiles', action: 'power + 3' } ]
   end
 
   ##
   # @tile_data <Hash or ActionController::Parameters> with keys as [x, y] and values as tile type downcased
-  def update_card_tile_selections(tile_data)
+  def update_card_tile_selections(tile_data, erase_existing = true)
     return unless tile_data.is_a?(ActionController::Parameters) || tile_data.is_a?(Hash)
+    if erase_existing
+      self.card_tiles.delete_all
+    end
     tile_data.each_pair do |k, v|
       x, y = k.split('_').map(&:to_i)
-      card_tiles.create(type: v.classify, x: x, y: y)
+      self.card_tiles.create(type: v.classify, x: x, y: y)
     end
   end
 
@@ -86,6 +89,25 @@ class Card < ApplicationRecord
     end
   end
 
+  def clean_card_tiles!
+    existing_set = Set.new
+    card_tiles.each do|t| 
+      a = [t.type, t.x, t.y]
+      if existing_set.include?(a)
+        t.destroy
+      else
+        existing_set << a
+      end
+    end
+  end
+
+  def yaml_data
+    h = attributes.slice(*%w(type name category card_number description power_rank power raise_power_rank) )
+    h['cars_tiles'] = self.card_tiles.collect{|t| t.attributes.slice('type', 'x', 'y') }
+    h['abilities'] = self.card_abilities.collect{|a| a.attributes.slice('type', 'when', 'which', 'action_type', 'action_value') }
+    h
+  end
+
   ###########################
   # Class methods
 
@@ -95,9 +117,10 @@ class Card < ApplicationRecord
   def self.build_from_import_data(h)
     card_class = h['type'].constantize
     card = card_class.new(name: h['name'], card_number: h['card_number'], pawn_rank: h['pawn_rank'], power: h['power'])
-    card.pawn_tiles = h['pawn_tiles']
-    card.affected_tiles = h['affected_tiles']
-    card.ability_effects = h['ability_effects']
+    card.card_tiles = h['card_tiles'].to_a.collect{|t| CardTile.new(t) }
+    card.pawn_tiles = h['pawn_tiles'].to_a.collect{|t| Pawn.new(t) }
+    card.affected_tiles = h['affected_tiles'].to_a.collect{|t| AffectedTile.new(t) }
+    card.card_abilities = h['card_abilities'].to_a.collect{|a| CardAbility.new(a) }
     card
   end
 

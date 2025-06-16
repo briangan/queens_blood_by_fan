@@ -2,6 +2,8 @@ require 'rails_helper'
 
 describe Game, type: :feature do
 
+  before
+
   context 'When creating a game' do
     it 'Should have a board and board tiles' do
       game = prepare_game(:game, 5, 3)
@@ -28,6 +30,8 @@ describe Game, type: :feature do
     game
   end
 
+  ##
+  # Ensure first column and last column are claimed by the respective users.
   def check_pawn_rank_and_claiming_user_id(players, board)
     player1 = players.first
     player2 = players[1]
@@ -35,7 +39,7 @@ describe Game, type: :feature do
     board.board_tiles.each do |tile|
       if tile.column == 1 && pick.include?(tile.row)
         expect(tile.claiming_user_id).to eq(player1.id)
-      elsif tile.column == 5 && pick.include?(tile.row)
+      elsif tile.column == board.columns.size && pick.include?(tile.row)
         expect(tile.claiming_user_id).to eq(player2.id)
       end
     end
@@ -43,6 +47,7 @@ describe Game, type: :feature do
     check_range_to_pick(board)
   end
 
+  # Check the range of rows that can be picked for a given number of rows.
   def check_range_to_pick(board)
     1.upto(4) do |i|
       expect(board.range_to_pick(i)).to eq(1..i)
