@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_15_214224) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_18_030011) do
   create_table "board_spots", force: :cascade do |t|
     t.integer "board_id"
     t.integer "column"
@@ -164,6 +164,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_15_214224) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
+  end
+
+  create_table "versions", force: :cascade do |t|
+    t.string "item_type", null: false
+    t.bigint "item_id", null: false
+    t.string "event", null: false
+    t.string "whodunnit"
+    t.text "object", limit: 1073741823
+    t.datetime "created_at"
+    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
 end
