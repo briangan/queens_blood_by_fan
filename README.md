@@ -21,6 +21,16 @@ It's developed in Ruby on Rails platform based in Unix/Linux operating system.  
 * Graphics
   - Card images downloaded from https://www.powerpyx.com/final-fantasy-7-vii-rebirth-all-queens-blood-card-locations/
 
+# Installation
+Ensure /Gemfile has 
+gem 'rails', '~> 7.2'
+gem 'importmap-rails'
+gem 'hotwire-rails'
+gem 'turbo-rails'
+
+Run bin/rails importmap:install then bin/rails hotwire:install then bin/rails turbo:install
+
+
 # Configuration
 * Before running database migrations, ensure your database server has the necessary database/repository according to running Rails environment, and authentication.
 * Within your specified environment, run `bin/rails db:migrate` to setup database schemas and data.  Run `bin/rails db:seed` to populate initial data.

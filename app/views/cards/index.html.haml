@@ -3,11 +3,19 @@
   = render partial:'form_assets'
 
 %div(class="accordion container" id="cards_accordion")
-  %div.text-end.mr-3
-    = button_tag('Expand All Cards', class:'btn btn-sm btn-primary', data:{'expand-all-cards'=>true})
+  .text-end.mr-3
+    = turbo_frame_tag 'cards_filter_frame' do
+      = form_with url: cards_path, method: :get, data: { turbo_frame: 'cards_frame' } do
+        = hidden_field_tag :format, :turbo_stream
+        %label{for: 'limit'} Per Page: 
+        = select_tag :limit, options_for_select([2, 5, 10, 20, 50, 100], params[:limit])
+        = submit_tag 'Apply', class: 'btn btn-sm btn-primary ml-2'
+        &nbsp;&nbsp;
+        = button_tag('Expand All Cards', class:'btn btn-sm btn-primary', data:{'expand-all-cards'=>true})
   %br/
-  = render partial:'cards/form', collection: @cards, as: :card
-    
-.container
-  .align-center.mt-3
-    = paginate @cards
+  %h2.text-center.mb-3 Cards
+  = turbo_frame_tag 'cards_frame' do
+    = render partial:'cards/form', collection: @cards, as: :card
+    .container
+      .align-center.mt-3
+        = paginate @cards

@@ -1,0 +1,5 @@
+= turbo_stream.replace 'cards_frame' do
+  = render partial:'cards/form', collection: @cards, as: :card
+  .container
+    .align-center.mt-3
+      = paginate @cards

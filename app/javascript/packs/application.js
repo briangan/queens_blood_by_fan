@@ -21,4 +21,6 @@ window.$ = jQuery
 
 
 $(function() {
+  $(".best-in-place").best_in_place();
+
 });

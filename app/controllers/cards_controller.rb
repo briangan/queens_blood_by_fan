@@ -2,10 +2,11 @@ class CardsController < InheritedResources::Base
   helper CardAbilitiesHelper
   
   def index
-    @cards = Card.includes(:card_tiles, :card_abilities).order(:card_number).page(params[:page])
+    @cards = Card.includes(:card_tiles, :card_abilities).order(:card_number).page(params[:page]).limit(params[:limit]&.to_i || 20)
     set_page_title_suffix(@cards, 'card')
     
     respond_to do |format|
+      format.turbo_stream
       format.html
       format.json { render json: @cards }
     end
