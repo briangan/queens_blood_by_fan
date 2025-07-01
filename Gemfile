@@ -19,7 +19,7 @@ gem 'inherited_resources'
 gem 'sqlite3', '~> 1.4'
 gem 'mysql2'
 
-gem 'paper_trail', '~> 15.0'
+gem 'paper_trail', '~> 15'
 
 ###############
 # Fontend
