@@ -10,27 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_18_030011) do
-  create_table "board_spots", force: :cascade do |t|
-    t.integer "board_id"
-    t.integer "column"
-    t.integer "row"
-    t.integer "pawn_value", default: 0
-    t.integer "power_value", default: 0
-    t.integer "current_card_id"
-    t.index ["board_id", "column", "row"], name: "index_board_spots_on_board_id_and_column_and_row"
-    t.index ["board_id"], name: "index_board_spots_on_board_id"
-  end
-
-  create_table "board_spots_cards", force: :cascade do |t|
-    t.integer "board_spot_id"
-    t.integer "user_id"
-    t.integer "card_id"
-    t.integer "spot_order", default: 0
-    t.index ["board_spot_id", "spot_order"], name: "index_board_spots_cards_on_board_spot_id_and_spot_order", unique: true
-    t.index ["board_spot_id"], name: "index_board_spots_cards_on_board_spot_id"
-  end
-
+ActiveRecord::Schema[7.2].define(version: 2025_07_01_012152) do
   create_table "board_tiles", force: :cascade do |t|
     t.integer "board_id"
     t.integer "column"
@@ -98,10 +78,23 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_18_030011) do
     t.index ["power"], name: "index_cards_on_power"
   end
 
+  create_table "game_board_tiles", force: :cascade do |t|
+    t.integer "board_id"
+    t.integer "column"
+    t.integer "row"
+    t.integer "pawn_value", default: 0
+    t.integer "power_value", default: 0
+    t.integer "current_card_id"
+    t.integer "game_id", null: false
+    t.index ["board_id", "column", "row"], name: "index_game_board_tiles_on_board_id_and_column_and_row"
+    t.index ["board_id"], name: "index_game_board_tiles_on_board_id"
+    t.index ["game_id"], name: "index_game_board_tiles_on_game_id"
+  end
+
   create_table "game_moves", force: :cascade do |t|
     t.integer "game_id"
     t.integer "user_id"
-    t.integer "board_spot_id"
+    t.integer "game_board_tile_id"
     t.integer "card_id"
     t.integer "move_order", default: 0
     t.datetime "created_at", null: false
@@ -109,19 +102,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_18_030011) do
     t.index ["game_id", "move_order"], name: "index_game_moves_on_game_id_and_move_order"
     t.index ["game_id", "user_id"], name: "index_game_moves_on_game_id_and_user_id"
     t.index ["game_id"], name: "index_game_moves_on_game_id"
-  end
-
-  create_table "game_session_moves", force: :cascade do |t|
-    t.integer "game_session_id"
-    t.integer "user_id"
-    t.integer "board_spot_id"
-    t.integer "card_id"
-    t.integer "move_order", default: 0
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["game_session_id", "move_order"], name: "index_game_session_moves_on_game_session_id_and_move_order"
-    t.index ["game_session_id", "user_id"], name: "index_game_session_moves_on_game_session_id_and_user_id"
-    t.index ["game_session_id"], name: "index_game_session_moves_on_game_session_id"
   end
 
   create_table "games", force: :cascade do |t|
@@ -175,5 +155,4 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_18_030011) do
     t.datetime "created_at"
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
-
 end

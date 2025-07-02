@@ -5,7 +5,7 @@
 # [ ] Card number 86 has ability "when first reaches power 7 ..."
 # [ ] Card number 142 has ability "when the rounds ends, the loser of each lane's score is added to victor's"
 class CardAbility < ApplicationRecord
-  belongs_to :card
+  belongs_to :card, optional: true
   # attr_accessor :action
 
   TYPES = %w[RaiseRankAbility EnhanceAbility EnfeebleAbility ReplacementAbility SpawnAbility AddCardAbility DestroyCardAbility]
