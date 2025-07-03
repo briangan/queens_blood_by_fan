@@ -48,7 +48,7 @@ gem 'jbuilder', '~> 2.7'
 
 gem 'kaminari'
 gem 'kaminari-bootstrap'
-gem "best_in_place", git: "https://github.com/mmotherwell/best_in_place"
+gem "best_in_place", '~> 4.0'
 
 ####################
 # Server

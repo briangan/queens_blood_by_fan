@@ -1,11 +1,3 @@
-GIT
-  remote: https://github.com/mmotherwell/best_in_place
-  revision: 88eb3052623a9a6cd346864d2aca05021c2f80d0
-  specs:
-    best_in_place (3.1.1)
-      actionpack (>= 3.2)
-      railties (>= 3.2)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -84,6 +76,9 @@ GEM
       public_suffix (>= 2.0.2, < 7.0)
     base64 (0.3.0)
     benchmark (0.4.1)
+    best_in_place (4.0.0)
+      actionpack (>= 7.0)
+      railties (>= 7.0)
     better_errors (2.10.1)
       erubi (>= 1.0.0)
       rack (>= 0.9.0)
@@ -445,7 +440,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  best_in_place!
+  best_in_place (~> 4.0)
   better_errors
   bootsnap (>= 1.4.4)
   bootstrap

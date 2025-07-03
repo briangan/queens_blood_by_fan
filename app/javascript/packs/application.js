@@ -8,19 +8,25 @@ import Turbolinks from "turbolinks"
 import * as ActiveStorage from "@rails/activestorage"
 import "channels"
 import jQuery from "jquery"
+
+// Set globals BEFORE importing plugins
+window.jQuery = jQuery
+window.$ = jQuery
+
 import "jquery-ui/ui/widgets/draggable"
 import "jquery-ui/ui/widgets/droppable"
+
 //import "./controllers"
 import * as bootstrap from 'bootstrap'
+
+// These need jQuery and $
+import "best_in_place"
 
 Rails.start()
 Turbolinks.start()
 ActiveStorage.start()
-window.jQuery = jQuery
-window.$ = jQuery
-
 
 $(function() {
-  $(".best-in-place").best_in_place();
+  $(".best-in-place-input").best_in_place();
 
 });

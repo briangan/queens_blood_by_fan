@@ -21,6 +21,7 @@
         .col-auto.mb-3
           = f.label :name
           = f.text_field :name, class: 'form-control-sm align-middle'
+          -#= best_in_place card, :name, url: card_path(card), class: 'form-control-sm align-middle best-in-place-input', placeholder:'Card Name'
         .col-auto.mb-3.align-middle
           = f.label :type
           = f.select :type, options_for_select([ ['Normal','Card'], ['Replacement','ReplacementCard'] ], card.type), {}, class: 'form-control-sm', title:'Card Type', data:{ 'bs-toggle'=>'tooltip'}
