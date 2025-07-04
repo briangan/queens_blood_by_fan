@@ -15,3 +15,32 @@
  */
 @import "bootstrap/scss/bootstrap";
 @import 'bootstrap-icons/font/bootstrap-icons';
+
+// variables
+$blood-color: rgb(179, 16, 31);
+$blood-text-color: rgb(255, 255, 255);
+
+.navbar {
+  background-color: $blood-color;
+  color: $blood-text-color;
+
+  .nav-link {
+    color: $blood-text-color;
+    &:hover {
+      color: darken($blood-text-color, 10%);
+    }
+  }
+
+  .navbar-brand {
+    color: $blood-text-color;
+    &:hover {
+      color: darken($blood-text-color, 10%);
+    }
+  }
+
+  // .nav-item with child having .active
+  .nav-item > .nav-link.active {
+    color: $blood-text-color;
+    background-color: darken($blood-color, 10%);
+  }
+}

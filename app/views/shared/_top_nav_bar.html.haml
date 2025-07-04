@@ -1,0 +1,13 @@
+%nav(class="navbar navbar-expand-lg p-0")
+  .container-fluid
+    %a(class="navbar-brand" href="#") Queen's Blood by Fan
+    %button(class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation")
+      %span.navbar-toggler-icon
+    %div(class="collapse navbar-collapse" id="navbarSupportedContent")
+      %ul(class="navbar-nav me-auto mb-2 mb-lg-0")
+        %li.nav-item
+          = link_to 'Game', Game.first, class:"nav-link#{' active' if params[:controller] == 'games' }"
+        %li.nav-item
+          = link_to 'Boards', boards_path, class:"nav-link#{' active' if params[:controller] == 'boards' }"
+        %li.nav-item
+          = link_to 'Cards', cards_path, class:"nav-link#{' active' if params[:controller] == 'cards' }"
