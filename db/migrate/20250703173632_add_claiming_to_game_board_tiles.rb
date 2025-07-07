@@ -5,12 +5,16 @@ class AddClaimingToGameBoardTiles < ActiveRecord::Migration[7.2]
 
     add_index :game_board_tiles, :claiming_user_id unless index_exists?(:game_board_tiles, :claiming_user_id)
 
-    create_table_unless_exists :board_tiles do |t|
+    drop_table_if_exists :board_tiles
+    create_table :board_tiles do |t|
       t.integer :board_id, null: false
       t.integer :column, null: false
       t.integer :row, null: false
       t.integer :pawn_value, default: 1
       t.integer :claiming_user_number, null: false
+
+      t.index :board_id
+      t.index [:board_id, :claiming_user_number]
     end
   end
 

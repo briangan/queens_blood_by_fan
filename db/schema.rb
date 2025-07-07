@@ -12,19 +12,12 @@
 
 ActiveRecord::Schema[7.2].define(version: 2025_07_03_173632) do
   create_table "board_tiles", force: :cascade do |t|
-    t.integer "board_id"
-    t.integer "column"
-    t.integer "row"
-    t.integer "pawn_rank", default: 0
-    t.integer "total_power", default: 0
-    t.integer "current_card_id"
-    t.integer "claiming_user_id"
-    t.datetime "claimed_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["board_id", "claiming_user_id"], name: "index_board_tiles_on_board_id_and_claiming_user_id"
-    t.index ["board_id", "column", "row"], name: "index_board_tiles_on_board_id_and_column_and_row"
-    t.index ["board_id", "updated_at"], name: "index_board_tiles_on_board_id_and_updated_at"
+    t.integer "board_id", null: false
+    t.integer "column", null: false
+    t.integer "row", null: false
+    t.integer "pawn_value", default: 1
+    t.integer "claiming_user_number", null: false
+    t.index ["board_id", "claiming_user_number"], name: "index_board_tiles_on_board_id_and_claiming_user_number"
     t.index ["board_id"], name: "index_board_tiles_on_board_id"
   end
 
