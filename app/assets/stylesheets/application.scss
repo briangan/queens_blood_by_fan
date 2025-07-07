@@ -19,6 +19,42 @@
 // variables
 $blood-color: rgb(179, 16, 31);
 $blood-text-color: rgb(255, 255, 255);
+$user-1-color: rgb(0, 153, 0);
+$user-1-bg-color: rgb(123, 186, 139);
+$user-2-color: rgb(204, 0, 0);
+$user-2-bg-color: rgb(196, 81, 81);
+
+// use $user-1-color and $user-2-color for user-specific styles
+.user-1 {
+  color: $user-1-color;
+  background-color: $user-1-bg-color;
+}
+.user-2 {
+  color: $user-2-color;
+  background-color: $user-2-bg-color;
+}
+.user-1-bg-color {
+  background-color: $user-1-bg-color;
+}
+.user-2-bg-color {
+  background-color: $user-2-bg-color;
+}
+
+.btn-check + .user-1-bg-color, .btn-check + .user-2-bg-color {
+  color: yellow;
+}
+.btn-check:checked + .user-1-bg-color , .btn.active.user-1-bg-color, .btn.show.user-1-bg-color {
+  background-color: $user-1-bg-color;
+  color: black;
+  font-weight: bold;
+  border: solid 2px black;
+}
+  .btn-check:checked + .user-2-bg-color , .btn.active.user-2-bg-color, .btn.show.user-2-bg-color {
+  background-color: $user-2-bg-color;
+  color: black;
+  font-weight: bold;
+  border: solid 2px black;
+}
 
 .navbar {
   background-color: $blood-color;

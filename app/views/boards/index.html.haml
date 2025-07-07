@@ -1,0 +1,21 @@
+%h3 Boards - Templates for Game Boards
+.container
+  .row
+    .col-md-6.col-sm-12
+      %table.table.table-striped.table-bordered.table-hover
+        %thead
+          %tr
+            %th Columns
+            %th Rows
+            %th
+
+        %tbody
+          - @boards.each do |board|
+            %tr
+              %td= board.columns
+              %td= board.rows
+              %td= link_to 'Edit', edit_board_path(board)
+
+%br
+
+= link_to 'New Board', new_board_path
