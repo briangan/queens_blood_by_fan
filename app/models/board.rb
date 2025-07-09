@@ -16,6 +16,13 @@ class Board < ApplicationRecord
     board
   end
 
+  # @return <Hash of [column, row] => Array of BoardTile >
+  def board_tiles_map
+    unless @board_tiles_map
+      @board_tiles_map = board_tiles.all.group_by{|bto| [bto.column, bto.row] }
+    end
+    @board_tiles_map
+  end
   
 
   ##

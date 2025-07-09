@@ -2,9 +2,7 @@
   # Required locals:
   #   board <Board>
   # board_tiles matrix: [[column, row] => BoardTile]
-  bt_matrix = {}
-  board.board_tiles.each{|bt| bt_matrix[ [bt.column, bt.row] ] = bt.claiming_user_number }
-  bto_matrix = board.board_tiles.all.group_by{|bto| [bto.column, bto.row] }
+  bto_matrix = board.board_tiles_map
 :css
   .board-tile-cell {
     width: 50px;
@@ -40,16 +38,7 @@
     $(this).val(nextV);
     // console.log("| " + $(this).attr('id') + " | selected " + currentSelectedUserNumber + ", "+ v + " -> " + nextV);
 
-    if (nextV == '1') {
-      $(this).parent().removeClass('user-2-bg-color').addClass('user-1-bg-color');
-      $(this).prop('checked', true);
-    } else if (nextV == '2') {
-      $(this).parent().removeClass('user-1-bg-color').addClass('user-2-bg-color');
-      $(this).prop('checked', true);
-    } else {
-      $(this).parent().removeClass('user-1-bg-color').removeClass('user-2-bg-color');
-      $(this).prop('checked', false);
-    }
+    renderBoardTileCell(this);
 
     // Synch the radio button choice
     if (nextV == '') {
@@ -66,7 +55,6 @@
   function renderBoardTileCell(checkBox){
     var v = $(checkBox).val();
     
-    console.log("| Rendering tile checkBox: " + $(checkBox).attr('name') + " with value: " + v);
     if (v == '1') {
       $(checkBox).parent().removeClass('user-2-bg-color').addClass('user-1-bg-color');
       $(checkBox).prop('checked', true);
@@ -129,10 +117,8 @@
         - 1.upto(board.rows) do |row|
           %tr
             - 1.upto(board.columns) do |col|
-              - existing_user_number = bto_matrix[[col, row]]&.first&.claiming_user_number || bt_matrix[[col, row]] || ''
+              - existing_user_number = bto_matrix[[col, row]]&.first&.claiming_user_number || ''
               %td.board-tile-cell
-                = existing_user_number
-                %br/
                 = check_box_tag "board_tiles[board_tile_at_#{col}_#{row}]", existing_user_number, id: "board_tile_#{col}_#{row}", class:'board-tile-checkbox', data:{ 'bs-toggle' => 'tooltip', 'bs-title' => "Tile at #{col},#{row}" }
   .actions
     %button(type='submit' class='btn btn-primary' data-disabled-with='Saving...')

@@ -21,6 +21,8 @@ gem 'mysql2'
 
 gem 'paper_trail', '~> 15'
 
+gem 'seed_dump'
+
 ###############
 # Fontend
 

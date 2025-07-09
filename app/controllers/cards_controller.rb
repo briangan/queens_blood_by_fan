@@ -40,6 +40,6 @@ class CardsController < InheritedResources::Base
   end
 
   def card_permitted_params
-    params.permit( card_abilities: CardAbility::PERMITTED_PARAMS, card: [:type, :name, :category, :card_number, :description, :pawn_rank, :power, :raise_pawn_rank] )
+    params.permit( :card_tiles, card_abilities: CardAbility::PERMITTED_PARAMS, card: [:type, :name, :category, :card_number, :description, :pawn_rank, :power, :raise_pawn_rank] )
   end
 end

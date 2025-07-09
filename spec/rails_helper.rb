@@ -68,4 +68,4 @@ RSpec.configure do |config|
 
 end
 
-ActiveSupport::Deprecation.silenced = true if Rails.version.match(/\A(\d+\.?\d[0,1])/).try(:[], 1).to_f < 6.1
+ActiveSupport::Deprecation.silenced = true if Rails.version.match(/\A(\d+\.?\d{0,3})/).try(:[], 1).to_f < 6.1

@@ -15,5 +15,5 @@
       = render 'cards/card', card: card, which_player: 2
     .clearfix
 %hr
-= render partial:'boards/board', locals:{ board: @game.board }
+= render partial:'board', locals:{ game: @game }
 

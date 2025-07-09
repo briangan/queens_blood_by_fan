@@ -5,12 +5,16 @@
 
 
 %h1= app_name
-
-.card
-  .card-header Games
-  = render partial:'games/games', locals:{ games: @games }
-%br
-%br
-.card
-  .card-header
-    = link_to 'Cards', cards_path
+.row
+  .col-auto
+    .card
+      .card-header Games
+      = render partial:'games/games', locals:{ games: @games }
+  .col-auto
+    .card
+      .card-header
+        = link_to 'Cards', cards_path
+  .col-auto
+    .card
+      .card-header
+        = link_to 'Boards', boards_path

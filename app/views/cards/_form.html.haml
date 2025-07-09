@@ -1,5 +1,5 @@
 = form_for(card, url: card_path(card), as: 'card', remote: true, method:'put' ) do |f|
-  = hidden_field_tag :authenticity_token, form_authenticity_token
+  = hidden_field_tag :format, :js
   %div.accordion-item.d-flex.flow-row(id="card_form_#{card.id}")
     .align-self-center
       .card(id="card_cropped_#{card.card_number}" data-card-number="#{card.card_number}")
@@ -38,8 +38,9 @@
           = f.text_area :description, class: 'form-control-sm align-middle'
       .row
         .col.mb-3.text-end
-          = f.submit 'Update', class: 'btn btn-primary btn-sm'
-          = link_to 'Edit', edit_card_path(card), class: 'btn btn-secondary btn-sm' unless request.path == edit_card_path(card)
+          %button(type='submit' class='btn btn-primary btn-sm' data-disable-with='Updating...')
+            %i.bi.bi-floppy-fill &nbsp;
+            Save
     .align-self-center.p-3.ml-5
       %div
         = render partial:'cards/card_tile_selection_grid', locals: {card: card}
