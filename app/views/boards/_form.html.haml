@@ -1,8 +1,7 @@
 :ruby
   # Required locals:
   #   board <Board>
-  # board_tiles matrix: [[column, row] => BoardTile]
-  bto_matrix = board.board_tiles_map
+
 :css
   .board-tile-cell {
     width: 50px;
@@ -75,19 +74,55 @@
     });
   }
 
+  function generateBoardTilesTable() {
+    // deletes all rows in the tables
+    const boardTilesTable = document.querySelector('#board_tiles_table tbody');
+    if (boardTilesTable) {
+      boardTilesTable.innerHTML = '';
+      var boardColumns = parseInt(document.querySelector('#board_form input[name="board[columns]"]').value);
+      var boardRows = parseInt(document.querySelector('#board_form input[name="board[rows]"]').value);
+      // Generate the table rows and cells
+      for (let row = 1; row <= boardRows; row++) {
+        const tr = document.createElement('tr');
+        for (let col = 1; col <= boardColumns; col++) {
+          const td = document.createElement('td');
+          td.className = 'board-tile-cell';
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.className = 'board-tile-checkbox';
+          checkbox.id = `board_tile_${col}_${row}`;
+          checkbox.name = `board_tiles[board_tile_at_${col}_${row}]`;
+          checkbox.value = '';
+          checkbox.dataset.bsToggle = 'tooltip';
+          checkbox.dataset.bsTitle = `Tile at ${col},${row}`;
+          checkbox.addEventListener('change', toggleTileUser);
+          td.appendChild(checkbox);
+          checkbox.value = '';
+          renderBoardTileCell(checkbox);
+          tr.appendChild(td);
+        }
+        boardTilesTable.appendChild(tr);
+      }
+    }
+  }
+
   $( function() {
     renderAllBoardTileCells();
 
-    const checkboxes = document.querySelectorAll('.board-tile-checkbox');
-    checkboxes.forEach(checkbox => {
-      checkbox.addEventListener('change', function() {
+    $('#board_form input[name="board[columns]"]').on('change', function() {
+        generateBoardTilesTable();
+      });
+    $('#board_form input[name="board[rows]"]').on('change', function() {
+        generateBoardTilesTable();
+      });
+
+    $('.board-tile-checkbox').on('change', function() {
         toggleTileUser.call(this);
       });
-    });
   });
 -#%pre= bt_matrix.to_yaml
-= form_for @board,  html:{ id:'board_form' } do |f|
-  = hidden_field_tag :format, :js
+= form_for @board, remote: !@board.new_record?, html:{ id:'board_form' } do |f|
+  = hidden_field_tag(:format, :js) if @board&.id
   - if board.errors.any?
     #error_explanation
       %h2= "#{pluralize(board.errors.count, "error")} prohibited this board from being saved:"
@@ -112,16 +147,9 @@
     %input(type="radio" class="btn-check" name="current_user_number" id="current_user_number_option_2" value="2" autocomplete="off")
     %label(for="current_user_number_option_2" class="btn user-2-bg-color") User 2
   %div(class="form-group input-group mb-3")
-    %table.table-striped
-      %tbody
-        - 1.upto(board.rows) do |row|
-          %tr
-            - 1.upto(board.columns) do |col|
-              - existing_user_number = bto_matrix[[col, row]]&.first&.claiming_user_number || ''
-              %td.board-tile-cell
-                = check_box_tag "board_tiles[board_tile_at_#{col}_#{row}]", existing_user_number, id: "board_tile_#{col}_#{row}", class:'board-tile-checkbox', data:{ 'bs-toggle' => 'tooltip', 'bs-title' => "Tile at #{col},#{row}" }
+    = turbo_frame_tag 'board_tiles_table_frame' do
+      = render 'boards/board_tiles_table', board: board
   .actions
-    %button(type='submit' class='btn btn-primary' data-disabled-with='Saving...')
+    %button(type='submit' class='btn btn-primary' data-disable-with='Saving...')
       %i.bi.bi-floppy-fill
       Save
-  

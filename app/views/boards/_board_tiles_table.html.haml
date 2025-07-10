@@ -1,0 +1,13 @@
+-# Generate a table of checkboxes for each board tile inside a Board according to its rows and columns.
+:ruby
+  # Required locals: 
+  #   board <Board>
+  bto_matrix = board.board_tiles_map
+%table.table-striped(id="board_tiles_table")
+  %tbody
+    - 1.upto(board.rows) do |row|
+      %tr
+        - 1.upto(board.columns) do |col|
+          - existing_user_number = bto_matrix[[col, row]]&.first&.claiming_user_number || ''
+          %td.board-tile-cell
+            = check_box_tag "board_tiles[board_tile_at_#{col}_#{row}]", existing_user_number, id: "board_tile_#{col}_#{row}", class:'board-tile-checkbox', data:{ 'bs-toggle' => 'tooltip', 'bs-title' => "Tile at #{col},#{row}" }

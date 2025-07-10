@@ -9,7 +9,15 @@
     --highlight-card-border-color: #73eac3;
     --highlight-tile-background-color: #bed5cb;
     --tile-card-width: 156px;
-    --tile-card-height: 208px
+    --tile-card-height: 208px;
+    --tile-card-image-width: 544px;
+    --tile-card-image-left: -36px;
+    --tile-card-image-top: -28px;
+    --tile-small-card-width: 101px;
+    --tile-small-card-height: 135px;
+    --tile-small-card-image-width: 360px;
+    --tile-small-card-image-left: -23px;
+    --tile-small-card-image-top: -18px;
   }
   .board-wrapper {
     background-color: #999999;
@@ -19,10 +27,11 @@
     width: var(--tile-card-width);
     height: var(--tile-card-height);
     display: inline-block;
-    border: 0;
+    border: solid 1px gray;
     margin: 0;
     padding: 0;
     text-align: center;
+    vertical-align: middle;
   }
   .board-tile-odd {
     background-color: #4d5878;
@@ -78,10 +87,10 @@
   .board-tile .powerdown-effect {
     color: purple;
   }
-  .card-extra-image {
+  .card > .card-extra-image {
     overflow: hidden;
   }
-  .card-extra-image img {
+  .card > .card-extra-image img {
     width: 544px;
     position: relative;
     left: -36px;
@@ -102,6 +111,25 @@
     display: inline-block;
     text-align: center;
     overflow: hidden;
+  }
+
+  .small-card {
+    width: var(--tile-small-card-width);
+    height: var(--tile-small-card-height);
+    border-width: 0.1em;
+    border-radius: 0.5em;
+    margin: 0.1em 0.05em;
+    cursor: grab;
+    display: inline-block;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .small-card > .card-extra-image img {
+    width: var(--tile-small-card-image-width);
+    position: relative;
+    left: var(--tile-small-card-image-left);
+    top: var(--tile-small-card-image-top);
   }
 
   .card[data-player="1"], .card-wrapper[data-player="1"] {
@@ -157,7 +185,7 @@
   /* Action Handlers *************************************/
   function dropCardHandler(event, ui) {
     var shouldAccept = isCardAcceptableToTile( ui.draggable, $(this));
-    console.log("Card dropped " + ui.draggable.attr('id') + " on " + $(this).attr('id') + " => "+ shouldAccept );
+    // console.log("Card dropped " + ui.draggable.attr('id') + " on " + $(this).attr('id') + " => "+ shouldAccept );
 
     if (shouldAccept) {
       ui.draggable.data('board-tile-id', $(this).attr('id') );
@@ -168,6 +196,7 @@
       $(this).html('');
       $(ui.draggable).detach().appendTo( $(this) );
       ui.draggable.addClass('card-dropped');
+      ui.draggable.removeClass('small-card');
 
       ui.draggable.draggable( 'option', 'revert', false );
 

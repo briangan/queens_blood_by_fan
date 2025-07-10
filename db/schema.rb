@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_07_03_173632) do
+ActiveRecord::Schema[7.2].define(version: 2025_07_09_233307) do
   create_table "board_tiles", force: :cascade do |t|
     t.integer "board_id", null: false
     t.integer "column", null: false
@@ -106,6 +106,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_03_173632) do
     t.string "status", default: "0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "current_turn_user_id"
     t.index ["created_at"], name: "index_games_on_created_at"
   end
 

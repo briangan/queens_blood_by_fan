@@ -2,6 +2,12 @@ class BoardsController < InheritedResources::Base
 
   actions :index, :show, :new, :create, :edit, :update
 
+  def new
+    @board = Board.new(columns: permitted_params[:columns] || Board::DEFAULT_BOARD_COLUMNS, 
+      rows: permitted_params[:rows] || Board::DEFAULT_BOARD_ROWS )
+    super
+  end
+
   def update
     @board ||= resource
     @board.board_tiles.delete_all
@@ -16,7 +22,7 @@ class BoardsController < InheritedResources::Base
       end
     end
     super do|format|
-      format.js { render js: '' }
+      format.js { render js:'', status: :ok }
       format.html { redirect_to params[:return_url].present? ? params[:return_url] : edit_board_path(@board) }
     end
   end

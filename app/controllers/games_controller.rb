@@ -4,4 +4,10 @@ class GamesController < ::InheritedResources::Base
     set_page_title_suffix(@games)
     
   end
+
+  def create_game_move
+    respond_to do |format|
+      format.js { render js:'', status: :ok }
+    end
+  end
 end

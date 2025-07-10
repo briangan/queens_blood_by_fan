@@ -3,17 +3,32 @@
   
 - content_for :more_head do
   = render partial:'cards/assets'
-.row
-  .col.card-wrapper
-    - card_numbers_1 = (1..145).to_a ####### .shuffle
-    - Card.where(card_number: card_numbers_1[0..cards_per_player_count - 1] ).each do |card|
-      = render 'cards/card', card: card, which_player: 1
-    .clearfix
-  .col.card-wrapper
-    - card_numbers_2 = (1..145).to_a #### .shuffle
-    - Card.where(card_number: card_numbers_2[0..cards_per_player_count - 1] ).each do |card|
-      = render 'cards/card', card: card, which_player: 2
-    .clearfix
+= form_tag url: create_game_move_game_path(@game), method: :post, data: { turbo_frame: 'game_frame' } do
+  = hidden_field_tag :format, :turbo_stream
+  .text-center.mb-3
+    %p Turn for Player 1
+    %button.btn.btn-primary{ type: 'submit' } Start Game Move
+.row(id="user_cards_wrapper")
+  .col
+    %ul(class="nav nav-tabs")
+      %li(class="nav-item")
+        %a(name="player_1_cards")
+        %h4(class="nav-link user-1-bg-color text-dark fw-bold") Player 1
+    .card-wrapper.user-1-border.p-2
+      - card_numbers_1 = (1..145).to_a.shuffle[0..cards_per_player_count - 1]
+      - Card.where(card_number: card_numbers_1[0..cards_per_player_count - 1] ).each do |card|
+        = render 'cards/card', card: card, which_player: 1, card_css_class: 'card small-card'
+      .clearfix
+  .col
+    %ul(class="nav nav-tabs")
+      %li(class="nav-item")
+        %a(name="player_2_cards")
+        %h4(class="nav-link user-2-bg-color text-dark fw-bold") Player 2
+    .card-wrapper.user-2-border.p-2
+      - card_numbers_2 = (1..145).to_a.shuffle[0..cards_per_player_count - 1]
+      - Card.where(card_number: card_numbers_2[0..cards_per_player_count - 1] ).each do |card|
+        = render 'cards/card', card: card, which_player: 2
+      .clearfix
 %hr
 = render partial:'board', locals:{ game: @game }
 
