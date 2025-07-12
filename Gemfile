@@ -53,6 +53,11 @@ gem 'kaminari-bootstrap'
 gem "best_in_place", '~> 4.0'
 
 ####################
+# Authentication
+
+gem 'devise'
+
+####################
 # Server
 
 # Reduces boot times through caching; required in config/boot.rb

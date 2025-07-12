@@ -1,4 +1,7 @@
 class ApplicationController < ActionController::Base
+
+  before_action :authenticate_user!
+
   ##
   # @page_title_suffix is used to append to the end of the page title in layouts/application.
   # 
