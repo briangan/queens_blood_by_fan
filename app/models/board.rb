@@ -12,7 +12,6 @@ class Board < ApplicationRecord
   def self.create_board(cols = DEFAULT_BOARD_COLUMNS, rows = DEFAULT_BOARD_ROWS)
     board = Board.where(columns: cols, rows: rows).last || Board.create(columns: cols, rows: rows)
 
-    board.create_board_tiles!
     board
   end
 
@@ -24,28 +23,6 @@ class Board < ApplicationRecord
     @board_tiles_map
   end
   
-
-  ##
-  # Pick left-most column and middle 3 rows for player 1.
-  # Pick right-most column and middle 3 rows for player 2.
-  def pick_pawns_for_players!(players = nil)
-    player1 = players[0]
-    player2 = players[1]
-
-    pick = range_to_pick(rows)
-    player1_tiles = board_tiles.where(column: 1).where(row: pick )
-    player2_tiles = board_tiles.where(column: columns).where(row: pick )
-
-    player1_tiles.each do |tile|
-      tile.attributes = { pawn_rank: 1, claiming_user_id: player1.id }
-      tile.save
-    end
-
-    player2_tiles.each do |tile|
-      tile.attributes = { pawn_rank: 1, claiming_user_id: player2.id }
-      tile.save
-    end
-  end
 
   ##
   # Find the range of rows in the middle of the board.

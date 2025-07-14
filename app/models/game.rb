@@ -2,6 +2,7 @@ class Game < ActiveRecord::Base
   has_many :game_users, class_name:'GameUser', dependent: :destroy
   has_many :users, through: :game_users
   belongs_to :winner, class_name: 'User', foreign_key: 'winner_user_id', optional: true
+  belongs_to :current_turn_user, class_name: 'User', foreign_key: 'current_turn_user_id', optional: true
 
   has_many :games_cards, dependent: :destroy
   has_many :cards, through: :games_cards
@@ -51,6 +52,25 @@ class Game < ActiveRecord::Base
     end
   end
 
+  # @game_move [GameMove]
+  def proceed_with_game_move(game_move)
+  end
+
+  # Either start 1st turn for nil @current_turn_user_id or switch to next player.
+  # @return [Integer] current_turn_user_id
+  def go_to_next_turn!
+    # Next turn
+    if current_turn_user_id.nil?
+      # If no current turn user, set to player 1.
+      self.current_turn_user_id = game_users.first.user_id
+    else
+      # Otherwise, switch to the next player.
+      next_player = game_users.where.not(user_id: current_turn_user_id).first
+      self.update(current_turn_user_id: next_player.user_id) if next_player
+    end
+    self.current_turn_user_id
+  end
+
   ##
   # @column [Integer] 1 to colunms
   # @row [Integer] 1 to rows
@@ -74,10 +94,23 @@ class Game < ActiveRecord::Base
   end
 
 
-  def pick_pawns_for_players!
-    raise 'Game must have 2 players' if users.size < 2
-    board.pick_pawns_for_players!(users)
+  # pick_pawns_for_players! is now done within @copy_from_board_to_game_board_tiles!
+  
+  # Ordered list of User in the game by move_order.
+  def players
+    @players = game_users.includes(:user).order(:move_order).map(&:user)
   end
+
+  def player_1
+    players.first
+  end
+  alias_method :user_1, :player_1
+
+  def player_2
+    players[1]
+  end
+  alias_method :user_2, :player_2
+
 
   private
   
