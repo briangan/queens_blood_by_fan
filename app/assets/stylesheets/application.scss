@@ -33,6 +33,11 @@ $user-2-bg-color: rgb(196, 81, 81);
   --user-2-bg-color: rgb(196, 81, 81);
 }
 
+.blood-bg-color {
+  background-color: var(--blood-color);
+  color: var(--blood-text-color);
+}
+
 // use $user-1-color and $user-2-color for user-specific styles
 .user-1 {
   color: var(--user-1-color);
@@ -41,6 +46,12 @@ $user-2-bg-color: rgb(196, 81, 81);
 .user-2 {
   color: var(--user-2-color);
   background-color: var(--user-2-bg-color);
+}
+.user-1-color {
+  color: var(--user-1-color);
+}
+.user-2-color {
+  color: var(--user-2-color);
 }
 .user-1-bg-color {
   background-color: var(--user-1-bg-color);
@@ -75,7 +86,7 @@ $user-2-bg-color: rgb(196, 81, 81);
   background-color: $blood-color;
   color: $blood-text-color;
 
-  .nav-link {
+  .nav-link, a {
     color: $blood-text-color;
     &:hover {
       color: darken($blood-text-color, 10%);

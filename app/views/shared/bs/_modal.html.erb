@@ -1,0 +1,43 @@
+<% 
+=begin
+Optional locals:
+  title <String>
+  body <String>
+  footer <String>
+  id <String>
+  render_partial_for_body <String>
+  render_partial_for_body_locals <Hash>
+  show_footer <Boolean> default true
+  show_footer_close_button <Boolean> default true
+=end
+title = '' unless defined?(title)
+body = '' unless defined?(body)
+footer = '' unless defined?(footer)
+id = '' unless defined?(id)
+render_partial_for_body = nil unless defined?(render_partial_for_body)
+render_partial_for_body_locals = nil unless defined?(render_partial_for_body_locals)
+show_footer = true unless defined?(show_footer) && show_footer.to_s == 'false'
+show_footer_close_button = true unless defined?(show_footer_close_button) && show_footer_close_button.to_s == 'false'
+-%>
+<div class="modal fade" tabindex="-1" id="<%= id %>">
+  <div class="modal-dialog" style="min-width: 50%; max-width: 80%;">
+    <div class="modal-content">
+      <div class="modal-header blood-bg-color">
+        <h5 class="modal-title"><%= raw title %></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body container" style="margin: 0 auto; overflow: auto;">
+        <%= raw(body) if body.present? %>
+        <%= render(partial: render_partial_for_body, locals: render_partial_for_body_locals) if render_partial_for_body.present? %>
+      </div>
+      <% if show_footer %>
+      <div class="modal-footer">
+        <%= raw(footer) if footer.present? %>
+        <% if show_footer_close_button %>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <% end %>
+      </div>
+      <% end # show_footer %>
+    </div>
+  </div>
+</div>

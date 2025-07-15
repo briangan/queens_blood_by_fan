@@ -5,7 +5,7 @@
   #   card_css_class: default to 'card'
   which_player = 1 unless defined?(which_player)
   card_css_class = 'card' unless defined?(card_css_class) && card_css_class.present?
-= content_tag(:div, class: "#{card_css_class} draggable", id: "player_#{which_player}_card_#{card.card_number}", data: card_data_attr(card).merge({ player: which_player}) ) do
+= content_tag(:div, class: "#{card_css_class}", id: "player_#{which_player}_card_#{card.card_number}", data: card_data_attr(card).merge({ player: which_player}) ) do
   %i.bi.bi-slash-circle.d-none
   .card-extra-image
     %img(src="/cards/#{card.card_number}.jpg" title="Card ##{card.card_number}")

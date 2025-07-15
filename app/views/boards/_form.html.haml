@@ -134,10 +134,10 @@
       %div(class="form-group input-group mb-3")
         %span(class="input-group-text") 
           Columns
-        = f.number_field :columns, class: 'form-control', placeholder: 'Columns', required: true, aria: { label: 'Columns', describedby: 'columns-addon1' }
+        = f.number_field :columns, class: 'form-control', placeholder: 'Columns', required: true
         %span(class="input-group-text") 
           Rows
-        = f.number_field :rows, class: 'form-control', placeholder: 'Rows', required: true, aria: { label: 'Rows', describedby: 'rows-addon1' }
+        = f.number_field :rows, class: 'form-control', placeholder: 'Rows', required: true
   %div(class="form-group input-group mb-3")
     %label(for="current_user_number" class="input-group-text") 
       Choose which user for the tiles

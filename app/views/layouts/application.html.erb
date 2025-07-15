@@ -15,9 +15,16 @@
 
   <body>
     <%= render 'shared/top_nav_bar' %>
+    <div id="flash_messages_wrapper">
+      <% if flash[:notice].present? %><div class="mb-3 alert alert-success" role="alert"><%= flash[:notice] %></div><% end -%>
+      <% if flash[:warning].present? %><div class="mb-3 alert alert-warning" role="alert"><%= flash[:warning] %></div><% end -%>
+      <% if flash[:alert].present? %><div class="mb-3 alert alert-danger" role="alert"><%= flash[:alert] %></div><% end -%>
+    </div>
     <div id="main" class="m-3">
       <%= yield %>
     </div>
-
+    <br/>
+    <br/>
+    <%= render 'shared/bs/modal', id:'alert_modal', title:'Alert', body:'', show_footer_close_button: false %>
   </body>
 </html>

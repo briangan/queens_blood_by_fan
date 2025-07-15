@@ -3,32 +3,31 @@
   
 - content_for :more_head do
   = render partial:'cards/assets'
-= form_tag url: create_game_move_game_path(@game), method: :post, data: { turbo_frame: 'game_frame' } do
-  = hidden_field_tag :format, :turbo_stream
-  .text-center.mb-3
-    %p Turn for Player 1
-    %button.btn.btn-primary{ type: 'submit' } Start Game Move
 .row(id="user_cards_wrapper")
   .col
     %ul(class="nav nav-tabs")
       %li(class="nav-item")
         %a(name="player_1_cards")
-        %h4(class="nav-link user-1-bg-color text-dark fw-bold") Player 1
+        %h4(class="nav-link user-1-bg-color text-dark fw-bold")
+          = current_user.id == @game.player_1.id ? 'You' : "Player 1: #{@game.player_1.username}"
     .card-wrapper.user-1-border.p-2
       - card_numbers_1 = (1..145).to_a.shuffle[0..cards_per_player_count - 1]
       - Card.where(card_number: card_numbers_1[0..cards_per_player_count - 1] ).each do |card|
-        = render 'cards/card', card: card, which_player: 1, card_css_class: 'card small-card'
+        = render 'cards/card', card: card, which_player: 1, card_css_class: "card small-card#{' draggable' if @game.player_1.id == current_user.id}"
       .clearfix
   .col
     %ul(class="nav nav-tabs")
       %li(class="nav-item")
         %a(name="player_2_cards")
-        %h4(class="nav-link user-2-bg-color text-dark fw-bold") Player 2
+        %h4(class="nav-link user-2-bg-color text-light fw-bold") 
+          = current_user.id == @game.player_2.id ? 'You' : "Player 2: #{@game.player_2.username}"
     .card-wrapper.user-2-border.p-2
       - card_numbers_2 = (1..145).to_a.shuffle[0..cards_per_player_count - 1]
       - Card.where(card_number: card_numbers_2[0..cards_per_player_count - 1] ).each do |card|
-        = render 'cards/card', card: card, which_player: 2
+        = render 'cards/card', card: card, which_player: 2, card_css_class: "card small-card#{' draggable' if @game.player_2.id == current_user.id}"
       .clearfix
+= turbo_frame_tag 'game_current_player_frame' do
+  = render 'games/players_and_current_turn', game: @game
 %hr
 = render partial:'board', locals:{ game: @game }
 

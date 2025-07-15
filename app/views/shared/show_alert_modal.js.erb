@@ -1,0 +1,9 @@
+<%
+  # This template is used to show a modal alert with messages from the flash upon JS request.
+body = ''
+[:notice, :warning, :alert].each do |key|
+  body += "<p>#{flash[key]}</p>" if flash[key].present?
+end
+-%>
+$("#alert_modal .modal-body").html("<%= raw j(body) %>");
+$("#alert_modal").modal('show');

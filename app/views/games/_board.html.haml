@@ -16,7 +16,7 @@
             - player_user_ids << board_tile.claiming_user_id
             - current_user_id = board_tile.claiming_user_id
           - player_number = player_user_ids.index(board_tile.claiming_user_id)
-        %div(class="board-tile #{board_tile_index % 2 == 1 ? 'board-tile-odd' : 'board-tile-even'} droppable" id="board_tile_#{col}_#{row}" data-tile-position="#{col},#{row}" data-player="#{player_number}" data-claiming-user-id="#{board_tile.claiming_user_id}")
+        %div(class="board-tile #{board_tile_index % 2 == 1 ? 'board-tile-odd' : 'board-tile-even'} droppable" id="board_tile_#{col}_#{row}" data-tile-position="#{col},#{row}" data-game-tile-id="#{board_tile.id}" data-player="#{player_number}" data-claiming-user-id="#{board_tile.claiming_user_id}")
           .card-wrapper(title="#{col},#{row} w/ #{board_tile.pawn_value} pawns by #{board_tile.claiming_user_id}" data-bs-toggle="tooltip" data-bs-placement="top")
             - if board_tile.claiming_user_id && board_tile.pawn_value.to_i > 0
               - board_tile.pawn_value.to_i.times do

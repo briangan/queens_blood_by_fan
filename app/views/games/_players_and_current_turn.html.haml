@@ -1,0 +1,17 @@
+:ruby
+  # Required locals:
+  #   game <Game>
+= form_tag create_game_move_game_path(game), method: :post, remote: true, data: { turbo_frame: 'game_frame' } do
+  = hidden_field_tag :format, :js
+  .row(id="game_user_turn_wrapper")
+    .col.text-end
+      - if game.player_1.id == game.current_turn_user_id
+        %span(id="user_1_turn_cursor" class="bi bi-arrow-up-square-fill user-1-color" style="font-size: 2rem;")
+          = game.player_1.id == current_user.id ? ' Your Turn' : " Opponent's Turn"
+    .col.text-center
+      %h4.mt-3.mb-3
+        %button(type='submit') Current Turn
+    .col.text-begin
+      - if game.player_2.id == game.current_turn_user_id
+        %span(id="user_1_turn_cursor" class="bi bi-arrow-up-square-fill user-2-color" style="font-size: 2rem;")
+          = game.player_2.id == current_user.id ? ' Your Turn' : " Opponent's Turn"

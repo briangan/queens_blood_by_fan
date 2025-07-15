@@ -1,7 +1,7 @@
 %nav(class="navbar navbar-expand-lg p-0")
   .container-fluid
     %a(class="navbar-brand" href="/" title="Back Home") Queen's Blood by Fan
-    %button(class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation")
+    %button(class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent")
       %span.navbar-toggler-icon
     %div(class="collapse navbar-collapse" id="navbarSupportedContent")
       %ul(class="navbar-nav me-auto mb-2 mb-lg-0")
@@ -11,3 +11,11 @@
           = link_to 'Boards', boards_path, class:"nav-link#{' active' if params[:controller] == 'boards' }"
         %li.nav-item
           = link_to 'Cards', cards_path, class:"nav-link#{' active' if params[:controller] == 'cards' }"
+    .float-end
+      - if user_signed_in?
+        %strong #{current_user.username}
+        &nbsp;
+        = link_to ' Logout', destroy_user_session_path, method: :delete, class:'btn bi bi-box-arrow-up-left'
+      - else
+        = link_to ' Login', new_user_session_path, class:'btn bi bi-box-arrow-in-down-right'
+    .clearfix
