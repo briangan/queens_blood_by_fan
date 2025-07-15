@@ -1,6 +1,6 @@
 class RenameBoardSpots < ActiveRecord::Migration[7.2]
   def up
-    if table_exists?(:game_board_tiles)
+    if table_exists?(:board_spots)
       rename_table :board_spots, :game_board_tiles
     end
     if table_exists?(:game_board_tiles)
