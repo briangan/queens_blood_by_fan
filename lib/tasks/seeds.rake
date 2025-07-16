@@ -2,8 +2,7 @@
 def seeds_order
   [
     Card => [:card_tiles, :card_abilities],
-    Board => [:board_tiles],
-    User => [],
+    Board => [:board_tiles]
   ]
 end
 

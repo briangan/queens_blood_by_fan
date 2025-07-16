@@ -25,6 +25,7 @@ class Board < ApplicationRecord
   
 
   ##
+  # TODO: Is this really correct or be needed?
   # Find the range of rows in the middle of the board.
   # @how_many_rows [Integer] number of rows
   def range_to_pick(how_many_rows = nil)

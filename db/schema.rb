@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_07_15_134531) do
+ActiveRecord::Schema[7.2].define(version: 2025_07_15_204355) do
   create_table "board_tiles", force: :cascade do |t|
     t.integer "board_id", null: false
     t.integer "column", null: false
@@ -71,6 +71,22 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_15_134531) do
     t.index ["power"], name: "index_cards_on_power"
   end
 
+  create_table "decks", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "name", limit: 64
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_decks_on_user_id"
+  end
+
+  create_table "decks_cards", force: :cascade do |t|
+    t.integer "deck_id", null: false
+    t.integer "card_id", null: false
+    t.integer "position", default: 0
+    t.index ["card_id"], name: "index_decks_cards_on_card_id"
+    t.index ["deck_id"], name: "index_decks_cards_on_deck_id"
+  end
+
   create_table "game_board_tiles", force: :cascade do |t|
     t.integer "board_id"
     t.integer "column"
@@ -115,7 +131,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_15_134531) do
     t.integer "card_id", null: false
     t.integer "user_id"
     t.integer "deck_order", default: 0
+    t.integer "usage_order"
     t.index ["game_id", "deck_order"], name: "index_games_cards_on_game_id_and_deck_order", unique: true
+    t.index ["game_id", "usage_order"], name: "index_games_cards_on_game_id_and_usage_order"
     t.index ["game_id", "user_id"], name: "index_games_cards_on_game_id_and_user_id"
     t.index ["game_id"], name: "index_games_cards_on_game_id"
   end
@@ -146,6 +164,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_15_134531) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
+  end
+
+  create_table "users_cards", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "card_id", null: false
+    t.integer "quantity", default: 1
+    t.index ["card_id"], name: "index_users_cards_on_card_id"
+    t.index ["user_id"], name: "index_users_cards_on_user_id"
   end
 
   create_table "versions", force: :cascade do |t|

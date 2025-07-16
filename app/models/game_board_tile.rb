@@ -11,7 +11,7 @@ class GameBoardTile < ApplicationRecord
 
   has_many :game_moves
 
-  scope :claimed, -> { where.not(claming_user_id: nil) }
+  scope :claimed, -> { where('claming_user_id IS NOT nil') }
 
   validates_presence_of :game_id, :board_id, :column, :row
 end

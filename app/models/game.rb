@@ -15,12 +15,13 @@ class Game < ActiveRecord::Base
 
   validates_presence_of :board
 
-  # after_create :create_board_game_tiles! # handled by :check_board_changes
+  # after_create :create_game_board_tiles # handled by :check_board_changes
   # after_create :copy_from_board_to_game_board_tiles! # handled by :check_board_changes
   
+  after_create :initialize_board_changes
   after_save :check_board_changes
 
-  def create_board_game_tiles!
+  def create_game_board_tiles!
     tiles = []
     1.upto(columns) do |x|
       1.upto(rows) do |y|
@@ -36,9 +37,9 @@ class Game < ActiveRecord::Base
   # This requires board_tiles and users to be present.
   def copy_from_board_to_game_board_tiles!
     raise ArgumentError.new('Game must have a board') unless board
-    raise ArgumentError.new('Game must have users') if users.empty?
+
     if game_board_tiles.blank?
-      create_board_game_tiles!
+      create_game_board_tiles
     end
     raise ArgumentError.new('Game must have game_board_tiles') if game_board_tiles.blank?
 
@@ -65,7 +66,7 @@ class Game < ActiveRecord::Base
       self.current_turn_user_id = game_users.first.user_id
     else
       # Otherwise, switch to the next player.
-      next_player = game_users.where.not(user_id: current_turn_user_id).first
+      next_player = game_users.where("user_id NOT IN (?)", current_turn_user_id).first
       self.update(current_turn_user_id: next_player.user_id) if next_player
     end
     self.current_turn_user_id
@@ -113,12 +114,16 @@ class Game < ActiveRecord::Base
 
 
   private
+
+  def initialize_board_changes
+    check_board_changes(true)
+  end
   
   # If board has changed, need to reset the game board tiles.
-  def check_board_changes
-    if board_id_changed? && board_id.present?
-      board_game_tiles.delete_all
-      create_board_game_tiles!
+  def check_board_changes(force_to_reload = false)
+    if (force_to_reload || board_id_changed? ) && board_id
+      self.game_board_tiles.delete_all
+      create_game_board_tiles!
 
       # If the board has changed, we need to copy the board tiles to the game board tiles.
       copy_from_board_to_game_board_tiles!

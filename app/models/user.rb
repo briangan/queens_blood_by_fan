@@ -5,4 +5,7 @@ class User < ApplicationRecord
          # :recoverable, :rememberable, :validatable
          # 
   has_many :game_users, dependent: :destroy
+  has_many :decks, dependent: :destroy
+  has_many :user_cards, class_name:'UserCard', dependent: :destroy
+  has_many :cards, through: :user_cards
 end
