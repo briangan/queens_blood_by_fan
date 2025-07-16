@@ -11,11 +11,17 @@
           = link_to 'Boards', boards_path, class:"nav-link#{' active' if params[:controller] == 'boards' }"
         %li.nav-item
           = link_to 'Cards', cards_path, class:"nav-link#{' active' if params[:controller] == 'cards' }"
-    .float-end
-      - if user_signed_in?
-        %strong #{current_user.username}
-        &nbsp;
-        = link_to ' Logout', destroy_user_session_path, method: :delete, class:'btn bi bi-box-arrow-up-left'
-      - else
+    
+    - if user_signed_in?
+      .dropdown.float-end
+        %a(class="dropdown-toggle text-deco-none" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false")
+          %strong #{current_user.username}
+        %ul.dropdown-menu.dark-blood-bg-color.subtle-shadow(style="left: -50%;")
+          %li 
+            = link_to 'Decks', decks_path, class:"dropdown-item"
+      &nbsp;
+      = link_to ' Logout', destroy_user_session_path, method: :delete, class:'btn bi bi-box-arrow-up-left'
+    - else
+      .float-end
         = link_to ' Login', new_user_session_path, class:'btn bi bi-box-arrow-in-down-right'
     .clearfix

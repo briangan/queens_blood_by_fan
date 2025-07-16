@@ -31,11 +31,39 @@ $user-2-bg-color: rgb(196, 81, 81);
   --user-1-bg-color: rgb(123, 186, 139);
   --user-2-color: rgb(204, 0, 0);
   --user-2-bg-color: rgb(196, 81, 81);
+
+  --player-1-color: #44a1fe;
+  --player-2-color: #a71528;
+  --player-1-pawn-color: #69d75f;
+  --player-2-pawn-color: #cc6572;
+  --highlight-card-border-color: #73eac3;
+  --highlight-tile-background-color: #bed5cb;
+  --tile-card-width: 180px;
+  --tile-card-height: 220px;
+  --tile-card-image-width: 150px;
+  --tile-card-image-left: 0;
+  --tile-card-image-top: 0;
+  --tile-small-card-width: 100px;
+  --tile-small-card-height: auto;
+  --tile-small-card-with-note-height: auto;
+  --tile-small-card-image-width: 100px;
+  --tile-small-card-image-left: 0;
+  --tile-small-card-image-top: 0;
 }
 
 .blood-bg-color {
   background-color: var(--blood-color);
   color: var(--blood-text-color);
+}
+.dark-blood-bg-color {
+  background-color: darken($blood-color, 10%);
+  color: $blood-text-color;
+  .dropdown-item {
+    color: $blood-text-color;
+    &:hover {
+      color: darken($blood-color, 10%);
+    }
+  }
 }
 
 // use $user-1-color and $user-2-color for user-specific styles
@@ -75,7 +103,7 @@ $user-2-bg-color: rgb(196, 81, 81);
   font-weight: bold;
   border: solid 2px black;
 }
-  .btn-check:checked + .user-2-bg-color , .btn.active.user-2-bg-color, .btn.show.user-2-bg-color {
+.btn-check:checked + .user-2-bg-color , .btn.active.user-2-bg-color, .btn.show.user-2-bg-color {
   background-color: $user-2-bg-color;
   color: black;
   font-weight: bold;
@@ -105,4 +133,165 @@ $user-2-bg-color: rgb(196, 81, 81);
     color: $blood-text-color;
     background-color: darken($blood-color, 10%);
   }
+}
+
+// General styles for text
+.text-deco-none, .text-decoration-none {
+  text-decoration: none;
+}
+
+.subtle-shadow {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+// Cards ///////////////////////////////////
+.board-wrapper {
+  background-color: #999999;
+  text-align: center;
+}
+.board-tile {
+  width: var(--tile-card-width);
+  height: var(--tile-card-height);
+  display: inline-block;
+  border: solid 1px gray;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;
+}
+.board-tile-odd {
+  background-color: #4d5878;
+}
+.board-tile-even {
+  background-color: #c4daef;
+}
+.board-tile[data-claiming-player="1"] {
+  background-color: var(--player-1-color);
+  border-color: var(--player-1-color);
+}
+.board-tile[data-claiming-player="2"] {
+  background-color: var(--player-2-color);
+  border-color: var(--player-2-color);
+}
+.board-tile > .card-wrapper {
+  width: 100%;
+  height: 100%;
+  padding-top: 35%;
+  opacity: 0.8;
+  overflow: hidden;
+  text-align: center;
+  vertical-align: middle;
+}
+.pawn-icon {
+  font-size: 2.5em;
+  color: #e0e0e0;
+  transform: translate(-50%, -50%);
+}
+.disabled-icon {
+  font-size: 3.5em;
+  color: #999999;
+  opacity: 1.0;
+}
+
+.board-tile[data-player="1"] .pawn-icon {
+  color: var(--player-1-pawn-color);
+}
+.board-tile[data-player="2"] .pawn-icon {
+  color: var(--player-2-pawn-color);
+}
+
+.board-tile .preview-effect-label, .board-tile .effect-label {
+  position: relative;
+  top: 42%;
+  left: 0;
+  font-weight: 700;
+  z-index: 100;
+}
+.board-tile .powerup-effect {
+  color: green;
+}
+.board-tile .powerdown-effect {
+  color: purple;
+}
+.card > .card-extra-image {
+  overflow: hidden;
+}
+.card > .card-extra-image img {
+  width: var(--tile-card-image-width);
+  position: relative;
+  left: var(--tile-card-image-left);
+  top: var(--tile-card-image-top);
+}
+
+.card .bi {
+  font-size: 4em;
+  color: #e0e0e0;
+  opacity: 0.7;
+  position: relative;
+}
+.card {
+  width: var(--tile-card-width);
+  height: var(--tile-card-height);
+  border-width: 0.4em;
+  margin: 0.2em 0.1em;
+  display: inline-block;
+  text-align: center;
+  overflow: hidden;
+}
+
+.small-card {
+  width: var(--tile-small-card-width);
+  height: var(--tile-small-card-height);
+  border-width: 0.1em;
+  border-radius: 0.5em;
+  margin: 0.1em 0.05em;
+  display: inline-block;
+  text-align: center;
+  overflow: hidden;
+}
+
+.small-card > .card-extra-image img {
+  width: var(--tile-small-card-image-width);
+  position: relative;
+  left: var(--tile-small-card-image-left);
+  top: var(--tile-small-card-image-top);
+}
+
+.small-card-with-note {
+  @extend .small-card;
+}
+
+.card[data-player="1"], .card-wrapper[data-player="1"] {
+  border-color: var(--player-1-color);
+}
+.card[data-player="2"], .card-wrapper[data-player="2"] {
+  border-color: var(--player-2-color);
+}
+.card-dropped {
+  background: transparent;
+  position: relative !important;
+  margin: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
+.card-drop-hover[data-player="1"] {
+  background-color: #d0e0ff;
+}
+.card-drop-hover[data-player="2"] {
+  background-color: #ffe0e0;
+}
+.highlight-tile .card {
+  border-color: var(--highlight-card-border-color);
+}
+.highlight-tile {
+  background-color: var(--highlight-tile-background-color);
+}
+.center-tile > .card-wrapper {
+  border: solid 0.4em #ddc568;
+  background-color: #e0e0e0;
+}
+.draggable {
+  cursor: grab;
 }

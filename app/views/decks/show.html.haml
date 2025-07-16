@@ -1,0 +1,12 @@
+- content_for :more_head do
+  = render partial:'cards/assets'
+  = javascript_pack_tag 'cards', 'data-turbolinks-track': 'reload'
+%h3= @deck.name || 'Your Deck'
+.container
+  = render 'deck_nav_tabs'
+%br/
+.container
+  .card-wrapper.user-1-border.p-2
+    - current_user.user_cards.includes(:card).each do |user_card|
+      = render 'user_cards/user_card', user_card: user_card, card_css_class: "card small-card-with-note"
+    .clearfix

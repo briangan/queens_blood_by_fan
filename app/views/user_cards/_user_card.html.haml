@@ -1,0 +1,11 @@
+:ruby
+  # Selection of the card to be displayed in the user card section using checkbox.
+  # Required locals: user_card
+  #   card_css_class: default to 'card'
+  card_css_class = 'card' unless defined?(card_css_class) && card_css_class.present?
+  card = user_card.card
+= content_tag(:div, class: "#{card_css_class} card-selectable", id: "user_card_#{user_card.id}", data:{ 'card-id': card.id, 'quantity': user_card.quantity } ) do
+  .card-extra-image
+    = image_tag(asset_path("cards/#{card.dash_id}.webp"), class: 'card-image', title: "Card ##{card.card_number}")
+  .card-note
+    %strong #{user_card.quantity}x 

@@ -23,4 +23,21 @@ class Deck < ApplicationRecord
     deck_cards.order(:position).map(&:card)
   end
 
+  ##############################
+  # Class Methods
+  
+  def self.populate_decks_for_user(user)
+    (Deck.where(user_id: user.id).count + 1).upto(MAX_DECKS_PER_USER) do |i|
+      Deck.create(user_id: user.id, name: "Deck #{i}")
+    end
+  end
+
+  def self.populate_cards_for_user(user)
+    current_card_ids = UserCard.where(user_id: user.id).pluck(:card_id).uniq
+    how_many_more = MAX_CARDS_PER_DECK + 5 + rand(10) - current_card_ids.size 
+    Card.where.not(id: current_card_ids).limit(how_many_more).order('RANDOM()').each do |card|
+      UserCard.create(user_id: user.id, card_id: card.id)
+    end
+  end
+
 end

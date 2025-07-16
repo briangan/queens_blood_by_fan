@@ -2,9 +2,9 @@
 # Record that represents a card to be used by a player with attributes like name, card_number, pawn_rank, and power.
 # Associations include tiles and abilities.
 # Cards TODOs:
-# [ ] Add Mandragora Minion card
-# [ ] Add Heatseeker Minion card
-# [ ] Add Grangalan Minion card
+# [x] Add Mandragora Minion card
+# [x] Add Heatseeker Minion card
+# [ ] Add Grangalan Junior card
 # [ ] Add Resurrected Amalgam card
 # [ ] Add Moogle card
 # [ ] Add Tiny Bronco card
@@ -30,6 +30,11 @@ class Card < ApplicationRecord
 
   TYPES = %w[Card ReplacementCard]
   CATEGORIES = %w[Standard Legendary]
+
+  # 'Ying & Yang' to 'ying-yang'
+  def dash_id
+    name.gsub(/[^a-z0-9]+/i, '-').downcase
+  end
 
   ##
   # @return [Array] of [x, y] coordinates of pawn tiles

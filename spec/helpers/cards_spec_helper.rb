@@ -34,9 +34,7 @@ module CardsSpecHelper
     puts "Collected #{UserCard.where(user_id: user.id).count} cards for user #{user.username} (#{user.id})"
     expect(UserCard.where(user_id: user.id).count).to be >= Deck::MAX_CARDS_PER_DECK
 
-    (Deck.where(user_id: user.id).count + 1).upto( Deck::MAX_DECKS_PER_USER ) do |i|
-      Deck.create(user_id: user.id, name: "Deck #{i}")
-    end
+    Deck.populate_decks_for_user(user)
     expect(Deck.where(user_id: user.id).count).to eq Deck::MAX_DECKS_PER_USER
 
     Deck.includes(:deck_cards).where(user_id: user.id).each do |deck|

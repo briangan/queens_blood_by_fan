@@ -1,0 +1,54 @@
+:ruby
+  # Veritical list of column and values for the record.
+  # Required locals:
+  #   record <ActiveRecord::Base>
+  # Optional locals:
+  #   table_id <String> default would convert record.class underscore and _record_table_$id suffix
+  #   table_style <String> CSS property default would be empty
+  table_id = record.class.to_s.parameterize.underscore + "_record_table_#{record.id}" unless defined?(table_id) && table_id.present?
+  table_style = '' unless defined?(table_style)
+  # keep original case of column names
+  column_variants = {}
+  record.class.column_names.map { |col| column_variants[col.downcase] = col }
+  changes = record.changes
+
+= form_for record, remote: true, method:'put', html:{ id: "#{record.class.to_s.parameterize.underscore}_form_#{record.id}" } do|f|
+  - changes.each do|col, value_ar|
+  - next if %w(id).include?(col.to_s)
+    = f.hidden_field( col.downcase.to_sym, value: value_ar.last )
+  %table.with-striped-rows.ec-sr_table(id=table_id style=table_style)
+    %tbody
+      - if changes.size > 0
+        %tr.row-with-changes
+          %td.text-end(colspan="2")
+            %a(href="javascript:$('##{table_id} > tbody > tr:not([class*=\'row-with-changes\'])').toggle('show');" style="cursor:ns-resize;" title="Click to show/hide changes only")
+              %span.text-danger.fw-bold Changes shown
+            /
+              \: Save changes?
+              <button type='submit' class='btn btn-sm text-primary' data-disable-with=' ..'>
+              <i class='bi bi-floppy2-fill'></i>
+              </button>
+      - column_variants.keys.sort.each do |col|
+      - value = record.send( column_variants[col] )
+      - change_value_ar = changes[ column_variants[col.to_s]  ]
+        %tr(class="#{'row-with-changes' if change_value_ar}" valign="top")
+          %td
+            %b(class="#{'text-danger' if change_value_ar.present?}")
+              = column_variants[col]
+              \:
+          %td
+            - if change_value_ar
+              - if change_value_ar.first.nil?
+                = raw("<span class='subtle-border opacity-50' data-bs-title='Previously: * null value *' data-bs-toggle='tooltip'>&nbsp;x&nbsp;</span>")
+              - else
+                %span.txt-crossed-out= change_value_ar.first
+            - if col =~ /(amount|_revenue)$/i && value.is_a?(Numeric)
+              = number_to_currency(value, unit: "$", format: "%u%n")
+            - elsif col =~ /(comment|notes?|TEXT|SERVICE_INSTANCE_ID)$/i && value.is_a?(String)
+              = simple_format value
+            - elsif value.is_a?(Date)
+              = value.strftime("%Y-%m-%d")
+            - elsif value.is_a?(Time)
+              = value.strftime("%Y-%m-%d %H:%M:%S")
+            - else
+              = value

@@ -8,5 +8,5 @@
 = content_tag(:div, class: "#{card_css_class}", id: "player_#{which_player}_card_#{card.card_number}", data: card_data_attr(card).merge({ player: which_player}) ) do
   %i.bi.bi-slash-circle.d-none
   .card-extra-image
-    %img(src="/cards/#{card.card_number}.jpg" title="Card ##{card.card_number}")
+    = image_tag(asset_path("cards/#{card.dash_id}.webp"), class: 'card-image', title: "Card ##{card.card_number}")
   %i.bi.bi-slash-circle.d-none
