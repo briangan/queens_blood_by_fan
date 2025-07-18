@@ -1,12 +1,27 @@
 - content_for :more_head do
   = render partial:'cards/assets'
   = javascript_pack_tag 'cards', 'data-turbolinks-track': 'reload'
+ 
 %h3= @deck.name || 'Your Deck'
 .container
-  = render 'deck_nav_tabs'
+  = form_tag(select_deck_cards_deck_path(@deck), method: :put, id: 'deck_form', class: 'form-inline', remote: true) do
+    - 1.upto(Deck::MAX_CARDS_PER_DECK) do |i|
+      = hidden_field_tag "card_ids[]", nil, id:"card_id_input_#{i}", class:'deck-card-id'
+    -#= best_in_place @deck, :name, class: 'form-control', style: 'width: 200px;', cancel_button: true, save_button: true, ok_button_class: 'btn btn-primary', cancel_button_class: 'btn btn-secondary'
+
+    = render 'deck_nav_tabs'
+    %div(class="border border-info bg-subtle-gray p-2" style="border-width: 0.2em !important;")
+      %p 
+        %span(id="max_cards_per_deck_note") Max #{Deck::MAX_CARDS_PER_DECK} cards per deck &nbsp;
+        = submit_tag('Update Deck', class: 'btn btn-sm btn-primary', data:{ disable_with: 'Updating...'} )
+      %div(id='deck_cards_wrapper' class="droppable ui-droppable small-card border w-100 text-start" data-player="1")
+        - @deck.cards.each do |card|
+          - user_card = UserCard.new(card: card, card_id: card.id, quantity: 1)
+          = render 'user_cards/user_card', user_card: user_card, show_add_button: false, show_remove_button: true, which_player: 1, card_css_class: "card small-card-with-note d-inline-flex"
 %br/
 .container
-  .card-wrapper.user-1-border.p-2
-    - current_user.user_cards.includes(:card).each do |user_card|
-      = render 'user_cards/user_card', user_card: user_card, card_css_class: "card small-card-with-note"
+  %h4 Your Collection of Cards
+  .card-wrapper.bg-secondary.p-2(id="user_cards_wrapper")
+    - user_cards_after_deck_changes(current_user.user_cards.includes(:card).all, @deck).each do |user_card|
+      = render 'user_cards/user_card', user_card: user_card, card_css_class: "card small-card-with-note d-inline-flex"
     .clearfix

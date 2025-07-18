@@ -1,4 +1,4 @@
-%ul(class="nav nav-tabs")
+%ul(class="nav nav-tabs border-info")
   - user_decks.to_a.each_with_index do |deck, index|
     %li.nav-item
-      %a(class="nav-link#{' active' if @deck ? @deck.id == deck.id : index==0}" aria-current="page" href="#{deck_path(deck)}")= deck.name
+      %a(class="nav-link#{' active bg-info border-info' if @deck ? @deck.id == deck.id : index==0}" aria-current="page" href="#{deck_path(deck)}")= deck.name

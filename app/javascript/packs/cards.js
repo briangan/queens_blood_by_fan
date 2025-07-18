@@ -104,7 +104,7 @@ function previewVisualEffectTo(sourceTile, targetTile, ability)
 }
 
 // Initialization
-$(function() {
+$(document).on("turbolinks:load", function() {
   $(".draggable").draggable({ 
     "opacity": 0.35, revert: false,
     snap: ".board-tile", snapMode: "inner", snapTolerance: 30,
@@ -127,6 +127,8 @@ $(function() {
       resetHLTiles();
     }
   });
+
+  $("*[data-bs-toggle='tooltip'").tooltip();
 });
 
 /* $(document).on("dragstart", "card", function (event) {

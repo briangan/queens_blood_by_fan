@@ -10,6 +10,20 @@ class DecksController < InheritedResources::Base
     end
   end
 
+  def select_deck_cards
+    @deck = resource
+    params.permit!
+    if params[:card_ids].present?
+      @deck.deck_cards.destroy_all
+      params[:card_ids].each do |card_id|
+        DeckCard.create(deck_id: @deck.id, card_id: card_id)
+      end
+      flash[:notice] = 'Deck cards updated successfully.'
+    else
+      flash[:alert] = 'No cards selected.'
+    end
+  end
+
   private
 
     def deck_params

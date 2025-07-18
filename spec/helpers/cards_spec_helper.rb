@@ -26,11 +26,8 @@ module CardsSpecHelper
   end
 
   def prepare_cards_and_decks_for_user(user)
-    current_card_ids = UserCard.where(user_id: user.id).collect(&:card_id).uniq
-    how_many_more = Deck::MAX_CARDS_PER_DECK + 5 + rand(10) - current_card_ids.size 
-    Card.where.not(id: current_card_ids).limit(how_many_more).order('RANDOM()').each do |card|
-      UserCard.create(user_id: user.id, card_id: card.id)
-    end
+    user.random_pick_cards()
+    
     puts "Collected #{UserCard.where(user_id: user.id).count} cards for user #{user.username} (#{user.id})"
     expect(UserCard.where(user_id: user.id).count).to be >= Deck::MAX_CARDS_PER_DECK
 

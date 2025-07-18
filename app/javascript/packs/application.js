@@ -26,7 +26,7 @@ Rails.start()
 Turbolinks.start()
 ActiveStorage.start()
 
-$(function() {
+$(document).on("turbolinks:load", function() {
   $(".best-in-place-input").best_in_place();
-
+  $(".best-in-place").best_in_place();
 });

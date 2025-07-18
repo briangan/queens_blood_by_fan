@@ -2,4 +2,93 @@
   # CSS and JS for playing with cards on board with styles and effects of game play.
   # javascript moved to /app/javascript/packs/cards.js
 :css
-  
+  .user-card-quantity-input {
+    border: 0;
+    text-align: center;
+  }
+  .user-card-add-button, .user-card-remove-button  {
+    line-height: 1.5em;
+    padding: 0.1em 0.2em;
+    border: 0;
+  }
+  @keyframes blink {
+    0% {
+      opacity: 0;
+    }
+    50% {
+      opacity: .5;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  .warning-short-blink {
+    animation: blink 0.5s linear 2;
+    background-color: yellow;
+  }
+:javascript
+  function syncCardSelectionToInputs(){
+    var cardIds = [];
+    $('#deck_cards_wrapper > *[data-card-id]').each(function(index, element) {
+      var cardId = $(element).data('card-id');
+      cardIds.push(cardId);
+    });
+    $("#deck_form input[name='card_ids[]']").each(function(index, element) {
+      $(element).val( cardIds[index] || '' );
+    });
+  }
+
+  function addCardToSelection(event) {
+      const userCardId = $(this).data('user-card-id');
+      const cardId = $(this).data('card-id');
+      var quantityInput = $(this).siblings('*[data-quantity]');
+      if (quantityInput) {
+        var quantity = parseInt(quantityInput.text()) || 0;
+        var countOfCardsInDeck = $("#deck_cards_wrapper > *[data-card-id]").length;
+        if (quantity < 1) {
+          quantityInput.addClass('warning-short-blink');
+        } else if (countOfCardsInDeck >= #{Deck::MAX_CARDS_PER_DECK} ) {
+          $("#max_cards_per_deck_note").addClass('warning-short-blink');
+          alert("You can only have #{Deck::MAX_CARDS_PER_DECK} cards in your deck.");
+        } else {
+          quantity -= 1;
+          quantityInput.text(quantity);
+          var userCard = $("#user_card_"+ userCardId).clone();
+          $(userCard).prop('id', 'user_card_clone_' + userCardId);
+          $(userCard).attr('data-user-card-id', '');
+          $(userCard).removeClass('card-selectable');
+          var actionRow = $(userCard).children();
+          $(actionRow).children('.user-card-quantity-input').addClass('d-none');
+          $(actionRow).children('.user-card-add-button').addClass('d-none');
+          $(actionRow).children('.user-card-remove-button').removeClass('d-none');
+          $(userCard).appendTo($("#deck_cards_wrapper"));
+          $("#user_card_clone_" + userCardId + " > .card-actions-row > .user-card-remove-button").click( removeCardFromSelection );
+        }
+        $("#user_cards_wrapper > *[data-user-card-id='" + userCardId + "']").css('opacity', (quantity < 1) ? '0.5' : '1');
+
+        syncCardSelectionToInputs();
+      }
+    }
+
+    function removeCardFromSelection() {
+      let card = $(this).parent().parent();
+      const cardId = $(card).data('card-id');
+      let userCard = $("#user_cards_wrapper > *[data-card-id='" + cardId + "']");
+      if (userCard) {
+        var quantityInput = $("#user_cards_wrapper > *[data-card-id='" + cardId + "'] *[data-quantity]");
+        if (quantityInput.length > 0) {
+          var quantity = parseInt( $(quantityInput).text()) || 0;
+          quantity++;
+          $(quantityInput).text(quantity);
+          $("#user_cards_wrapper > *[data-card-id='" + cardId + "']").css('opacity', (quantity < 1) ? '0.5' : '1');
+        }
+        $(card).detach().remove();
+        // Even after removal, the #user_cards_wrapper
+        syncCardSelectionToInputs();
+      }
+    }
+  $(document).on("turbolinks:load", function() {
+    $('.user-card-add-button').click( addCardToSelection );
+    $('.user-card-remove-button').click( removeCardFromSelection );
+    syncCardSelectionToInputs();
+  });

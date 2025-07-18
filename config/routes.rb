@@ -1,6 +1,12 @@
 Rails.application.routes.draw do
-  resources :decks
-  devise_for :users
+  resources :decks, only:[:index, :show, :update] do
+    member do
+      match 'select_deck_cards', to: 'decks#select_deck_cards', via:[:get, :post, :put, :patch]
+    end
+  end
+
+  devise_for :users, controllers: { registrations: 'users/registrations' }
+
   resources :users
   resources :cards
   resources :card_abilities
