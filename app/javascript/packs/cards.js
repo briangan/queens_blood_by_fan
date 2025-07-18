@@ -3,6 +3,12 @@ function getMainBoard() {
   window.mainBoard = mainBoard; // For debugging purposes
   return mainBoard;
 }
+function showBoardNotice(message, type = 'info') {
+  var bgClass = 'bg-' + type;
+  $("#board_notice").removeClass(bgClass).addClass(bgClass).text(message).css('opacity', 1);
+  window.setTimeout(function(){ $("#board_notice").css('opacity', 0); }, 2000);
+}
+
 /* Status and questionaire functions ******************/
 function isCardAcceptableToTile(card, tile) {
   var isAcceptable = ( card.attr('data-player') == tile.attr('data-player') );
@@ -35,7 +41,7 @@ function dropCardHandler(event, ui) {
     $(this).attr('data-claiming-player', whichPlayer ); // If drop onto pawn, would be unnecessary
   } else {
     // console.log("> Cannot drop this card here!");
-    
+    showBoardNotice("Cannot drop this card here!", 'warning');
   }
   resetHLTiles();
 }

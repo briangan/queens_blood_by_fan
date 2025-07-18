@@ -1,11 +1,13 @@
 :ruby
   # Required locals:
   #   game <Game>
+%div(id="board_notice" class="text-center" role="alert")
+  &nbsp;
 .board-wrapper
   - board_tile_index = 0
   - player_user_ids = [nil]
   - current_user_id = nil
-  %table(class="board-table")
+  %table(id="board_table" class="board-table")
     %tbody
       - 1.upto(game.board.rows) do |row|
         %tr(class="board-row")
