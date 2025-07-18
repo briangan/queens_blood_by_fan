@@ -38,7 +38,7 @@ $user-2-bg-color: rgb(196, 81, 81);
   --player-2-pawn-color: #cc6572;
   --highlight-card-border-color: #73eac3;
   --highlight-tile-background-color: #bed5cb;
-  --tile-card-width: 180px;
+  --tile-card-width: 160px;
   --tile-card-height: 220px;
   --tile-card-image-width: 150px;
   --tile-card-image-left: 0;
@@ -155,6 +155,10 @@ $user-2-bg-color: rgb(196, 81, 81);
 .board-wrapper {
   background-color: #999999;
   text-align: center;
+}
+.board-wrapper > .board-table {
+  margin-left: auto;
+  margin-right: auto
 }
 .board-tile {
   width: var(--tile-card-width);

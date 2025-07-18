@@ -1,7 +1,6 @@
-var mainBoard = null;
 function getMainBoard() {
-  if (mainBoard){ return mainBoard; }
-  mainBoard = $(".board-wrapper").first();
+  let mainBoard = $(".board-wrapper > table > tbody").first();
+  window.mainBoard = mainBoard; // For debugging purposes
   return mainBoard;
 }
 /* Status and questionaire functions ******************/
@@ -18,7 +17,7 @@ function shouldDragRevertDragToTile() {
 /* Action Handlers *************************************/
 function dropCardHandler(event, ui) {
   var shouldAccept = isCardAcceptableToTile( ui.draggable, $(this));
-  // console.log("Card dropped " + ui.draggable.attr('id') + " on " + $(this).attr('id') + " => "+ shouldAccept );
+  console.log("Card dropped " + ui.draggable.attr('id') + " on " + $(this).attr('id') + " => "+ shouldAccept );
 
   if (shouldAccept) {
     ui.draggable.data('board-tile-id', $(this).attr('id') );
@@ -34,11 +33,11 @@ function dropCardHandler(event, ui) {
     ui.draggable.draggable( 'option', 'revert', false );
 
     $(this).attr('data-claiming-player', whichPlayer ); // If drop onto pawn, would be unnecessary
-    resetHLTiles();
   } else {
-    console.log("> Cannot drop this card here!");
-    resetHLTiles();
+    // console.log("> Cannot drop this card here!");
+    
   }
+  resetHLTiles();
 }
 /* Dry run that only renders the effects of the card placement.
 * Iterates over the pawn-tiles and affected-tiles of the card to highlight the tiles that would be affected.
@@ -78,14 +77,14 @@ function previewCardPlacementEffect(board, tile, card) {
     var targetTile = board.find('.board-tile[data-tile-position="' + col + ',' + row + '"]');
     if (targetTile.length > 0) {
       abilities.forEach(function(ability) {
-        console.log("Preview ability effect to " + targetTile.attr('id') + " => " + ability['action_typeß'] );
+        // console.log("Preview ability effect to " + targetTile.attr('id') + " => " + ability['action_typeß'] );
         previewVisualEffectTo(tile, targetTile, ability);
       });
     }
   } );
 }
 function resetHLTiles() {
-  var board = getMainBoard();
+  let board = getMainBoard();
   board.find('.highlight-tile').removeClass('highlight-tile');
   board.find('.center-tile').find(".disabled-icon").addClass('d-none');
   board.find('.center-tile').removeClass('center-tile');
@@ -128,13 +127,13 @@ $(document).on("turbolinks:load", function() {
     }
   });
 
+  /* $(document).on("dragstart", "card", function (event) {
+    console.log("Card dragging " + $(this).attr('id') );
+  }); */
+
+  $(document).on("dragstop", ".card", function (event) {
+    $(this).children(".bi").addClass('d-none');
+  });
+
   $("*[data-bs-toggle='tooltip'").tooltip();
-});
-
-/* $(document).on("dragstart", "card", function (event) {
-  console.log("Card dragging " + $(this).attr('id') );
-
-}); */
-$(document).on("dragstop", ".card", function (event) {
-  $(this).children(".bi").addClass('d-none');
 });
