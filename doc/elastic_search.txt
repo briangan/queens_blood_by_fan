@@ -1,0 +1,18 @@
+############################################
+# ElasticSearch
+
+==================================
+How to run ElasticSearch: Elastic Cloud vs OnePremises/OnPrem
+* Elastic Cloud
+  * runs on Elastic Servers in diff clouds
+  * no knowledge needed to operate the Stack
+  * only knowledge to ingest data and use UI
+  * availables on: Google Cloud, AWS, Azure
+  * monthly costs
+  
+* OnePremises
+  * hosts in ur own environment
+  * knowledge needed to operate the Stack
+  * knowledge to ingest data and use the UI
+  * deployable to ur Servers
+  * free or annual costs if license has been purchased
