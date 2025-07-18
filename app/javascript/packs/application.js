@@ -20,7 +20,7 @@ import "jquery-ui/ui/widgets/droppable"
 import * as bootstrap from 'bootstrap'
 
 // These need jQuery and $
-import "best_in_place"
+
 
 Rails.start()
 Turbolinks.start()
@@ -29,4 +29,5 @@ ActiveStorage.start()
 $(document).on("turbolinks:load", function() {
   $(".best-in-place-input").best_in_place();
   $(".best-in-place").best_in_place();
+  $(".best_in_place").best_in_place();
 });

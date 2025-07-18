@@ -1,13 +1,15 @@
 - content_for :more_head do
   = render partial:'cards/assets'
   = javascript_pack_tag 'cards', 'data-turbolinks-track': 'reload'
- 
-%h3= @deck.name || 'Your Deck'
+
 .container
+  %h4
+    Name: 
+    = best_in_place @deck, :name, class:'bg-subtle-gray p-2', ok_button:'Update', ok_button_class: 'btn btn-primary btn-sm m-1', cancel_button:' x ', cancel_button_class: 'btn btn-secondary btn-sm m-1', 'data-bs-toggle':'tooltip', 'data-bs-title': 'Click to Edit', 'data-bs-placement': 'bottom'
+  %br/
   = form_tag(select_deck_cards_deck_path(@deck), method: :put, id: 'deck_form', class: 'form-inline', remote: true) do
     - 1.upto(Deck::MAX_CARDS_PER_DECK) do |i|
       = hidden_field_tag "card_ids[]", nil, id:"card_id_input_#{i}", class:'deck-card-id'
-    -#= best_in_place @deck, :name, class: 'form-control', style: 'width: 200px;', cancel_button: true, save_button: true, ok_button_class: 'btn btn-primary', cancel_button_class: 'btn btn-secondary'
 
     = render 'deck_nav_tabs'
     %div(class="border border-info bg-subtle-gray p-2" style="border-width: 0.2em !important;")
@@ -20,7 +22,9 @@
           = render 'user_cards/user_card', user_card: user_card, show_add_button: false, show_remove_button: true, which_player: 1, card_css_class: "card small-card-with-note d-inline-flex"
 %br/
 .container
-  %h4 Your Collection of Cards
+  %h4 
+    %bi.bi-arrow-up-circle-fill.text-info
+    Choose From Your Collection
   .card-wrapper.bg-secondary.p-2(id="user_cards_wrapper")
     - user_cards_after_deck_changes(current_user.user_cards.includes(:card).all, @deck).each do |user_card|
       = render 'user_cards/user_card', user_card: user_card, card_css_class: "card small-card-with-note d-inline-flex"

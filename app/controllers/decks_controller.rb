@@ -10,6 +10,13 @@ class DecksController < InheritedResources::Base
     end
   end
 
+  def update
+    super do|format|
+      format.js { render js:'', status: :ok }
+      format.json { render json: resource.as_json, status: :ok }
+    end
+  end
+
   def select_deck_cards
     @deck = resource
     params.permit!
