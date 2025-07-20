@@ -12,11 +12,63 @@ describe Game, type: :feature do
   context 'When creating a game' do
     it 'Should have a board and board tiles' do
       game = prepare_game(:game, 5, 3)
+      game.go_to_next_turn! 
+      game.reload
+      expect(game.game_moves.count).to eq 0
+      expect(game.game_users.collect(&:user_id).include?(game.current_turn_user_id)).to be true
+
+      first_player_card = game.current_turn_user.cards.first
+      the_following_user_id = game.current_turn_user_id == game.player_1.id ? game.player_2.id : game.player_1.id
+
+      expect(game.game_users.where(user_id: game.current_turn_user_id).first&.move_order).to eq 1
+      expect(game.game_users.where(user_id: the_following_user_id).first&.move_order).to be > 1
 
       prepare_cards_and_decks_for_user(game.player_1)
       prepare_cards_and_decks_for_user(game.player_2)
-      
-      # check_pawn_rank_and_claiming_user_id(game)
+
+      # Falty game moves
+      valid_game_board_tile = game.game_board_tiles.where(claiming_user_id: game.current_turn_user_id).first
+      game_move = GameMove.new(game_id: game.id, user_id: the_following_user_id, 
+        game_board_tile_id: valid_game_board_tile.id, card_id: first_player_card.id)
+      expect(game_move.valid?).to be false
+      puts "| 3.1 | Game move is invalid: #{game_move.errors.full_messages.join(', ')}"
+
+      game_move = GameMove.new(game_id: game.id, user_id: game.current_turn_user_id, 
+        game_board_tile_id: 0, card_id: first_player_card.id)
+      expect(game_move.valid?).to be false
+      puts "| 3.2 | Game move is invalid: #{game_move.errors.full_messages.join(', ')}"
+
+      game_move = GameMove.new(game_id: game.id, user_id: game.current_turn_user_id, 
+        game_board_tile_id: valid_game_board_tile.id, card_id: 0)
+      expect(game_move.valid?).to be false
+      puts "| 3.3 | Game move is invalid: #{game_move.errors.full_messages.join(', ')}"
+
+      other_valid_game_board_tile = game.game_board_tiles.where(claiming_user_id: the_following_user_id).first
+      game_move = GameMove.new(game_id: game.id, user_id: game.current_turn_user_id, 
+        game_board_tile_id: other_valid_game_board_tile.id, card_id: first_player_card.id)
+      expect(game_move.valid?).to be false
+      puts "| 3.4 | Game move is invalid: #{game_move.errors.full_messages.join(', ')}"
+
+      game_move = GameMove.new(game_id: game.id, user_id: game.current_turn_user_id, 
+        game_board_tile_id: valid_game_board_tile.id, card_id: first_player_card.id)
+      expect(game_move.valid?).to be true
+      puts "| 3.5 | Game move valid: #{game_move.errors.full_messages.join(', ')}"
+
+      valid_game_board_tile.update_columns(current_card_id: first_player_card.id, claiming_user_id: game.current_turn_user_id)
+      game_move = GameMove.new(game_id: game.id, user_id: game.current_turn_user_id, 
+        game_board_tile_id: valid_game_board_tile.id, card_id: first_player_card.id)
+      expect(game_move.valid?).to be false
+      puts "| 3.6 | Game move invalid: #{game_move.errors.full_messages.join(', ')}"
+
+      first_replacement_card = game.current_turn_user.cards.where(type: 'ReplacementCard').first
+      if first_replacement_card.nil?
+        first_replacement_card = ReplacementCard.first
+        game.current_turn_user.user_cards.create(card_id: first_replacement_card.id)
+      end
+      game_move = GameMove.new(game_id: game.id, user_id: game.current_turn_user_id, 
+        game_board_tile_id: valid_game_board_tile.id, card_id: first_replacement_card.id)
+      expect(game_move.valid?).to be true
+      puts "| 3.7 | Game move w/ replacement card valid: #{game_move.errors.full_messages.join(', ')}"
     end
   end
 
@@ -56,33 +108,4 @@ describe Game, type: :feature do
     game
   end
 
-  ##
-  # Ensure first column and last column are claimed by the respective users.
-  def check_pawn_rank_and_claiming_user_id(game)
-    player1 = game.player_1
-    player2 = game.player_2
-    pick = game.board.range_to_pick(game.board.rows)
-    game.game_board_tiles.each do |tile|
-      if tile.column == 1 && pick.include?(tile.row)
-        expect(tile.claiming_user_id).to eq(player1.id)
-      elsif tile.column == board.columns.size && pick.include?(tile.row)
-        expect(tile.claiming_user_id).to eq(player2.id)
-      end
-    end
-  end
-
-  # Check the range of rows that can be picked for a given number of rows.
-  def check_range_to_pick(board)
-    1.upto(4) do |i|
-      expect(board.range_to_pick(i)).to eq(1..i)
-    end
-    5.upto(10) do |i|
-      pick = board.range_to_pick(i)
-      if i % 2 == 0
-        expect(pick).to eq( (i / 2)..(i / 2 + 1))
-      else
-        expect(pick).to eq( (i / 2)..(i / 2 + 2) )
-      end
-    end
-  end
 end

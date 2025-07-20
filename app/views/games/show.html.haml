@@ -12,8 +12,8 @@
         %h4(class="nav-link user-1-bg-color text-dark fw-bold")
           = current_user.id == @game.player_1.id ? 'You' : "Player 1: #{@game.player_1.username}"
     .card-wrapper.user-1-border.p-2
-      - best_set_of_cards_for_player(@game.player_1).each do |card|
-        = render 'cards/card', card: card, which_player: 1, card_css_class: "card small-card#{' draggable' if @game.player_1.id == current_user.id}"
+      - player_1_locals = { which_player: 1, card_css_class: "card small-card#{' draggable' if @game.player_1.id == current_user.id}" }
+      = render partial:'cards/card', collection: best_set_of_cards_for_player(@game.player_1), as: :card, locals: player_1_locals
       .clearfix
   .col
     %ul(class="nav nav-tabs")
@@ -22,8 +22,8 @@
         %h4(class="nav-link user-2-bg-color text-light fw-bold") 
           = current_user.id == @game.player_2.id ? 'You' : "Player 2: #{@game.player_2.username}"
     .card-wrapper.user-2-border.p-2
-      - best_set_of_cards_for_player(@game.player_2).each do |card|
-        = render 'cards/card', card: card, which_player: 2, card_css_class: "card small-card#{' draggable' if @game.player_2.id == current_user.id}"
+      - player_2_locals = { which_player: 2, card_css_class: "card small-card#{' draggable' if @game.player_2.id == current_user.id}" }
+      = render partial:'cards/card', collection: best_set_of_cards_for_player(@game.player_2), as: :card, locals: player_2_locals
       .clearfix
 = turbo_frame_tag 'game_current_player_frame' do
   = render 'games/players_and_current_turn', game: @game

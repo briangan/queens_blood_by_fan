@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   resources :games, only:[:create, :show] do
     member do
       match 'create_game_move', to: 'games#create_game_move', via:[:get, :post, :put, :patch]
+      match 'reset', to: 'games#reset', via:[:get, :post, :put, :patch]
     end
   end
   resources :boards

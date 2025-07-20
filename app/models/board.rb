@@ -23,24 +23,4 @@ class Board < ApplicationRecord
     @board_tiles_map
   end
   
-
-  ##
-  # TODO: Is this really correct or be needed?
-  # Find the range of rows in the middle of the board.
-  # @how_many_rows [Integer] number of rows
-  def range_to_pick(how_many_rows = nil)
-    how_many_rows ||= rows
-    if how_many_rows <= 4
-      1..how_many_rows
-    else
-      # Pick middle 3 rows if odd number of rows; else pick middle 2 rows.
-      if (how_many_rows % 2 == 0)
-        half_point = how_many_rows / 2
-        half_point..(half_point + 1)
-      else
-        half_point = how_many_rows / 2
-        half_point..(half_point + 2)
-      end
-    end
-  end
 end

@@ -12,7 +12,11 @@ function showBoardNotice(message, type = 'info') {
 /* Status and questionaire functions ******************/
 function isCardAcceptableToTile(card, tile) {
   var isAcceptable = ( card.attr('data-player') == tile.attr('data-player') );
-  /////////console.log("Card accept? " + card.attr('data-player') + " vs " + tile.attr('data-player') + " => " + isAcceptable );
+
+  // check card's pawn_rank vs tile's pawn_value
+  if (isAcceptable && card.data('pawn-rank') && tile.data('pawn-value')) {
+    isAcceptable = ( parseInt(card.data('pawn-rank')) <= parseInt(tile.data('pawn-value')) );
+  }
   return isAcceptable;
 }
 function shouldDragRevertDragToTile() {
@@ -37,6 +41,10 @@ function dropCardHandler(event, ui) {
     ui.draggable.removeClass('small-card');
 
     ui.draggable.draggable( 'option', 'revert', false );
+
+    $("#game_move_card_id").val( ui.draggable.attr('data-card-id') );
+    $("#game_move_game_board_tile_id").val( $(this).attr('data-game-board-tile-id') );
+    $("#game_move_form").trigger('submit');
 
     $(this).attr('data-claiming-player', whichPlayer ); // If drop onto pawn, would be unnecessary
   } else {
@@ -83,6 +91,8 @@ function previewCardPlacementEffect(board, tile, card) {
     var targetTile = board.find('.board-tile[data-tile-position="' + col + ',' + row + '"]');
     if (targetTile.length > 0) {
       abilities.forEach(function(ability) {
+        targetTile.addClass('highlight-tile');
+        targetTile.children('.card').addClass('highlight-tile');
         // console.log("Preview ability effect to " + targetTile.attr('id') + " => " + ability['action_typeß'] );
         previewVisualEffectTo(tile, targetTile, ability);
       });
@@ -102,9 +112,9 @@ function resetHLTiles() {
 function previewVisualEffectTo(sourceTile, targetTile, ability) 
 {
   if (ability['action_type'] == 'power_up') {
-    targetTile.children().append("<h3 class='preview-effect-label powerup-effect'> +" + ability['action_value'] + "</h3>")
+    $(targetTile.children()[0]).append("<h3 class='preview-effect-label powerup-effect'> +" + ability['action_value'] + "</h3>")
   } else if (ability['action_type'] == 'power_down') {
-    targetTile.children().append("<h3 class='preview-effect-label powerdown-effect'> -" + ability['action_value'] + "</h3>")
+    $(targetTile.children()[0]).append("<h3 class='preview-effect-label powerdown-effect'> -" + ability['action_value'] + "</h3>")
   }
 }
 

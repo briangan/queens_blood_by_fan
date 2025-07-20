@@ -1,8 +1,11 @@
 :ruby
   # Required locals:
   #   game <Game>
-= form_tag create_game_move_game_path(game), method: :post, remote: true, data: { turbo_frame: 'game_frame' } do
+= form_for game, url: create_game_move_game_path, method: :post, remote: true, html:{ id:"game_move_form" }, data: { turbo_frame: 'game_frame' } do|f|
   = hidden_field_tag :format, :js
+  = hidden_field_tag :authenticity_token, form_authenticity_token
+  = hidden_field_tag :game_board_tile_id, nil, id: 'game_move_game_board_tile_id'
+  = hidden_field_tag :card_id, nil, id: 'game_move_card_id'
   .row(id="game_user_turn_wrapper")
     .col.text-end
       - if game.player_1.id == game.current_turn_user_id
@@ -10,7 +13,9 @@
           = game.player_1.id == current_user.id ? ' Your Turn' : " Opponent's Turn"
     .col.text-center
       %h4.mt-3.mb-3
-        %button(type='submit') Current Turn
+        = link_to reset_game_path(game), class:'btn btn-sm btn-danger', data:{ confirm: 'Are you sure you want to reset the game?' } do
+          %i.bi.bi-arrow-clockwise 
+          Reset Game
     .col.text-begin
       - if game.player_2.id == game.current_turn_user_id
         %span(id="user_1_turn_cursor" class="bi bi-arrow-up-square-fill user-2-color" style="font-size: 2rem;")

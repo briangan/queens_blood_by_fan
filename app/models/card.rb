@@ -60,6 +60,7 @@ class Card < ApplicationRecord
 
   ##
   # Only for testing.
+  # TODO: more complex ability effects data.
   def ability_effects_data
     card_abilities.map { |ability| ability.attributes }
     # [ { type: 'EnhancementAbility', when: 'initiated', which: 'allies_on_affected_tiles', action: 'power + 3' } ]
@@ -111,6 +112,10 @@ class Card < ApplicationRecord
     h['cars_tiles'] = self.card_tiles.collect{|t| t.attributes.slice('type', 'x', 'y') }
     h['abilities'] = self.card_abilities.collect{|a| a.attributes.slice('type', 'when', 'which', 'action_type', 'action_value') }
     h
+  end
+
+  def can_replace_card_on_tile?
+    false
   end
 
   ###########################

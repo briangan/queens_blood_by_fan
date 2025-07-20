@@ -14,4 +14,12 @@ class GameBoardTile < ApplicationRecord
   scope :claimed, -> { where('claming_user_id IS NOT nil') }
 
   validates_presence_of :game_id, :board_id, :column, :row
+
+  before_save :normalize_attributes
+
+  private
+
+  def normalize_attributes
+    self.pawn_value = 1 if claiming_user_id && pawn_value.to_i < 1
+  end
 end

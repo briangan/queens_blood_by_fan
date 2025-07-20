@@ -3,6 +3,8 @@
   # Optional: 
   #   which_player
   #   card_css_class: default to 'card'
+  # TODO: 
+  # [ ] render some graphics for extra power effects such as ally card's enfeeblement
   which_player = 1 unless defined?(which_player)
   card_css_class = 'card' unless defined?(card_css_class) && card_css_class.present?
 = content_tag(:div, class: "#{card_css_class}", id: "player_#{which_player}_card_#{card.card_number}", data: card_data_attr(card).merge({ player: which_player}) ) do

@@ -1,5 +1,5 @@
 class Game < ActiveRecord::Base
-  has_many :game_users, class_name:'GameUser', dependent: :destroy
+  has_many :game_users, -> { order(:move_order) }, class_name:'GameUser', dependent: :destroy
   has_many :users, through: :game_users
   belongs_to :winner, class_name: 'User', foreign_key: 'winner_user_id', optional: true
   belongs_to :current_turn_user, class_name: 'User', foreign_key: 'current_turn_user_id', optional: true
@@ -39,11 +39,11 @@ class Game < ActiveRecord::Base
     raise ArgumentError.new('Game must have a board') unless board
 
     if game_board_tiles.blank?
-      create_game_board_tiles
+      create_game_board_tiles!
     end
     raise ArgumentError.new('Game must have game_board_tiles') if game_board_tiles.blank?
 
-    users = self.users.order(:move_order).all
+    users = self.users.all
 
     # Copy the board tiles to the game board tiles.
     board.board_tiles.each do |bto|
@@ -53,23 +53,64 @@ class Game < ActiveRecord::Base
     end
   end
 
-  # @game_move [GameMove]
+  # @game_move <GameMove> expected valid.
+  # @return <Array of GameBoardTile> affected tiles.
   def proceed_with_game_move(game_move)
+    changed_tiles = []
+    # Check if the move is valid (which internally checks user turn and tile and card).
+    if game_move.valid?
+      # Proceed with the move.
+      # game_move.save
+
+      # game_move.game_board_tile.update(current_card_id: game_move.card.id, claiming_user_id: game_move.user_id, claimed_at: Time.now, power_value: game_move.card.power)
+      changed_tiles << game_move.game_board_tile
+
+      binding.irb # TODO: REMOVE
+      game_move.card.card_tiles.each do |card_tile|
+        next if card_tile.x.to_i < 1 && card_tile.y.to_i < 1
+        other_t = self.find_tile(game_move.game_board_tile.column + card_tile.y, game_move.game_board_tile.row + card_tile.x)
+        if other_t
+          # other_t.update(pawn_value: other_t.pawn_value + 1, claiming_user_id: game_move.user_id, claimed_at: Time.now)
+          changed_tiles << other_t
+        end
+      end
+      
+      ## tile.update(pawn_value: card.pawn_rank, claiming_user_id: current_turn_user.id, claimed_at: Time.now)
+
+      # game_move.move_order = self.game_moves.where("id != ?", game_move.id).order(:move_order).last&.move_order.to_i + 1
+      # game_move.save
+
+      # go_to_next_turn!
+    end
+    changed_tiles
   end
 
   # Either start 1st turn for nil @current_turn_user_id or switch to next player.
   # @return [Integer] current_turn_user_id
   def go_to_next_turn!
     # Next turn
-    if current_turn_user_id.nil?
+    if current_turn_user_id.nil? # supposedly random pick
       # If no current turn user, set to player 1.
-      self.current_turn_user_id = game_users.first.user_id
+      self.update(current_turn_user_id: game_users.first.user_id)
+      self.game_users.where(user_id: current_turn_user_id).update_all(move_order: 1)
+      self.game_users.where("user_id != ?", current_turn_user_id).update_all(move_order: 2)
     else
       # Otherwise, switch to the next player.
       next_player = game_users.where("user_id NOT IN (?)", current_turn_user_id).first
       self.update(current_turn_user_id: next_player.user_id) if next_player
     end
     self.current_turn_user_id
+  end
+
+  ##
+  # Reset the game to initial state: unset current_turn_user_id, winner_user_id;
+  # deletes game_moves; deletes & recreates game_board_tiles.
+  def reset!
+    self.update(current_turn_user_id: nil, winner_user_id: nil)
+    self.game_moves.delete_all
+    self.game_board_tiles.delete_all
+    self.copy_from_board_to_game_board_tiles!
+    self.go_to_next_turn! if self.current_turn_user_id.nil?
   end
 
   ##
@@ -86,10 +127,10 @@ class Game < ActiveRecord::Base
 
   ##
   # Matrix array of board tiles.
-  # @return <Hash of column => Array of <BoardTile>>
+  # @return <Hash of column => Array of <GameBoardTile>>
   def game_board_tiles_map
     unless @game_board_tiles_map
-      @game_board_tiles_map = game_board_tiles.order(:column, :row).to_a.group_by(&:column)
+      @game_board_tiles_map = game_board_tiles.includes(:current_card).order(:column, :row).to_a.group_by(&:column)
     end
     @game_board_tiles_map
   end
@@ -99,7 +140,7 @@ class Game < ActiveRecord::Base
   
   # Ordered list of User in the game by move_order.
   def players
-    @players = game_users.includes(:user).order(:move_order).map(&:user)
+    @players ||= game_users.includes(:user).map(&:user)
   end
 
   def player_1

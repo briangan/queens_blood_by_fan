@@ -2,30 +2,7 @@
   # CSS and JS for playing with cards on board with styles and effects of game play.
   # javascript moved to /app/javascript/packs/cards.js
 :css
-  .user-card-quantity-input {
-    border: 0;
-    text-align: center;
-  }
-  .user-card-add-button, .user-card-remove-button  {
-    line-height: 1.5em;
-    padding: 0.1em 0.2em;
-    border: 0;
-  }
-  @keyframes blink {
-    0% {
-      opacity: 0;
-    }
-    50% {
-      opacity: .5;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-  .warning-short-blink {
-    animation: blink 0.5s linear 2;
-    background-color: yellow;
-  }
+
 :javascript
   function syncCardSelectionToInputs(){
     var cardIds = [];
