@@ -60,27 +60,26 @@ class Game < ActiveRecord::Base
     # Check if the move is valid (which internally checks user turn and tile and card).
     if game_move.valid?
       # Proceed with the move.
-      # game_move.save
+      game_move.save
 
-      # game_move.game_board_tile.update(current_card_id: game_move.card.id, claiming_user_id: game_move.user_id, claimed_at: Time.now, power_value: game_move.card.power)
+      game_move.game_board_tile.update(current_card_id: game_move.card.id, claiming_user_id: game_move.user_id, claimed_at: Time.now, power_value: game_move.card.power)
       changed_tiles << game_move.game_board_tile
 
-      binding.irb # TODO: REMOVE
       game_move.card.card_tiles.each do |card_tile|
         next if card_tile.x.to_i < 1 && card_tile.y.to_i < 1
         other_t = self.find_tile(game_move.game_board_tile.column + card_tile.y, game_move.game_board_tile.row + card_tile.x)
         if other_t
-          # other_t.update(pawn_value: other_t.pawn_value + 1, claiming_user_id: game_move.user_id, claimed_at: Time.now)
+          other_t.update(pawn_value: other_t.pawn_value + 1, claiming_user_id: game_move.user_id, claimed_at: Time.now)
           changed_tiles << other_t
         end
       end
       
-      ## tile.update(pawn_value: card.pawn_rank, claiming_user_id: current_turn_user.id, claimed_at: Time.now)
+      game_move.game_board_tile.update(pawn_value: game_move.card.pawn_rank, claiming_user_id: current_turn_user.id, claimed_at: Time.now)
 
-      # game_move.move_order = self.game_moves.where("id != ?", game_move.id).order(:move_order).last&.move_order.to_i + 1
-      # game_move.save
+      game_move.move_order = self.game_moves.where("id != ?", game_move.id).order(:move_order).last&.move_order.to_i + 1
+      game_move.save
 
-      # go_to_next_turn!
+      go_to_next_turn!
     end
     changed_tiles
   end

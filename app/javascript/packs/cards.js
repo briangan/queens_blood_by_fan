@@ -44,7 +44,7 @@ function dropCardHandler(event, ui) {
 
     $("#game_move_card_id").val( ui.draggable.attr('data-card-id') );
     $("#game_move_game_board_tile_id").val( $(this).attr('data-game-board-tile-id') );
-    $("#game_move_form").trigger('submit');
+    $("#game_move_submit_button").trigger('click'); // $("#game_move_form").trigger('submit');
 
     $(this).attr('data-claiming-player', whichPlayer ); // If drop onto pawn, would be unnecessary
   } else {

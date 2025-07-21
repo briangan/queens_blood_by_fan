@@ -28,5 +28,6 @@
 = turbo_frame_tag 'game_current_player_frame' do
   = render 'games/players_and_current_turn', game: @game
 %hr
-= render partial:'board', locals:{ game: @game }
+= turbo_frame_tag 'game_board_frame' do
+  = render partial:'board', locals:{ game: @game }
 
