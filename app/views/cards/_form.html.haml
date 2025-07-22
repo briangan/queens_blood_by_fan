@@ -4,7 +4,7 @@
     .align-self-center
       .card(id="card_cropped_#{card.card_number}" data-card-number="#{card.card_number}")
         .card-extra-image
-          %img(src="#{ asset_path("cards/#{card.dash_id}.webp") }" title="Card ##{card.card_number}")
+          %img(src="#{ asset_path("cards/#{card.card_number}.webp") }" title="Card ##{card.card_number}")
       .text-start.d-none(id="card_full_#{card.card_number}" data-card-number="#{card.card_number}")
         %img(src="#{ asset_path("detailed_cards/#{card.card_number}.avif") }" title="Card ##{card.card_number}")
     .align-self-center.text-start

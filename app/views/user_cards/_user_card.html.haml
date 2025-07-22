@@ -12,7 +12,7 @@
   show_remove_button = false unless defined?(show_remove_button) && show_remove_button.to_s == 'true'
 = content_tag(:div, class: "#{card_css_class} card-selectable", id: "user_card_#{user_card.id}", data:{ 'user-card-id': user_card.id, 'card-id': card.id, 'quantity': user_card.quantity }, style:"#{'opacity: 0.5;' if user_card.quantity.to_i < 1}" ) do
   .card-extra-image
-    = image_tag(asset_path("cards/#{card.dash_id}.webp"), class: 'card-image', title: "Card ##{card.card_number}")
+    = image_tag(asset_path("cards/#{card.card_number}.webp"), class: 'card-image', title: "Card ##{card.card_number}")
   .card-actions-row.text-center
     %span(id="user_card_of_#{user_card.card_id}" data-card-id="#{card.id}" user-card-id="#{user_card.id}" data-quantity="#{user_card.quantity}" data-bs-title='Count of this card' data-bs-toggle='tooltip' disabled='disabled' class=' user-card-quantity-input')= user_card.quantity
     %button(type='button' class="btn btn-lg user-card-add-button#{' d-none' unless show_add_button}" data-card-id="#{card.id}" data-user-card-id="#{user_card.id}" data-bs-toggle='tooltip' data-bs-placement='bottom' data-bs-title="Add this card to your deck" )
