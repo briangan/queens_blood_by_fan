@@ -54,32 +54,35 @@ class Game < ActiveRecord::Base
   end
 
   # @game_move <GameMove> expected valid.
+  # @options <Hash> additional
+  #   :dry_run [Boolean] if true, do not save the game_move, just return affected tiles.
   # @return <Array of GameBoardTile> affected tiles.
-  def proceed_with_game_move(game_move)
+  def proceed_with_game_move(game_move, options = {})
+    dry_run = options[:dry_run] || false
     changed_tiles = []
     # Check if the move is valid (which internally checks user turn and tile and card).
     if game_move.valid?
       # Proceed with the move.
-      game_move.save
+      game_move.save unless dry_run
 
-      game_move.game_board_tile.update(current_card_id: game_move.card.id, claiming_user_id: game_move.user_id, claimed_at: Time.now, power_value: game_move.card.power)
+      game_move.game_board_tile.update(current_card_id: game_move.card.id, claiming_user_id: game_move.user_id, claimed_at: Time.now, power_value: game_move.card.power) unless dry_run
       changed_tiles << game_move.game_board_tile
 
       game_move.card.card_tiles.each do |card_tile|
         next if card_tile.x.to_i < 1 && card_tile.y.to_i < 1
         other_t = self.find_tile(game_move.game_board_tile.column + card_tile.y, game_move.game_board_tile.row + card_tile.x)
         if other_t
-          other_t.update(pawn_value: other_t.pawn_value + 1, claiming_user_id: game_move.user_id, claimed_at: Time.now)
+          other_t.update(pawn_value: other_t.pawn_value + 1, claiming_user_id: game_move.user_id, claimed_at: Time.now) unless dry_run
           changed_tiles << other_t
         end
       end
       
-      game_move.game_board_tile.update(pawn_value: game_move.card.pawn_rank, claiming_user_id: current_turn_user.id, claimed_at: Time.now)
+      game_move.game_board_tile.update(pawn_value: game_move.card.pawn_rank, claiming_user_id: current_turn_user.id, claimed_at: Time.now) unless dry_run
 
       game_move.move_order = self.game_moves.where("id != ?", game_move.id).order(:move_order).last&.move_order.to_i + 1
-      game_move.save
+      game_move.save unless dry_run
 
-      go_to_next_turn!
+      go_to_next_turn! unless dry_run
     end
     changed_tiles
   end

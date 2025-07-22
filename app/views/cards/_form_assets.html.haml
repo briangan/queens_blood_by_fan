@@ -66,10 +66,8 @@
   }
 
 :javascript
-  var cardInteractionsLoaded = false;
   function setCardInteractions() 
   {
-    if (cardInteractionsLoaded) { return false; }
     $('[data-bs-toggle="tooltip"]').tooltip();
 
     $('.card-tile-selector input[type="checkbox"]').change(function() {
@@ -122,7 +120,4 @@
     });
   } // expandAllDetailImages
 
-  $(document).ready(setCardInteractions);
-  $(window).on('load', function() {
-    setCardInteractions();
-  });
+  $(document).on("turbolinks:load", setCardInteractions );

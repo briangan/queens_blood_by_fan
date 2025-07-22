@@ -2,7 +2,11 @@ class CardsController < InheritedResources::Base
   helper CardAbilitiesHelper
   
   def index
-    @cards = Card.includes(:card_tiles, :card_abilities).order(:card_number).page(params[:page]).limit(params[:limit]&.to_i || 20)
+    @cards = Card.includes(:card_tiles, :card_abilities)
+    if params[:keyword].present?
+      @cards = @cards.where('name LIKE ? OR description LIKE ? OR card_number=?', "%#{params[:keyword]}%", "%#{params[:keyword]}%", params[:keyword] )
+    end
+    @cards = @cards.order(:card_number).page(params[:page]).limit(params[:limit]&.to_i || 20)
     set_page_title_suffix(@cards, 'card')
     
     respond_to do |format|

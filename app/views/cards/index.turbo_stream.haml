@@ -3,3 +3,5 @@
   .container
     .align-center.mt-3
       = paginate @cards
+:javascript
+  $(document).on("turbolinks:load", setCardInteractions );
