@@ -93,7 +93,7 @@ function previewCardPlacementEffect(board, tile, card) {
       abilities.forEach(function(ability) {
         targetTile.addClass('highlight-tile');
         targetTile.children('.card').addClass('highlight-tile');
-        // console.log("Preview ability effect to " + targetTile.attr('id') + " => " + ability['action_typeß'] );
+        console.log("Preview ability effect to " + targetTile.attr('id') + " => " + ability['action_typeß'] );
         previewVisualEffectTo(tile, targetTile, ability);
       });
     }

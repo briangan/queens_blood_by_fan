@@ -6,9 +6,10 @@
   # TODO: 
   # [ ] render some graphics for extra power effects such as ally card's enfeeblement
   which_player = 1 unless defined?(which_player)
+  cards_folder = (which_player == 2 ? 'cards_flopped' : 'cards')
   card_css_class = 'card' unless defined?(card_css_class) && card_css_class.present?
-= content_tag(:div, class: "#{card_css_class}", id: "player_#{which_player}_card_#{card.card_number}", data: card_data_attr(card).merge({ player: which_player}) ) do
+= content_tag(:div, class: "#{card_css_class}", id: "player_#{which_player}_card_#{card.card_number}", data: card_data_attr(card, which_player).merge({ player: which_player}) ) do
   %i.bi.bi-slash-circle.d-none
   .card-extra-image
-    = image_tag(asset_path("cards/#{card.card_number}.webp"), class: 'card-image', title: "Card ##{card.card_number}")
+    = image_tag(asset_path("#{cards_folder}/#{card.card_number}.png"), class: 'card-image', title: "Card ##{card.card_number}")
   %i.bi.bi-slash-circle.d-none

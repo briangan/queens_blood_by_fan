@@ -42,4 +42,29 @@ namespace :cards do
     puts "dash_id_to_filenames: #{dash_id_to_filenames.size}"
     puts "Missing cards: #{missing_card_dash_ids.size}: #{missing_card_dash_ids.keys.join(', ')}"
   end
+
+  desc "Crop out grid of tiles from original card, flop it and merge to original card image"
+  task :flop_card_images => :environment do
+    SOURCE_PATH = File.join(Rails.root, 'app/assets/images/cards/')
+    SOURCE_FILENAME_REGEXP = /([^\/]+)\.(webp|jpe?g|png|avif)$/
+    TARGET_PATH = File.join(Rails.root, 'app/assets/images/cards_flopped/')
+
+    Dir.glob(File.join(SOURCE_PATH, '*')).each do |file_path|
+      if (m = file_path.match(SOURCE_FILENAME_REGEXP))
+        puts m[1]
+        target_path = File.join(TARGET_PATH, 'grid_' + File.basename(file_path) )
+        # `convert "#{file_path}" "#{File.join(TARGET_PATH, File.basename(file_path).gsub($1, 'png'))}"`
+        
+        # crop the grid
+        `convert "#{file_path}" -crop 122x122+135+312 "#{target_path}"`
+        
+        # flop the grid
+        `magick "#{target_path}" -flop "#{target_path}"`
+
+        # merge the flopped grid to original card image
+        `composite -geometry +135+312 "#{target_path}" "#{file_path}" "#{File.join(TARGET_PATH, File.basename(file_path) )}"`
+        `rm "#{target_path}"`
+      end
+    end
+  end
 end
