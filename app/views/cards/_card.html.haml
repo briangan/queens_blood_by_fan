@@ -12,4 +12,7 @@
   %i.bi.bi-slash-circle.d-none
   .card-extra-image
     = image_tag(asset_path("#{cards_folder}/#{card.card_number}.png"), class: 'card-image', title: "Card ##{card.card_number}")
+  .card-detail-image.d-none
+    %button(class="btn p-0 align-top bi bi-zoom-in card-detail-link" type="button" data-bs-toggle="offcanvas" data-bs-target="#detail_offcanvas" aria-controls="offcanvasRight" data-image-url="#{asset_path("detailed_cards/#{card.card_number}.png")}") &nbsp;
+
   %i.bi.bi-slash-circle.d-none

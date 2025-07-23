@@ -1,6 +1,6 @@
 :ruby
   cards_per_player_count = 4 ######### 15
-  player_number = @game.player_2.id == current_user.id ? 2 : 1
+  player_number = which_player_number_for_current_user(@game)
   
 - content_for :more_head do
   = render partial:'cards/assets'
@@ -14,7 +14,13 @@
         %li(class="nav-item w-100 text-end")
           %a(name="player_1_cards")
           %h4(class="nav-link #{player_number == 1 ? 'user-1-bg-color' : 'bg-subtle-gray'} text-dark fw-bold")
-            = current_user.id == @game.player_1.id ? 'You' : "Player 1: #{@game.player_1.username}"
+            - if @game.player_1.nil?
+              Waiting for Player 1 to join...
+              - if player_number.nil? 
+                &nbsp;
+                = link_to 'Join Game', join_game_path(@game), class:'btn btn-primary'
+            - else
+              = current_user.id == @game.player_1.id ? 'You' : "Player 1: #{@game.player_1.username}"
     .col-1.text-center
       %h4 VS.
     .col
@@ -22,15 +28,24 @@
         %li(class="nav-item w-100")
           %a(name="player_1_cards")
           %h4(class="nav-link #{player_number == 2 ? 'user-2-bg-color text-light' : 'bg-subtle-gray'} fw-bold")
-            = current_user.id == @game.player_2.id ? 'You' : "Player 2: #{@game.player_2.username}"
+            - if @game.player_2.nil?
+              Waiting for Player 2 to join...
+              - if player_number.nil? 
+                &nbsp;
+                = link_to 'Join the Game', join_game_path(@game), class:'btn btn-primary'
+            - else
+              = current_user.id == @game.player_2&.id ? 'You' : "Player 2: #{@game.player_2.username}"
     .clearfix
-  .row(id="user_cards_wrapper")
-    .col
-      %div(class="card-wrapper user-#{player_number}-border p-2")
-        - player_1_locals = { which_player: current_user.id == @game.player_2.id ? 2 : 1, card_css_class: "card small-card draggable" }
-        = render partial:'cards/card', collection: best_set_of_cards_for_player(current_user), as: :card, locals: player_1_locals
-        .clearfix
-%hr
-= turbo_frame_tag 'game_board_frame' do
-  = render partial:'board', locals:{ game: @game }
+  - if player_number && @game.in_progress?
+    .row(id="user_cards_wrapper")
+      .col
+        %div(class="card-wrapper user-#{player_number}-border p-2")
+          - player_1_locals = { which_player: player_number, card_css_class: "card small-card draggable" }
+          = render partial:'cards/card', collection: best_set_of_cards_for_player(current_user), as: :card, locals: player_1_locals
+          .clearfix
+- if @game.players.count >= 2
+  %hr
+  = turbo_frame_tag 'game_board_frame' do
+    = render partial:'board', locals:{ game: @game }
 
+= render 'shared/bs/offcanvas'

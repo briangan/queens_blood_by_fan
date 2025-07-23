@@ -1,8 +1,45 @@
 class GamesController < ::InheritedResources::Base
+
+  before_action :authorize_player!, only: [:create_game_move, :reset]
+
   def index
-    @games = Game.includes(:board).page(params[:page])
+    params.permit!
+    @games = Game.includes(:board, :users).page(params[:page])
+    @games = @games.where(status: params[:status].split(',')) if params[:status].present?
     set_page_title_suffix(@games)
     
+  end
+
+  def create
+    p = params.require(:game).permit(:board_id)
+    @game = Game.new(p)
+    @game.game_users.build(user_id: current_user.id, move_order: 1)
+    if @game.save
+      flash[:notice] = 'Game created successfully.'
+      redirect_to @game
+    else
+      flash.now[:alert] = @game.errors.full_messages.join(', ')
+      render :new
+    end
+  end
+
+  def join
+    @game = resource
+    if @game.game_users.where(user_id: current_user.id).count > 0
+      flash[:alert] = 'You are already a player of this game.'
+    elsif @game.game_users.count >= 2
+      flash[:alert] = 'This game already has enough players joined.'
+    else
+      @game.game_users.create(user: current_user, move_order: @game.game_users.count + 1)
+      @game.update(status: 'IN_PROGRESS') if @game.game_users.count >= 2
+      @game.go_to_next_turn! if @game.current_turn_user_id.nil?
+      flash[:notice] = 'You have joined the game successfully.'
+    end
+
+    respond_to do |format|
+      format.html { redirect_to @game }
+      format.turbo_stream
+    end
   end
 
   def create_game_move
@@ -15,7 +52,7 @@ class GamesController < ::InheritedResources::Base
       
       # @game_move.save!
       
-      @changed_tiles = @game.proceed_with_game_move(@game_move, dry_run: false) # TODO: remove dry_run: true
+      @changed_tiles = @game.proceed_with_game_move(@game_move, dry_run: true) # TODO: remove dry_run: true
 
       logger.debug "| changed_tiles: #{@changed_tiles.collect(&:attributes).to_yaml }"
 
@@ -23,7 +60,7 @@ class GamesController < ::InheritedResources::Base
 
       respond_to do |format|
         format.turbo_stream
-        format.js # <%= escape_javascript(render partial: 'game_board_tile', locals: { game_board_tile: tile, game: @game }) %>
+        format.js
         format.html { redirect_to game_path(id: @game.id, t: Time.now.to_i) }
       end
     else
@@ -47,6 +84,18 @@ class GamesController < ::InheritedResources::Base
 
     respond_to do |format|
       format.html { redirect_to @game }
+    end
+  end
+
+  protected
+
+  def authorize_player!
+    unless resource.game_users.where(user_id: current_user.id).exists?
+      flash[:alert] = 'You are not a player of this game.'
+      respond_to do|format|
+        format.js { render template: 'shared/show_alert_modal', status: :ok }
+        format.html { redirect_to games_path }
+      end
     end
   end
 end

@@ -1,7 +1,25 @@
 :ruby
   # Required locals:
   #   :games <Array<Game>>
-%ul(class="list-group list-group-flush")
-  - games.each do |game|
-    %li(class="list-group-item")
-      = link_to "Game #{game.columns} x #{game.rows}", game_path(game)
+%table(class="table tabled-bordered table-striped")
+  %thead
+    %tr
+      %th Board Size
+      %th Player 1
+      %th Player 2
+      %th Start Time
+      %th Status
+  %tbody
+    - games.each do |game|
+      %tr
+        %td
+          = link_to "#{game.columns} x #{game.rows}", game_path(game)
+        %td= game.player_1&.username
+        %td= game.player_2&.username
+        %td
+          %span(title="#{game.created_at.strftime('%Y-%m-%d %H:%M')}")= game.created_at.strftime('%Y-%m-%d')
+        %td
+          = game.status.titleize
+          &nbsp;
+          - if game.waiting? && game.game_users.collect(&:user_id).exclude?(current_user.id)
+            = link_to 'Join', join_game_path(game), class: 'btn btn-primary btn-sm'

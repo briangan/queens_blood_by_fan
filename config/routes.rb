@@ -10,8 +10,9 @@ Rails.application.routes.draw do
   resources :users
   resources :cards
   resources :card_abilities
-  resources :games, only:[:create, :show] do
+  resources :games, only:[:index, :new, :create, :show] do
     member do
+      match 'join', to: 'games#join', via:[:get, :post, :put, :patch]
       match 'create_game_move', to: 'games#create_game_move', via:[:get, :post, :put, :patch]
       match 'reset', to: 'games#reset', via:[:get, :post, :put, :patch]
     end

@@ -10,4 +10,14 @@ module GamesHelper
     board_tile_index ||= (tile.row - 1) * tile.board.columns + tile.column
     board_tile_index.even? ? 'even' : 'odd'
   end
+
+  def which_player_number_for_current_user(game)
+    if game.player_1&.id == current_user.id
+      1
+    elsif game.player_2&.id == current_user.id
+      2
+    else
+      nil
+    end
+  end
 end

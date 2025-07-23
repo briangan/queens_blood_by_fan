@@ -6,3 +6,6 @@
 <%  end # turbo_stream -%>
 <% end -%>
 <% end # if @changed_tiles -%>
+<% turbo_stream.replace 'game_current_player_frame' do %>
+  <%= render 'games/players_and_current_turn', game: @game %>
+<% end %>

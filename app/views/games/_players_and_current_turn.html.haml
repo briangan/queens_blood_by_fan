@@ -1,25 +1,27 @@
 :ruby
   # Required locals:
   #   game <Game>
-= form_for game, url: create_game_move_game_path, method: :post, remote: true, html:{ id:"game_move_form" }, data: { turbo_frame: 'game_board_frame' } do|f|
+= form_for game, url: create_game_move_game_path, method: :post, html:{ id:"game_move_form" }, data: { turbo_frame: 'game_board_frame' } do|f|
   -#= hidden_field_tag :format, :turbo_stream
   = hidden_field_tag :authenticity_token, form_authenticity_token
   = hidden_field_tag :game_board_tile_id, nil, id: 'game_move_game_board_tile_id'
   = hidden_field_tag :card_id, nil, id: 'game_move_card_id'
   .row(id="game_user_turn_wrapper")
     .col.text-end
-      - if game.player_1.id == game.current_turn_user_id
+      - if game.player_1 && game.player_1.id == game.current_turn_user_id
         %span(id="user_1_turn_cursor" class="bi bi-arrow-down-square-fill user-1-color" style="font-size: 1.6rem;")
-          = game.player_1.id == current_user.id ? ' Your Turn' : " Opponent's Turn"
+          = game.player_1.id == current_user.id ? ' Your Turn' : " #{game.player_1.username}'s Turn"
     .col.text-center
-      %h4.mt-0.mb-3
-        #{game.game_moves.count} Moves
-        &nbsp;
-        = link_to reset_game_path(game), class:'btn btn-sm btn-danger', data:{ confirm: 'Are you sure you want to reset the game?' } do
-          %i.bi.bi-arrow-clockwise 
-          Reset Game
-        = f.submit('Make Move', class:'btn btn-primary d-none', id:'game_move_submit_button')
+      - if game.in_progress?
+        %h4.mt-0.mb-3
+          #{game.game_moves.count} Moves
+          &nbsp;
+          - if which_player_number_for_current_user(game)
+            = link_to reset_game_path(game), class:'btn btn-sm btn-danger', remote: true, data:{ confirm: 'Are you sure you want to reset the game?' } do
+              %i.bi.bi-arrow-clockwise 
+              Reset Game
+            = f.submit('Make Move', class:'btn btn-primary d-none', id:'game_move_submit_button')
     .col.text-begin
-      - if game.player_2.id == game.current_turn_user_id
+      - if game.player_2 && game.player_2&.id == game.current_turn_user_id
         %span(id="user_1_turn_cursor" class="bi bi-arrow-down-square-fill user-2-color" style="font-size: 1.6rem;")
-          = game.player_2.id == current_user.id ? ' Your Turn' : " Opponent's Turn"
+          = game.player_2.id == current_user.id ? ' Your Turn' : " #{game.player_2.username}'s Turn"

@@ -1,0 +1,15 @@
+%h3 New Game
+%hr
+.container
+  = form_for @game || Game.new do|f|
+    %h5 Select a board size
+    %table(class="table table-bordered table-striped")
+      %tbody
+        %tr
+          - Board.all.each do |board|
+            %td.text-center
+              = f.radio_button :board_id, board.id, required: true
+              %br/
+              = f.label(:board_id, "#{board.columns} x #{board.rows}")
+    %br/
+    = f.submit 'Create Game', class: 'btn btn-success'

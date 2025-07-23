@@ -1,4 +1,6 @@
 class Game < ActiveRecord::Base
+  VALID_STATUSES = %w[WAITING IN_PROGRESS COMPLETED CANCELLED].freeze
+
   has_many :game_users, -> { order(:move_order) }, class_name:'GameUser', dependent: :destroy
   has_many :users, through: :game_users
   belongs_to :winner, class_name: 'User', foreign_key: 'winner_user_id', optional: true
@@ -12,6 +14,9 @@ class Game < ActiveRecord::Base
   has_many :game_board_tiles, dependent: :destroy
   has_many :game_board_tiles_with_cards, -> { where("current_card_id IS NOT NULL") }, class_name: 'GameBoardTile'
 
+  scope :waiting, -> { where(status: 'WAITING') }
+  scope :incomplete, -> { where(status: ['WAITING', 'IN_PROGRESS'] ) }
+
   delegate :columns, :rows, to: :board
 
   validates_presence_of :board
@@ -19,8 +24,17 @@ class Game < ActiveRecord::Base
   # after_create :create_game_board_tiles # handled by :check_board_changes
   # after_create :copy_from_board_to_game_board_tiles! # handled by :check_board_changes
   
+  before_save :normalize_attributes
   after_create :initialize_board_changes
   after_save :check_board_changes
+
+  VALID_STATUSES.each do |status|
+    unless respond_to?("#{status.downcase}?")
+      define_method("#{status.downcase}?") do
+        self.status&.upcase == status
+      end
+    end
+  end
 
   def create_game_board_tiles!
     tiles = []
@@ -50,7 +64,7 @@ class Game < ActiveRecord::Base
     board.board_tiles.each do |bto|
       gbt = self.find_tile(bto.column, bto.row)
       gbt ||= game_board_tiles.create(column: bto.column, row: bto.row)
-      gbt.update(pawn_value: gbt.pawn_value || 1, claiming_user_id: users[bto.claiming_user_number - 1].id, claimed_at: Time.now) if gbt.claiming_user_id.nil?
+      gbt.update(pawn_value: gbt.pawn_value || 1, claiming_user_id: users[bto.claiming_user_number - 1]&.id, claimed_at: Time.now) if gbt.claiming_user_id.nil?
     end
   end
 
@@ -151,7 +165,7 @@ class Game < ActiveRecord::Base
   def total_scores_for_all_rows
     all_row_scores = {}
     row_scores_sample = { player_1: 0, player_2: 0, player_1.id => 0, player_2.id => 0 }
-    game_board_tiles_with_cards.includes(:current_card).each do |t|
+    game_board_tiles_with_cards.includes(:current_card => [:affected_tiles, :card_abilities]).each do |t|
       next if t.current_card.nil?
       row_score = all_row_scores[t.row] || row_scores_sample.dup
       if t.claiming_user_id == player_1.id
@@ -185,6 +199,10 @@ class Game < ActiveRecord::Base
 
 
   private
+
+  def normalize_attributes
+    self.status = 'WAITING' if self.status.blank? || VALID_STATUSES.exclude?(self.status&.upcase)
+  end
 
   def initialize_board_changes
     check_board_changes(true)

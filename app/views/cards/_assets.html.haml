@@ -14,6 +14,18 @@
       $(element).val( cardIds[index] || '' );
     });
   }
+  function showDetailOfCardInCanvas() {
+    console.log("URL: " + $(this).data('image-url'));
+    $('#detail_offcanvas').find('.offcanvas-body').html("<img src='" + $(this).data('image-url') + "' class='img-fluid' />");
+  }
+  function showDetailLinkOfCard() {
+     $(this).find('.card-detail-image').removeClass('d-none');
+  }
+  function hideDetailLinkOfCard() {
+    setTimeout(() => {
+      $(this).find('.card-detail-image').addClass('d-none');
+    }, 3000);
+  }
 
   function addCardToSelection(event) {
       const userCardId = $(this).data('user-card-id');
@@ -67,5 +79,9 @@
   $(document).on("turbolinks:load", function() {
     $('.user-card-add-button').click( addCardToSelection );
     $('.user-card-remove-button').click( removeCardFromSelection );
+    $(".card-detail-link[data-image-url]").click(showDetailOfCardInCanvas );
+    $(".card[data-card-id]").on('mouseover', showDetailLinkOfCard );
+    $(".card[data-card-id]").on('mouseout', hideDetailLinkOfCard );
+
     syncCardSelectionToInputs();
   });

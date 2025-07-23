@@ -6,7 +6,7 @@
     %div(class="collapse navbar-collapse" id="navbarSupportedContent")
       %ul(class="navbar-nav me-auto mb-2 mb-lg-0")
         %li.nav-item
-          = link_to 'Game', Game.first, class:"nav-link#{' active' if params[:controller] == 'games' }"
+          = link_to 'Games', games_path, class:"nav-link#{' active' if params[:controller] == 'games' }"
         %li.nav-item
           = link_to 'Boards', boards_path, class:"nav-link#{' active' if params[:controller] == 'boards' }"
         %li.nav-item
