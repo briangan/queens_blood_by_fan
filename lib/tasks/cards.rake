@@ -67,4 +67,19 @@ namespace :cards do
       end
     end
   end
+
+  desc "The format avif does require libheif for ImageMagick"
+  task :convert_cards_to_png => :environment do
+    SOURCE_PATH = File.join(Rails.root, 'app/assets/images/detailed_cards/')
+
+    Dir.glob(File.join(SOURCE_PATH, '*')).each do |file_path|
+      file_name = File.basename(file_path)
+      if file_name.match?(/\.avif$/i)
+        puts file_name
+        target_file_path = file_path.gsub(/(\.avif)$/i, '.png')
+        `magick "#{file_path}" "#{target_file_path}"`
+        File.delete(file_path)
+      end
+    end
+  end
 end
