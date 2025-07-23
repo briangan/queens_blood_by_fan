@@ -1,0 +1,8 @@
+<% if @changed_tiles.present?
+    @changed_tiles.each do |tile|
+-%>
+<%= turbo_stream.replace("board_tile_#{tile.column}_#{tile.row}") do %>
+  <%= render(partial: 'game_board_tiles/table_cell', locals: { game_board_tile: tile, game: @game }) %>
+<%  end # turbo_stream -%>
+<% end -%>
+<% end # if @changed_tiles -%>

@@ -1,6 +1,8 @@
 :ruby
   # Required locals:
   #   game <Game>
+  total_scores_for_all_rows = @game.total_scores_for_all_rows
+
 %div(id="board_notice" class="text-center" role="alert")
   &nbsp;
 .board-wrapper
@@ -9,19 +11,14 @@
     %tbody
       - 1.upto(game.board.rows) do |row|
         - board_tile_index = row
+        - player_1_score = total_scores_for_all_rows[row].try(:[], :player_1) || 0
+        - player_2_score = total_scores_for_all_rows[row].try(:[], :player_2) || 0
         %tr(class="board-row")
+          %td(class="board-tile row-total-score-wrapper inset-shadow")
+            %span(class="row-total-score#{'-dark' if player_2_score >= player_1_score} row-total-score-player-1")= player_1_score
           - 1.upto(game.board.columns) do |col|
             - board_tile_index += 1
             - board_tile = game.find_tile(col, row)
-            - player_number = nil
-            - if board_tile.claiming_user_id 
-              - player_number = player_user_ids.index(board_tile.claiming_user_id)
-            %td(id="game_boad_tile_#{board_tile&.id}" class="board-tile #{board_tile_index % 2 == 1 ? 'board-tile-odd' : 'board-tile-even'} droppable" id="board_tile_#{col}_#{row}" data-tile-position="#{col},#{row}" data-game-board-tile-id="#{board_tile.id}" data-player="#{player_number}" data-claiming-user-id="#{board_tile.claiming_user_id}" data-pawn-value="#{board_tile.pawn_value}")
-              .card-wrapper(title="#{col},#{row} w/ #{board_tile.pawn_value} pawns by Player #{board_tile.claiming_user_id}" data-bs-toggle="tooltip" data-bs-placement="top" style="#{'padding-top: 0 !important;' if board_tile.current_card_id && board_tile.current_card}")
-                - if board_tile.current_card_id && board_tile.current_card
-                  = render 'cards/card', card: board_tile.current_card, which_player: player_number, card_css_class: "card"
-              .pawn-icon-wrapper(data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="For cards w/ up to #{board_tile.pawn_value} pawn rank")
-                - if board_tile.claiming_user_id && board_tile.pawn_value.to_i > 0
-                  - board_tile.pawn_value.to_i.times do
-                    %i(class="bi bi-cone pawn-icon user-#{player_number}-color")
-                %i.bi.bi-slash-circle.disabled-icon.d-none
+            = render partial:'game_board_tiles/table_cell', locals:{ game_board_tile: board_tile, game: game, board_tile_index: board_tile_index }
+          %td(class="board-tile row-total-score-wrapper")
+            %span(class="row-total-score#{'-dark' if player_1_score >= player_2_score} row-total-score-player-2")= player_2_score

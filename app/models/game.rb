@@ -10,6 +10,7 @@ class Game < ActiveRecord::Base
 
   has_many :game_moves, dependent: :destroy
   has_many :game_board_tiles, dependent: :destroy
+  has_many :game_board_tiles_with_cards, -> { where("current_card_id IS NOT NULL") }, class_name: 'GameBoardTile'
 
   delegate :columns, :rows, to: :board
 
@@ -60,19 +61,28 @@ class Game < ActiveRecord::Base
   def proceed_with_game_move(game_move, options = {})
     dry_run = options[:dry_run] || false
     changed_tiles = []
+    player_number = game_move.user_id == player_2.id ? 2 : 1
+    x_sign = player_number == 2 ? -1 : 1
+    self.class.logger.debug "| proceed_with_game_move (dry_run? #{dry_run}), valid? #{game_move.valid?}:\n#{game_move.attributes.to_yaml }"
     # Check if the move is valid (which internally checks user turn and tile and card).
     if game_move.valid?
       # Proceed with the move.
       game_move.save unless dry_run
 
-      game_move.game_board_tile.update(current_card_id: game_move.card.id, claiming_user_id: game_move.user_id, claimed_at: Time.now, power_value: game_move.card.power) unless dry_run
+      game_move.game_board_tile.attributes = { current_card_id: game_move.card.id, claiming_user_id: game_move.user_id, claimed_at: Time.now, power_value: game_move.card.power }
+      game_move.game_board_tile.current_card = game_move.card
+      game_move.game_board_tile.save unless dry_run
       changed_tiles << game_move.game_board_tile
 
       game_move.card.card_tiles.each do |card_tile|
-        next if card_tile.x.to_i < 1 && card_tile.y.to_i < 1
-        other_t = self.find_tile(game_move.game_board_tile.column + card_tile.y, game_move.game_board_tile.row + card_tile.x)
+        # next if card_tile.x.to_i < 1 && card_tile.y.to_i < 1
+        other_t = self.find_tile(game_move.game_board_tile.column + card_tile.x * x_sign, game_move.game_board_tile.row + card_tile.y)
+        self.class.logger.debug "| card_tile: #{game_move.game_board_tile.column} + x #{card_tile.x * x_sign}, #{game_move.game_board_tile.row} + y #{card_tile.y} => #{other_t&.inspect}"
         if other_t
-          other_t.update(pawn_value: other_t.pawn_value + 1, claiming_user_id: game_move.user_id, claimed_at: Time.now) unless dry_run
+          other_t.attributes = { 
+            pawn_value: other_t.claiming_user_id == game_move.user_id && other_t.pawn_value < GameBoardTile::MAX_PAWN_VALUE ? other_t.pawn_value + 1 : other_t.pawn_value, 
+            claiming_user_id: game_move.user_id, claimed_at: Time.now }
+          other_t.save unless dry_run
           changed_tiles << other_t
         end
       end
@@ -137,6 +147,24 @@ class Game < ActiveRecord::Base
     @game_board_tiles_map
   end
 
+  # @return <Hash> with keys: :player_1, :player_2, $user_1_id, $user_2_id
+  def total_scores_for_all_rows
+    all_row_scores = {}
+    row_scores_sample = { player_1: 0, player_2: 0, player_1.id => 0, player_2.id => 0 }
+    game_board_tiles_with_cards.includes(:current_card).each do |t|
+      next if t.current_card.nil?
+      row_score = all_row_scores[t.row] || row_scores_sample.dup
+      if t.claiming_user_id == player_1.id
+        row_score[:player_1] += t.current_card.power
+        row_score[player_1.id] += t.current_card.power
+      elsif t.claiming_user_id == player_2.id
+        row_score[:player_2] += t.current_card.power
+        row_score[player_2.id] += t.current_card.power
+      end
+      all_row_scores[t.row] = row_score
+    end
+    all_row_scores
+  end
 
   # pick_pawns_for_players! is now done within @copy_from_board_to_game_board_tiles!
   

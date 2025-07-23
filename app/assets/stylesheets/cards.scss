@@ -1,0 +1,90 @@
+@import 'globals';
+
+/* Cards *****************************/
+.card > .card-extra-image {
+  overflow: hidden;
+}
+.card > .card-extra-image img {
+  width: var(--tile-card-image-width);
+  position: relative;
+  left: var(--tile-card-image-left);
+  top: var(--tile-card-image-top);
+}
+
+.card {
+  width: var(--tile-card-width);
+  height: var(--tile-card-height);
+  border-width: 0.4em;
+  margin: 0.2em 0.1em;
+  display: inline-block;
+  text-align: center;
+  overflow: hidden;
+}
+
+.small-card {
+  width: var(--tile-small-card-width);
+  height: var(--tile-small-card-height);
+  min-height: var(--tile-small-card-width);
+  border-width: 0.1em;
+  border-radius: 0.5em;
+  margin: 0.1em 0.05em;
+  display: inline-block;
+  text-align: center;
+  overflow: hidden;
+}
+
+.small-card > .card-extra-image img {
+  width: var(--tile-small-card-image-width);
+  position: relative;
+  left: var(--tile-small-card-image-left);
+  top: var(--tile-small-card-image-top);
+}
+
+.small-card-with-note {
+  @extend .small-card;
+}
+
+.card[data-player="1"], .card-wrapper[data-player="1"] {
+  border-color: var(--player-1-color);
+}
+.card[data-player="2"], .card-wrapper[data-player="2"] {
+  border-color: var(--player-2-color);
+}
+.card-dropped {
+  background: transparent;
+  position: relative !important;
+  margin: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
+.card-drop-hover[data-player="1"] {
+  background-color: #d0e0ff;
+}
+.card-drop-hover[data-player="2"] {
+  background-color: #ffe0e0;
+}
+.highlight-tile .card {
+  border-color: var(--highlight-card-border-color);
+}
+.highlight-tile {
+  background-color: var(--highlight-tile-background-color);
+}
+.center-tile > .card-wrapper {
+  border: solid 0.4em #ddc568;
+  background-color: #e0e0e0;
+}
+.draggable {
+  cursor: grab;
+}
+
+.user-card-quantity-input {
+  border: 0;
+  text-align: center;
+}
+.user-card-add-button, .user-card-remove-button  {
+  line-height: 1.5em;
+  padding: 0.1em 0.2em;
+  border: 0;
+}

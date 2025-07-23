@@ -1,0 +1,7 @@
+<% if @changed_tiles.present? -%>
+<% @changed_tiles.each do |tile| -%>
+  <% Game.logger.debug "  tile #{tile.as_json}, *[data-tile-position='#{tile.column },#{ tile.row }']" %>
+  console.log("Updating tile at position <%= tile.column %>,<%= tile.row %> with new card placement.");
+  /* $("*[data-tile-position='<%= tile.column %>,<%= tile.row %>']").html("changed "); */
+<% end # each changed_tile %>
+<% end -%>

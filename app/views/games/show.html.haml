@@ -1,32 +1,35 @@
 :ruby
   cards_per_player_count = 4 ######### 15
+  player_number = @game.player_2.id == current_user.id ? 2 : 1
   
 - content_for :more_head do
   = render partial:'cards/assets'
   = javascript_pack_tag 'cards', 'data-turbolinks-track': 'reload'
-.row(id="user_cards_wrapper")
-  .col
-    %ul(class="nav nav-tabs")
-      %li(class="nav-item")
-        %a(name="player_1_cards")
-        %h4(class="nav-link user-1-bg-color text-dark fw-bold")
-          = current_user.id == @game.player_1.id ? 'You' : "Player 1: #{@game.player_1.username}"
-    .card-wrapper.user-1-border.p-2
-      - player_1_locals = { which_player: 1, card_css_class: "card small-card#{' draggable' if @game.player_1.id == current_user.id}" }
-      = render partial:'cards/card', collection: best_set_of_cards_for_player(@game.player_1), as: :card, locals: player_1_locals
-      .clearfix
-  .col
-    %ul(class="nav nav-tabs")
-      %li(class="nav-item")
-        %a(name="player_2_cards")
-        %h4(class="nav-link user-2-bg-color text-light fw-bold") 
-          = current_user.id == @game.player_2.id ? 'You' : "Player 2: #{@game.player_2.username}"
-    .card-wrapper.user-2-border.p-2
-      - player_2_locals = { which_player: 2, card_css_class: "card small-card#{' draggable' if @game.player_2.id == current_user.id}" }
-      = render partial:'cards/card', collection: best_set_of_cards_for_player(@game.player_2), as: :card, locals: player_2_locals
-      .clearfix
 = turbo_frame_tag 'game_current_player_frame' do
   = render 'games/players_and_current_turn', game: @game
+= turbo_frame_tag 'user_cards_frame' do
+  .row
+    .col
+      %ul(class="nav nav-tabs float-end w-100")
+        %li(class="nav-item w-100 text-end")
+          %a(name="player_1_cards")
+          %h4(class="nav-link #{player_number == 1 ? 'user-1-bg-color' : 'bg-subtle-gray'} text-dark fw-bold")
+            = current_user.id == @game.player_1.id ? 'You' : "Player 1: #{@game.player_1.username}"
+    .col-1.text-center
+      %h4 VS.
+    .col
+      %ul(class="nav nav-tabs w-100")
+        %li(class="nav-item w-100")
+          %a(name="player_1_cards")
+          %h4(class="nav-link #{player_number == 2 ? 'user-2-bg-color text-light' : 'bg-subtle-gray'} fw-bold")
+            = current_user.id == @game.player_2.id ? 'You' : "Player 2: #{@game.player_2.username}"
+    .clearfix
+  .row(id="user_cards_wrapper")
+    .col
+      %div(class="card-wrapper user-#{player_number}-border p-2")
+        - player_1_locals = { which_player: current_user.id == @game.player_2.id ? 2 : 1, card_css_class: "card small-card draggable" }
+        = render partial:'cards/card', collection: best_set_of_cards_for_player(current_user), as: :card, locals: player_1_locals
+        .clearfix
 %hr
 = turbo_frame_tag 'game_board_frame' do
   = render partial:'board', locals:{ game: @game }

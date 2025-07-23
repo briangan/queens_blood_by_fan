@@ -1,0 +1,115 @@
+@import 'globals';
+
+/* Boards *****************************/
+.board-wrapper {
+  background-color: #999999;
+  text-align: center;
+}
+.board-wrapper > .board-table {
+  margin-left: auto;
+  margin-right: auto
+}
+.board-tile {
+  width: var(--tile-card-width);
+  height: var(--tile-card-height);
+  display: inline-block;
+  border: solid 1px gray;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;
+  position: relative;
+}
+.board-tile-odd {
+  background-color: #4d5878;
+}
+.board-tile-even {
+  background-color: #c4daef;
+}
+.board-tile[data-claiming-player="1"] {
+  background-color: var(--player-1-color);
+  border-color: var(--player-1-color);
+}
+.board-tile[data-claiming-player="2"] {
+  background-color: var(--player-2-color);
+  border-color: var(--player-2-color);
+}
+.board-tile > .card-wrapper {
+  width: 100%;
+  height: 100%;
+  padding-top: 42%;
+  opacity: 0.8;
+  overflow: hidden;
+  text-align: center;
+  vertical-align: middle;
+  z-index: 50
+}
+.board-tile .pawn-icon-wrapper {
+  position: absolute;
+  left: 2em;
+  bottom: 0.3em;
+  z-index: 2;
+  display: flex;
+  gap: 0.2em;
+  z-index: 80;
+  opacity: 0.5;
+  &:hover {
+    opacity: 1.0;
+  }
+}
+.pawn-icon {
+  font-size: 2.5em;
+  color: #e0e0e0;
+  transform: translate(-50%, -50%);
+}
+.disabled-icon {
+  font-size: 3.5em;
+  color: #999999;
+  opacity: 1.0;
+}
+
+.board-tile .preview-effect-label, .board-tile .effect-label {
+  position: relative;
+  top: 42%;
+  left: 0;
+  font-weight: 700;
+  z-index: 100;
+}
+.board-tile .powerup-effect {
+  color: green;
+}
+.board-tile .powerdown-effect {
+  color: purple;
+}
+
+.board-tile-cell {
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  vertical-align: middle;
+  border: 2px solid lightgray;
+  margin-left: 2px;
+}
+.board-tile-cell:hover {
+  border: solid 3px #3366cc;
+}
+.board-tile-checkbox {
+  width: 30px;
+  height: 30px;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: .5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.warning-short-blink {
+  animation: blink 0.5s linear 2;
+  background-color: yellow;
+}

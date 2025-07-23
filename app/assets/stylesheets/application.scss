@@ -32,7 +32,7 @@ $user-2-bg-color: rgb(196, 81, 81);
   --user-2-color: rgb(204, 0, 0);
   --user-2-bg-color: rgb(196, 81, 81);
 
-  --player-1-color: #44a1fe;
+  --player-1-color: #00881c;
   --player-2-color: #a71528;
   --player-1-pawn-color: #69d75f;
   --player-2-pawn-color: #cc6572;
@@ -143,6 +143,9 @@ $user-2-bg-color: rgb(196, 81, 81);
 .subtle-shadow {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
+.inset-shadow {
+  box-shadow: inset 6px 4px 8px rgba(0, 0, 0, 0.7);
+}
 
 .bg-dark-info {
   background-color: rgb(191, 217, 255)
@@ -151,6 +154,19 @@ $user-2-bg-color: rgb(196, 81, 81);
   background-color: #f0f0f0;
 }
 
+// Vertically center text using margins
+.vmiddle-wrapper{
+  position: relative;
+  border: 3px solid green;
+}
+
+.vmiddle-wrapper > * {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
 // Cards ///////////////////////////////////
 .board-wrapper {
@@ -211,7 +227,7 @@ $user-2-bg-color: rgb(196, 81, 81);
 }
 .pawn-icon {
   font-size: 2.5em;
-  color: #e0e0e0;
+  /*color: #e0e0e0; */
   transform: translate(-50%, -50%);
 }
 .disabled-icon {
@@ -240,6 +256,34 @@ $user-2-bg-color: rgb(196, 81, 81);
 .board-tile .powerdown-effect {
   color: purple;
 }
+
+.row-total-score-wrapper {
+  @extend .vmiddle-wrapper;
+  @extend .text-center;
+  background-color: #2d1268;
+  border: inset 0.25em #240b5d;
+}
+.row-total-score {
+  font-weight: bold;
+  font-size: 3em;
+  border-radius: 3em;
+  border: groove 0.1em #ffbf12;
+  color: #ffbf12;
+  padding: 0 0.2em;
+}
+.row-total-score-dark {
+  @extend .row-total-score;
+  color: #bf9000;
+  background-color: #2d1268;
+  border: inset 0.1em #bf9000;
+}
+.row-total-score-player-1 {
+  background-color: var(--user-1-bg-color);
+}
+.row-total-score-player-2 {
+  background-color: var(--user-2-bg-color);
+}
+
 .card > .card-extra-image {
   overflow: hidden;
 }
@@ -254,7 +298,7 @@ $user-2-bg-color: rgb(196, 81, 81);
   width: var(--tile-card-width);
   height: var(--tile-card-height);
   border-width: 0.4em;
-  margin: 0.2em 0.1em;
+  /* margin: 0.2em 0.1em; */
   display: inline-block;
   text-align: center;
   overflow: hidden;
@@ -283,11 +327,13 @@ $user-2-bg-color: rgb(196, 81, 81);
   @extend .small-card;
 }
 
-.card[data-player="1"], .card-wrapper[data-player="1"] {
+.card[data-player="1"] {
   border-color: var(--player-1-color);
+  background-color: var(--player-1-bg-color);
 }
-.card[data-player="2"], .card-wrapper[data-player="2"] {
+.card[data-player="2"] {
   border-color: var(--player-2-color);
+  background-color: var(--player-2-bg-color);
 }
 .card-dropped {
   background: transparent;

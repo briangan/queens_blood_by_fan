@@ -12,12 +12,13 @@ function showBoardNotice(message, type = 'info') {
 /* Status and questionaire functions ******************/
 function isCardAcceptableToTile(card, tile) {
   var isAcceptable = ( card.attr('data-player') == tile.attr('data-player') );
-
+  var msg = (isAcceptable) ? '' : "Currently this tile is not claimed by you.";
   // check card's pawn_rank vs tile's pawn_value
   if (isAcceptable && card.data('pawn-rank') && tile.data('pawn-value')) {
     isAcceptable = ( parseInt(card.data('pawn-rank')) <= parseInt(tile.data('pawn-value')) );
+    msg = (isAcceptable) ? '' : "This card requires the tile w/ " + card.data('pawn-rank') + "+ pawns"
   }
-  return isAcceptable;
+  return [isAcceptable, msg];
 }
 function shouldDragRevertDragToTile() {
   //////////console.log("Should revert? " + $(this).attr('id') + " w/ " + $(this).attr('class') );
@@ -26,8 +27,8 @@ function shouldDragRevertDragToTile() {
 
 /* Action Handlers *************************************/
 function dropCardHandler(event, ui) {
-  var shouldAccept = isCardAcceptableToTile( ui.draggable, $(this));
-  console.log("Card dropped " + ui.draggable.attr('id') + " on " + $(this).attr('id') + " => "+ shouldAccept );
+  var [shouldAccept, msg] = isCardAcceptableToTile( ui.draggable, $(this));
+  //console.log("Card dropped " + ui.draggable.attr('id') + " on " + $(this).attr('id') + " => "+ shouldAccept );
 
   if (shouldAccept) {
     ui.draggable.data('board-tile-id', $(this).attr('id') );
@@ -49,7 +50,7 @@ function dropCardHandler(event, ui) {
     $(this).attr('data-claiming-player', whichPlayer ); // If drop onto pawn, would be unnecessary
   } else {
     // console.log("> Cannot drop this card here!");
-    showBoardNotice("Cannot drop this card here!", 'warning');
+    showBoardNotice( (msg == '') ? "Cannot drop this card here!" : msg, 'warning');
   }
   resetHLTiles();
 }
@@ -93,7 +94,7 @@ function previewCardPlacementEffect(board, tile, card) {
       abilities.forEach(function(ability) {
         targetTile.addClass('highlight-tile');
         targetTile.children('.card').addClass('highlight-tile');
-        console.log("Preview ability effect to " + targetTile.attr('id') + " => " + ability['action_typeß'] );
+        // console.log("Preview ability effect to " + targetTile.attr('id') + " => " + ability['action_typeß'] );
         previewVisualEffectTo(tile, targetTile, ability);
       });
     }

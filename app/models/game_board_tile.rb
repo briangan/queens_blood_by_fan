@@ -1,6 +1,8 @@
 ##
 # Data of a board spot which can be empty or placed with a card.
 class GameBoardTile < ApplicationRecord
+  MAX_PAWN_VALUE = 3
+  
   has_paper_trail on: [:update]
 
   belongs_to :game, dependent: :destroy, optional: true
