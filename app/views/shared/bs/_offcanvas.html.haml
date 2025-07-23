@@ -1,0 +1,9 @@
+:ruby
+  title = '' unless defined?(title)
+  body = '' unless defined?(body)
+%div(class="offcanvas offcanvas-start" tabindex="-1" id="detail_offcanvas" aria-labelledby="detail_offcanvas_label" style="max-width: 80%; width: auto;")
+  .offcanvas-header
+    %h5.offcanvas-title(id="detail_offcanvas_label")= title if title.present?
+    %button(type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close")
+  .offcanvas-body
+    = raw(body) if body.present?
