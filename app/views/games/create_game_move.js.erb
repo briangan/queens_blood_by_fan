@@ -1,7 +1,16 @@
-<% if @changed_tiles.present? -%>
-<% @changed_tiles.each do |tile| -%>
-  <% Game.logger.debug "  tile #{tile.as_json}, *[data-tile-position='#{tile.column },#{ tile.row }']" %>
-  console.log("Updating tile at position <%= tile.column %>,<%= tile.row %> with new card placement.");
-  /* $("*[data-tile-position='<%= tile.column %>,<%= tile.row %>']").html("changed "); */
-<% end # each changed_tile %>
+<% # Be aware that if the form submission is not executing Javascript code here, 
+  # the format tag may have to set 'data-turbo'="false" and have hidden field format='js'.
+-%>
+<% if @changed_tiles.present?
+    @changed_tiles.each do |tile|
+-%>
+  console.log("Updating tile at position <%= tile.column %>,<%= tile.row %> w/ card " + $("#game_board_tile_<%= tile.id %>").length );
+  $("#game_board_tile_<%= tile.id %>").replaceWith("<%= j render(partial: 'game_board_tiles/table_cell', locals: { game_board_tile: tile, game: @game }) %>");
+<% end # each tile -%>
+<% end # if @changed_tiles -%>
+
+$("#game_current_player_frame").html("<%= j render(partial: 'games/players_and_current_turn', locals: { game: @game }) %>");
+
+<% if flash[:warning].present? -%>
+  showBoardNotice("<%= raw flash[:warning] %>", 'warning');
 <% end -%>

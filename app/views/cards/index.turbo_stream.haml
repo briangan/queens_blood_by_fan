@@ -1,7 +1,6 @@
 = turbo_stream.replace 'cards_frame' do
+  = render 'cards/form_assets'
   = render partial:'cards/form', collection: @cards, as: :card
   .container
     .align-center.mt-3
       = paginate @cards
-:javascript
-  $(document).on("turbolinks:load", setCardInteractions );

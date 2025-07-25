@@ -9,3 +9,8 @@
 <% turbo_stream.replace 'game_current_player_frame' do %>
   <%= render 'games/players_and_current_turn', game: @game %>
 <% end %>
+<% if flash[:warning].present? -%>
+  <% turbo_stream.replace("board_notice") do %>
+    <%= flash[:warning] %>
+  <% end %>
+<% end -%>

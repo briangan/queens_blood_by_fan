@@ -8,11 +8,17 @@ function showBoardNotice(message, type = 'info') {
   $("#board_notice").removeClass(bgClass).addClass(bgClass).text(message).css('opacity', 1);
   window.setTimeout(function(){ $("#board_notice").css('opacity', 0); }, 2000);
 }
+window.showBoardNotice = showBoardNotice;
 
 /* Status and questionaire functions ******************/
 function isCardAcceptableToTile(card, tile) {
   var isAcceptable = ( card.attr('data-player') == tile.attr('data-player') );
   var msg = (isAcceptable) ? '' : "Currently this tile is not claimed by you.";
+  var currentTurnUserId = $("#game_current_turn_user_id").val();
+  if (isAcceptable && currentTurnUserId && currentTurnUserId != '') {
+    isAcceptable = (card.attr('data-player') == currentTurnUserId);
+    msg = (isAcceptable) ? '' : "Currently it is not your turn to make move.";
+  }
   // check card's pawn_rank vs tile's pawn_value
   if (isAcceptable && card.data('pawn-rank') && tile.data('pawn-value')) {
     isAcceptable = ( parseInt(card.data('pawn-rank')) <= parseInt(tile.data('pawn-value')) );

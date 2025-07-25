@@ -11,7 +11,7 @@
         .col-md-6
           .text-start.input-group
             %span(class="input-group-text fw-bold") Keyword 
-            = text_field_tag :keyword, params[:keyword], class: 'form-control', placeholder: 'Search by card name or description', data: { turbo_frame: 'cards_frame' }
+            = text_field_tag :keyword, params[:keyword], class: 'form-control', placeholder: 'Search by card name, description or number', data: { turbo_frame: 'cards_frame' }
         .col-md-3.ml-3.mr-3
           = hidden_field_tag :format, :turbo_stream
           %label{for: 'limit'} Per Page: 

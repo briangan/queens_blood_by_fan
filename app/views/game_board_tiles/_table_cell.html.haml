@@ -5,18 +5,17 @@
   #   game <Game> if not defined, would be game_board_tile.game
   #   board_tile_index <Integer> if not defined, would be calculated based on row and column
   game ||= game_game_board_tile.game unless defined?(game) && game
-  player_number = if game_board_tile.claiming_user_id
-      game_board_tile.claiming_user_id == game.player_2.id ? 2 : 1
-    else 
-      nil
-    end
+  player_number = which_player_number_for_claiming_user(game_board_tile, game)
   board_tile_index = nil unless defined?(board_tile_index)
-%td(id="game_boad_tile_#{game_board_tile&.id}" class="board-tile board-tile-#{board_tile_odd_or_even(game_board_tile, board_tile_index)} droppable" id="board_tile_#{game_board_tile.column}_#{game_board_tile.row}" data-tile-position="#{game_board_tile.column},#{game_board_tile.row}" data-game-board-tile-id="#{game_board_tile.id}" data-player="#{player_number}" data-claiming-user-id="#{game_board_tile.claiming_user_id}" data-pawn-value="#{game_board_tile.pawn_value}")
+= gamble_board_tile_cell_tag(game_board_tile, game, board_tile_index) do
   .card-wrapper(title="#{game_board_tile.column},#{game_board_tile.row} w/ #{game_board_tile.pawn_value} pawns by Player #{game_board_tile.claiming_user_id}" data-bs-toggle="tooltip" data-bs-placement="top" style="#{'padding-top: 0 !important;' if game_board_tile.current_card_id && game_board_tile.current_card}")
     - if game_board_tile.current_card_id && game_board_tile.current_card
       = render 'cards/card', card: game_board_tile.current_card, which_player: player_number, card_css_class: "card"
-  .pawn-icon-wrapper(data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="For cards w/ up to #{game_board_tile.pawn_value} pawn rank")
-    - if game_board_tile.claiming_user_id && game_board_tile.pawn_value.to_i > 0
-      - game_board_tile.pawn_value.to_i.times do
-        %i(class="bi bi-cone pawn-icon user-#{player_number}-color")
-    %i.bi.bi-slash-circle.disabled-icon.d-none
+      - if game_board_tile.pawn_value
+        %span.custom-power-icon= game_board_tile.power_value
+    - else 
+      .pawn-icon-wrapper(title="For cards w/ up to #{game_board_tile.pawn_value} pawn rank")
+        - if game_board_tile.claiming_user_id && game_board_tile.pawn_value.to_i > 0
+          - game_board_tile.pawn_value.to_i.times do
+            %i(class="bi bi-cone pawn-icon user-#{player_number}-color")
+        %i.bi.bi-slash-circle.disabled-icon.d-none

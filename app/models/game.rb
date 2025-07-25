@@ -106,7 +106,12 @@ class Game < ActiveRecord::Base
       game_move.move_order = self.game_moves.where("id != ?", game_move.id).order(:move_order).last&.move_order.to_i + 1
       game_move.save unless dry_run
 
-      go_to_next_turn! unless dry_run
+      if dry_run
+        self.current_turn_user = (current_turn_user_id == player_2&.id) ? player_1 : player_2
+        self.current_turn_user_id = self.current_turn_user&.id
+      else
+        go_to_next_turn!
+      end
     end
     changed_tiles
   end
@@ -145,18 +150,18 @@ class Game < ActiveRecord::Base
   # @return [GameBoardTile] or nil
   def find_tile(column, row)
     t = nil
-    if (col_list = game_board_tiles_map[column] )
-      t = col_list.find{|bt| bt.row == row } 
+    if (row_list = game_board_tiles_map[row] )
+      t = row_list.find{|bt| bt.column == column } 
     end
     t
   end
 
   ##
   # Matrix array of board tiles.
-  # @return <Hash of column => Array of <GameBoardTile>>
+  # @return <Hash of row => Array of <GameBoardTile w/ column> >
   def game_board_tiles_map
     unless @game_board_tiles_map
-      @game_board_tiles_map = game_board_tiles.includes(:current_card).order(:column, :row).to_a.group_by(&:column)
+      @game_board_tiles_map = game_board_tiles.includes(:current_card).order(:row, :column).to_a.group_by(&:row)
     end
     @game_board_tiles_map
   end
@@ -165,17 +170,37 @@ class Game < ActiveRecord::Base
   def total_scores_for_all_rows
     all_row_scores = {}
     row_scores_sample = { player_1: 0, player_2: 0, player_1.id => 0, player_2.id => 0 }
+
+    # Add game_board_tile.effective_card_abilities in map
     game_board_tiles_with_cards.includes(:current_card => [:affected_tiles, :card_abilities]).each do |t|
       next if t.current_card.nil?
-      row_score = all_row_scores[t.row] || row_scores_sample.dup
-      if t.claiming_user_id == player_1.id
-        row_score[:player_1] += t.current_card.power
-        row_score[player_1.id] += t.current_card.power
-      elsif t.claiming_user_id == player_2.id
-        row_score[:player_2] += t.current_card.power
-        row_score[player_2.id] += t.current_card.power
+      x_sign = t.claiming_user_id == player_2.id ? -1 : 1
+      t.current_card.affected_tiles.each do |affected_tile|
+        tile_map = find_tile(t.column + affected_tile.x * x_sign, t.row)
+        next if tile_map.nil?
+        tile_map.effective_card_abilities ||= []
+        t.current_card.card_abilities.each do |ca|
+          tile_map.effective_card_abilities << ca
+        end
+      end # each affected_tile
+    end
+
+    game_board_tiles_map.each do |row, tiles|
+      row_score = all_row_scores[row] || row_scores_sample.dup
+      tiles.each do |t|
+        next if t.current_card.nil? || t.claiming_user_id.nil?
+        
+        p = t.power_value.to_i
+        # player-specific scores
+        if t.claiming_user_id == player_1.id
+          row_score[:player_1] += p
+          row_score[player_1.id] += p
+        elsif t.claiming_user_id == player_2.id
+          row_score[:player_2] += p
+          row_score[player_2.id] += p
+        end
       end
-      all_row_scores[t.row] = row_score
+      all_row_scores[row] = row_score
     end
     all_row_scores
   end

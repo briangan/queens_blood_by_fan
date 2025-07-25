@@ -1,11 +1,12 @@
 :ruby
   # Required locals:
   #   game <Game>
-= form_for game, url: create_game_move_game_path, method: :post, html:{ id:"game_move_form" }, data: { turbo_frame: 'game_board_frame' } do|f|
-  -#= hidden_field_tag :format, :turbo_stream
+= form_for game, url: create_game_move_game_path, method: :post, remote: true, html:{ id:"game_move_form" }, data: { turbo: false } do|f|
+  = hidden_field_tag :format, :js
   = hidden_field_tag :authenticity_token, form_authenticity_token
   = hidden_field_tag :game_board_tile_id, nil, id: 'game_move_game_board_tile_id'
   = hidden_field_tag :card_id, nil, id: 'game_move_card_id'
+  = hidden_field_tag :current_turn_user_id, game.current_turn_user_id, id: 'game_current_turn_user_id'
   .row(id="game_user_turn_wrapper")
     .col.text-end
       - if game.player_1 && game.player_1.id == game.current_turn_user_id
