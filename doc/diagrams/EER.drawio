@@ -1,4 +1,4 @@
-<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.0.4 Chrome/138.0.7204.97 Electron/37.2.1 Safari/537.36" version="28.0.4">
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.0.6 Chrome/138.0.7204.100 Electron/37.2.3 Safari/537.36" version="28.0.6">
   <diagram name="EER" id="c4acf3e9-155e-7222-9cf6-157b1a14988f">
     <mxGraphModel dx="2718" dy="1848" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" background="none" math="0" shadow="0">
       <root>
@@ -532,6 +532,26 @@
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="10" y="270" as="sourcePoint" />
             <mxPoint y="693" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="PTwLzHaw3PMe_QY8Iw2a-1" value="&lt;span style=&quot;font-size: 12px;&quot;&gt;&lt;b&gt;game_board_tiles_card_abilities&lt;/b&gt;&lt;/span&gt;" style="swimlane;html=1;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#d5e8d4;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;swimlaneFillColor=#ffffff;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=10;align=center;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="-130" y="-40" width="240" height="110" as="geometry">
+            <mxRectangle x="510" y="42" width="170" height="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="PTwLzHaw3PMe_QY8Iw2a-2" value="&lt;div&gt;&lt;u&gt;source_game_board_tile_id&lt;/u&gt;&lt;/div&gt;&lt;div&gt;&lt;u&gt;game_board_tile_id&lt;/u&gt;&lt;/div&gt;&lt;div&gt;&lt;u&gt;card_ability_id&lt;/u&gt;&lt;/div&gt;&lt;div&gt;power_value_change&lt;/div&gt;&lt;div&gt;pawn_value_change&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;whiteSpace=wrap;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="PTwLzHaw3PMe_QY8Iw2a-1">
+          <mxGeometry y="26" width="240" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="PTwLzHaw3PMe_QY8Iw2a-3" value="" style="endArrow=ERmany;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;startArrow=diamondThin;startFill=1;endFill=0;entryX=0.188;entryY=1.018;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="_FI4FavQm8VD4Ou4lNko-9" target="PTwLzHaw3PMe_QY8Iw2a-2">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="170" y="179" as="sourcePoint" />
+            <mxPoint x="253" y="140" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="PTwLzHaw3PMe_QY8Iw2a-4" value="" style="endArrow=diamondThin;html=1;rounded=0;exitX=1.004;exitY=0.339;exitDx=0;exitDy=0;startArrow=ERmany;startFill=0;endFill=1;entryX=-0.012;entryY=0.385;entryDx=0;entryDy=0;entryPerimeter=0;exitPerimeter=0;" edge="1" parent="1" source="PTwLzHaw3PMe_QY8Iw2a-2" target="_FI4FavQm8VD4Ou4lNko-4">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="130" y="69" as="sourcePoint" />
+            <mxPoint x="213" y="30" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
