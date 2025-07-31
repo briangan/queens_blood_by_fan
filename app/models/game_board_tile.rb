@@ -11,7 +11,8 @@ class GameBoardTile < ApplicationRecord
   belongs_to :current_card, class_name:'Card', optional: true
   belongs_to :claiming_user, class_name: 'User', foreign_key: 'claming_user_id', optional: true
 
-  has_many :game_moves
+  has_many :game_board_tiles_abilities, class_name:'GameBoardTileAbility', foreign_key:'card_ability_id', dependent: :destroy
+  has_many :affecting_card_abilities, class_name: 'CardAbility', source: :card_ability, through: :game_board_tiles_abilities
 
   # Based on some other card(s)'s card abilities affecting this tile.
   attr_accessor :effective_card_abilities # <Array of CardAbility>

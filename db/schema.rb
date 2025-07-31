@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_07_15_204355) do
+ActiveRecord::Schema[7.2].define(version: 2025_07_25_201605) do
   create_table "board_tiles", force: :cascade do |t|
     t.integer "board_id", null: false
     t.integer "column", null: false
@@ -101,6 +101,18 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_15_204355) do
     t.index ["board_id"], name: "index_game_board_tiles_on_board_id"
     t.index ["claiming_user_id"], name: "index_game_board_tiles_on_claiming_user_id"
     t.index ["game_id"], name: "index_game_board_tiles_on_game_id"
+  end
+
+  create_table "game_board_tiles_abilities", force: :cascade do |t|
+    t.integer "source_game_board_tile_id", null: false
+    t.integer "game_board_tile_id", null: false
+    t.integer "card_ability_id", null: false
+    t.integer "power_value_change", default: 0, null: false
+    t.integer "pawn_value_change", default: 0, null: false
+    t.index ["game_board_tile_id", "pawn_value_change"], name: "idx_on_game_board_tile_id_pawn_value_change_f54d35cf71"
+    t.index ["game_board_tile_id", "power_value_change"], name: "idx_on_game_board_tile_id_power_value_change_b5c7c91557"
+    t.index ["game_board_tile_id"], name: "index_game_board_tiles_abilities_on_game_board_tile_id"
+    t.index ["source_game_board_tile_id"], name: "index_game_board_tiles_abilities_on_source_game_board_tile_id"
   end
 
   create_table "game_moves", force: :cascade do |t|

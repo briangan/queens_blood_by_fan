@@ -52,7 +52,7 @@ class GamesController < ::InheritedResources::Base
       
       # @game_move.save!
       
-      @changed_tiles = @game.proceed_with_game_move(@game_move, dry_run: true) # TODO: remove dry_run: true
+      @changed_tiles = @game.proceed_with_game_move(@game_move, dry_run: false)
 
       logger.debug "| changed_tiles: #{@changed_tiles.collect(&:attributes).to_yaml }"
 
