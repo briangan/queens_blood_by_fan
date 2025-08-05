@@ -2,7 +2,7 @@
   "name": "queens-blood-by-fan",
   "private": true,
   "engines": {
-    "node": "16.x"
+    "node": "16.20.2"
   },
   "dependencies": {
     "@hotwired/stimulus": "^3.0.1",
