@@ -3,7 +3,6 @@
   player_number = which_player_number_for_current_user(@game)
   
 - content_for :more_head do
-  = render partial:'cards/assets'
   = javascript_pack_tag 'cards', 'data-turbolinks-track': 'reload'
 = turbo_frame_tag 'game_current_player_frame' do
   = render 'games/players_and_current_turn', game: @game

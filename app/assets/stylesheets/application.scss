@@ -139,6 +139,15 @@ $user-2-bg-color: rgb(196, 81, 81);
 .text-deco-none, .text-decoration-none {
   text-decoration: none;
 }
+.text-lg, .text-larege {
+  font-size: 1.5em;
+}
+.text-md, .text-medium {
+  font-size: 1.2em;
+}
+.text-sm, .text-small {
+  font-size: 0.8em;
+}
 
 .subtle-shadow {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
@@ -291,6 +300,7 @@ $user-2-bg-color: rgb(196, 81, 81);
   color: #bf9000;
   background-color: #2d1268;
   border: inset 0.1em #bf9000;
+  opacity: 0.9;
 }
 .row-total-score-player-1 {
   background-color: var(--user-1-bg-color);
@@ -307,6 +317,14 @@ $user-2-bg-color: rgb(196, 81, 81);
   position: relative;
   left: var(--tile-card-image-left);
   top: var(--tile-card-image-top);
+}
+.card > .card-detail-image {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  z-index: 190;
+  background-color: #ccc;
+  opacity: 0.8;
 }
 
 .card {

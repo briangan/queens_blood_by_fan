@@ -1,6 +1,6 @@
 function getMainBoard() {
   let mainBoard = $(".board-wrapper > table > tbody").first();
-  window.mainBoard = mainBoard; // For debugging purposes
+  window.mainBoard = mainBoard;
   return mainBoard;
 }
 function showBoardNotice(message, type = 'info') {
@@ -8,7 +8,10 @@ function showBoardNotice(message, type = 'info') {
   $("#board_notice").removeClass(bgClass).addClass(bgClass).text(message).css('opacity', 1);
   window.setTimeout(function(){ $("#board_notice").css('opacity', 0); }, 2000);
 }
+window.getMainBoard = getMainBoard;
 window.showBoardNotice = showBoardNotice;
+let MAX_CARDS_PER_DECK = 15; // Best to refer this to backend constant
+window.MAX_CARDS_PER_DECK = MAX_CARDS_PER_DECK;
 
 /* Status and questionaire functions ******************/
 function isCardAcceptableToTile(card, tile) {
@@ -125,14 +128,95 @@ function previewVisualEffectTo(sourceTile, targetTile, ability)
   }
 }
 
-// Initialization
-$(document).on("turbolinks:load", function() {
+function syncCardSelectionToInputs(){
+  var cardIds = [];
+  $('#deck_cards_wrapper > *[data-card-id]').each(function(index, element) {
+    var cardId = $(element).data('card-id');
+    cardIds.push(cardId);
+  });
+  $("#deck_form input[name='card_ids[]']").each(function(index, element) {
+    $(element).val( cardIds[index] || '' );
+  });
+}
+function showDetailOfCardInCanvas() {
+  var s = "<img src='" + $(this).data('image-url') + "' class='img-fluid' />";
+  if ($(this).data('card-id')) {
+    s += "<div class='text-center'><a href=\'/cards/" + $(this).data('card-id') + "'><label class='bi bi-info-square-fill text-primary text-medium'/> Show detail of card</a></div>";
+  }
+  $('#detail_offcanvas').find('.offcanvas-body').html(s);
+}
+function showDetailLinkOfCard() {
+    $(this).find('.card-detail-image').removeClass('d-none');
+}
+function hideDetailLinkOfCard() {
+  setTimeout(() => {
+    $(this).find('.card-detail-image').addClass('d-none');
+  }, 3000);
+}
+
+function addCardToSelection(event) {
+  const userCardId = $(this).data('user-card-id');
+  const cardId = $(this).data('card-id');
+  var quantityInput = $(this).siblings('*[data-quantity]');
+  if (quantityInput) {
+    var quantity = parseInt(quantityInput.text()) || 0;
+    var countOfCardsInDeck = $("#deck_cards_wrapper > *[data-card-id]").length;
+    if (quantity < 1) {
+      quantityInput.addClass('warning-short-blink');
+    } else if (countOfCardsInDeck >= MAX_CARDS_PER_DECK) {
+      $("#max_cards_per_deck_note").addClass('warning-short-blink');
+      alert("You can only have " + MAX_CARDS_PER_DECK + " cards in your deck.");
+    } else {
+      quantity -= 1;
+      quantityInput.text(quantity);
+      var userCard = $("#user_card_"+ userCardId).clone();
+      $(userCard).prop('id', 'user_card_clone_' + userCardId);
+      $(userCard).attr('data-user-card-id', '');
+      $(userCard).removeClass('card-selectable');
+      var actionRow = $(userCard).children();
+      $(actionRow).children('.user-card-quantity-input').addClass('d-none');
+      $(actionRow).children('.user-card-add-button').addClass('d-none');
+      $(actionRow).children('.user-card-remove-button').removeClass('d-none');
+      $(userCard).appendTo($("#deck_cards_wrapper"));
+      $("#user_card_clone_" + userCardId + " > .card-actions-row > .user-card-remove-button").click( removeCardFromSelection );
+    }
+    $("#user_cards_wrapper > *[data-user-card-id='" + userCardId + "']").css('opacity', (quantity < 1) ? '0.5' : '1');
+
+    syncCardSelectionToInputs();
+  }
+}
+
+function removeCardFromSelection() {
+  let card = $(this).parent().parent();
+  const cardId = $(card).data('card-id');
+  let userCard = $("#user_cards_wrapper > *[data-card-id='" + cardId + "']");
+  if (userCard) {
+    var quantityInput = $("#user_cards_wrapper > *[data-card-id='" + cardId + "'] *[data-quantity]");
+    if (quantityInput.length > 0) {
+      var quantity = parseInt( $(quantityInput).text()) || 0;
+      quantity++;
+      $(quantityInput).text(quantity);
+      $("#user_cards_wrapper > *[data-card-id='" + cardId + "']").css('opacity', (quantity < 1) ? '0.5' : '1');
+    }
+    $(card).detach().remove();
+    // Even after removal, the #user_cards_wrapper
+    syncCardSelectionToInputs();
+  }
+}
+
+/* Load functions ########################################### */
+
+function setupCardInteractions() {
   $(".draggable").draggable({ 
     "opacity": 0.35, revert: false,
     snap: ".board-tile", snapMode: "inner", snapTolerance: 30,
     stack: ".card-wrapper div",
     revert: shouldDragRevertDragToTile
   });
+}
+
+function setupBoardInteractions() {
+  
   $(".droppable").droppable({
     hoverClass: "card-drop-hover",
     accept: '.card',
@@ -157,6 +241,26 @@ $(document).on("turbolinks:load", function() {
   $(document).on("dragstop", ".card", function (event) {
     $(this).children(".bi").addClass('d-none');
   });
+
+  $('.user-card-add-button').click( addCardToSelection );
+  $('.user-card-remove-button').click( removeCardFromSelection );
+  $(".card-detail-link[data-image-url]").click(showDetailOfCardInCanvas );
+  $(".card[data-card-id]").on('mouseover', showDetailLinkOfCard );
+  $(".card[data-card-id]").on('mouseout', hideDetailLinkOfCard );
+
+  window.showDetailOfCardInCanvas = showDetailOfCardInCanvas;
+  window.showDetailLinkOfCard = showDetailLinkOfCard;
+  window.hideDetailLinkOfCard = hideDetailLinkOfCard;
+
+  syncCardSelectionToInputs();
+
+  $("*[data-bs-toggle='tooltip'").tooltip();
+}
+
+// Initialization
+$(document).on("turbolinks:load", function(){
+  setupCardInteractions();
+  setupBoardInteractions();
 
   $("*[data-bs-toggle='tooltip'").tooltip();
 });
