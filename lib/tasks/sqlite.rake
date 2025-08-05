@@ -3,6 +3,7 @@ def sqlite_db_action(action, dump_version_number = nil)
   db_path = File.join(Rails.root, 'db', "#{Rails.env.downcase}.sqlite3")
   backup_path = File.join(Rails.root, 'db', 'backups').to_s
   schema_name = "#{Rails.env}"
+  suffices = ['', '-journal', '-wal', '-shm']
 
   fn = if dump_version_number == nil || dump_version_number == ''
       File.join(backup_path, "#{schema_name}.sqlite3")
@@ -12,14 +13,20 @@ def sqlite_db_action(action, dump_version_number = nil)
   puts sprintf("#{action} %-s -----------------------------", schema_name)
   begin
     if action == 'backup'
-      puts "Backing up SQLite database to #{fn}"
-      exec "cp -f #{db_path} #{fn}"
+      suffices.each do |suf|
+        puts "Backing up SQLite database to #{fn}#{suf}"
+        exec "cp -f #{db_path}#{suf} #{fn}"
+      end
     elsif action == 'restore'
-      puts "Restoring SQLite database from #{fn}"
-      if File.exist?(fn)
-        exec "cp -f #{fn} #{db_path}"
-      else
-        puts "** File not found: #{fn}"
+      suffices.each do |suf|
+        puts "Restoring SQLite database from #{fn}#{suf}"
+        puts "  to #{db_path}#{suf}"
+        if File.exist?(fn + suf)
+          exec "rm -f #{db_path}#{suf}"
+          exec "cp -f #{fn}#{suf} #{db_path}#{suf}"
+        else
+          puts "** File not found: #{fn}#{suf}"
+        end
       end
     end
   rescue Exception => cmd_e
