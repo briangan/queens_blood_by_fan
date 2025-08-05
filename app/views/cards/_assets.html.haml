@@ -15,7 +15,11 @@
     });
   }
   function showDetailOfCardInCanvas() {
-    $('#detail_offcanvas').find('.offcanvas-body').html("<img src='" + $(this).data('image-url') + "' class='img-fluid' />");
+    var s = "<img src='" + $(this).data('image-url') + "' class='img-fluid' />";
+    if ($(this).data('card-id')) {
+      s += "<div class='text-center'><a href=\'/cards/" + $(this).data('card-id') + "'><label class='bi bi-info-square-fill text-primary text-medium'/> Show detail of card</a></div>";
+    }
+    $('#detail_offcanvas').find('.offcanvas-body').html(s);
   }
   function showDetailLinkOfCard() {
      $(this).find('.card-detail-image').removeClass('d-none');
