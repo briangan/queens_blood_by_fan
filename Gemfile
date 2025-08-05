@@ -16,7 +16,6 @@ gem 'puma', '~> 6.0'
 # Backend
 
 gem 'inherited_resources'
-gem 'sqlite3', '~> 1.4'
 gem 'mysql2'
 
 gem 'paper_trail', '~> 15'
@@ -72,6 +71,13 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'factory_bot_rails'
   gem 'guard-rspec', require: false
+
+  gem 'sqlite3', '~> 1.4'
+end
+
+group :production do
+  gem 'pg', '~> 1.1'
+  gem 'rails_12factor'
 end
 
 group :development do
