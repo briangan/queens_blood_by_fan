@@ -19,6 +19,7 @@
 !/log/.keep
 !/tmp/.keep
 *.drawio.bkp
+/node_modules/.cache
 
 # Ignore pidfiles, but keep the directory.
 /tmp/pids/*

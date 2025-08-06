@@ -1,6 +1,6 @@
 # README
 
-This application is a similation of Queen's Blood inside Square Enix's RPG game, Final Fantasy VII Rebirth (2024).  The intention of this project is entirely for fan entertainment as we are so addicted to the card game.  We do not own any rights to the game, the characters, or the assets.  If you are part of Square Enix's copyright team that needs to discuss some things, you can contact us.
+This application is a similation of Queen's Blood inside Square Enix's RPG game, Final Fantasy VII Rebirth (2024).  The intention of this project is entirely for fan entertainment as we are so addicted to the card game what the company has not refactored out as public mobile game.  We do not own any rights to the game, the characters, or the assets.  If you are part of Square Enix's copyright team that needs to discuss some details, you can contact us.
 
 * Technologies
 * Resources
@@ -16,10 +16,11 @@ It's developed in Ruby on Rails platform based in Unix/Linux operating system.  
 * Rails: v7.1
 * JQuery: v3.7
 * JQuery-UI: v1.13
+* SQLite
 
 # Resources
 * Graphics
-  - Card images downloaded from https://www.powerpyx.com/final-fantasy-7-vii-rebirth-all-queens-blood-card-locations/
+  - Card images downloaded from https://game8.co/games/Final-Fantasy-VII-Rebirth/archives/Queens-Blood
 
 # Installation
 Ensure /Gemfile has 
@@ -38,11 +39,41 @@ Run bin/rails importmap:install then bin/rails hotwire:install then bin/rails tu
 # Database
 * Development environment for now uses sqlite3 instead of MySQL: inside folder db/development.sqlite3
 * Test environment for now uses sqlite3 instead of MySQL: inside folder db/test.sqlite3
-* Production environment is set to run with MySQL based database.
+* Production environment is set to run with Postgresql based database.  
+
+The settings inside config/database.yml
+heroku config:set DATABASE_URL='NEON_DATABASE_CONNECTION_STRING' -a neon-heroku-example
 
 # Deployment
 * Run the puma Rails server: bin/rails s
 * If using the MySQL database, ensure that's running.
+
+## Heroku Usage for Hosting
+* Staging site domain: https://boiling-beach-44284-60e062035d00.herokuapp.com/ 
+* GIT: https://git.heroku.com/boiling-beach-44284.git
+
+```
+Steps to setup GIT w/ heroku:
+install local heroku program; for example, Mac would run `brew install heroku`
+
+Set necessary environment variables on heroku's site:
+
+
+Then run:
+heroku login
+heroku create
+heroku git:remote -a boiling-beach-44284
+heroku buildpacks:add heroku/nodejs --index 1
+
+git add heroku master
+git remote add heroku https://git.heroku.com/boiling-beach-44284.git
+git push heroku master
+
+To run commands on heroku, such as initial `bin/rails db:migrate` and `bin/rails db:seed`
+can start terminal w/
+heroku run bash
+```
+
 
 # Contributions
 Currently this is a publicly free to access source code repository, so you are free to download or clone the codes.  It'd best if you are willing to participate by programming or preparing other parts of the project.  So you are welcomed to help out by doing some TODOs or share new ideas.
@@ -50,9 +81,10 @@ Currently this is a publicly free to access source code repository, so you are f
 
 # TODOs:
 ## Cards
-* Images: Crop out card bare images
-  - Inside folder public/cards there are downloaded images of 145 cards.  But each card image includes the explanation of card behaviors (which is great for data) on the right side.  
-  - I created a Photoshop file that has another layer with shape of only bare card without any BG, text or graphics.  So editor can load the selection by using the card shape, and copy image content only within the selection; open new image pasted with the bare card graphics, turn off background to keep cornders transparent and export as PNG file.
+* Implement "create another card after usage" cards 
+  [ ] There r some "create another card after usage" cards such as Grangalan that can create Grangalan Junior.
+  [ ] Different card image than its parent
+  [ ] Use of AddCardAbility to add GameCard to associate child Card
 * Data entry of cards
   - Enter attributes, abilities and tiles of each card into data/cards.yml file.  This would be valid values into DB table.
   - Can refer to card images inside public/cards that have explanations exactly from the game.  
