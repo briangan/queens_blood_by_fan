@@ -2,7 +2,7 @@ class EnsureGameBoardTiles < ActiveRecord::Migration[7.2]
   def up
     unless table_exists?(:game_board_tiles)
       create_table :game_board_tiles do|t|
-        t.ingter :game_id, null: false
+        t.integer :game_id, null: false
         t.integer :board_id, null: false
         t.integer :column
         t.integer :row

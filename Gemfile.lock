@@ -227,7 +227,6 @@ GEM
     mini_portile2 (2.8.9)
     minitest (5.25.5)
     msgpack (1.8.0)
-    mysql2 (0.5.6)
     nenv (0.3.0)
     net-imap (0.5.9)
       date
@@ -484,9 +483,8 @@ DEPENDENCIES
   kaminari
   kaminari-bootstrap
   listen (~> 3.3)
-  mysql2
   paper_trail (~> 15)
-  pg (~> 1.1)
+  pg
   pry-byebug
   puma (~> 6.0)
   rails (~> 7.2)

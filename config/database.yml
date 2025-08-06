@@ -3,8 +3,19 @@
 #
 #   Ensure the SQLite 3 gem is defined in your Gemfile
 #   gem 'sqlite3'
-#
-default: &mysql_default
+
+default: &pg_default
+  adapter: postgresql
+  encoding: unicode
+  sslmode: require
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: <%= ENV['PG_DATABASE_HOST'] || 'localhost' %>
+  port: <%= ENV['PG_DATABASE_PORT'] || '5432' %>
+  username: <%= ENV["PG_DATABASE_USERNAME"] %>
+  password: <%= ENV["PG_DATABASE_PASSWORD"] %>
+  database: queens_blood_by_fan_development
+
+mysql_default: &mysql_default
   adapter: mysql2
   encoding: utf8
   socket: /run/mysqld/mysqld.sock
@@ -32,5 +43,5 @@ test:
   database: db/test.sqlite3
 
 production:
-  <<: *mysql_default
+  <<: *pg_default
   database: queens_blood_by_fan_production

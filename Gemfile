@@ -16,7 +16,9 @@ gem 'puma', '~> 6.0'
 # Backend
 
 gem 'inherited_resources'
-gem 'mysql2'
+#gem 'mysql2'
+gem 'pg'
+gem 'rails_12factor'
 
 gem 'paper_trail', '~> 15'
 
@@ -76,7 +78,6 @@ group :development, :test do
 end
 
 group :production do
-  gem 'pg', '~> 1.1'
   gem 'rails_12factor'
 end
 

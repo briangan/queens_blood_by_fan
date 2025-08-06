@@ -10,7 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_07_25_201605) do
+ActiveRecord::Schema[7.2].define(version: 2025_08_06_042423) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "board_tiles", force: :cascade do |t|
     t.integer "board_id", null: false
     t.integer "column", null: false
@@ -43,7 +46,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_25_201605) do
     t.string "when", limit: 32
     t.string "which", limit: 64
     t.string "action_type", limit: 64
-    t.string "action_value", limit: 64
+    t.string "action_value", limit: 255
     t.index ["card_id"], name: "index_card_abilities_on_card_id"
   end
 
@@ -88,17 +91,15 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_25_201605) do
   end
 
   create_table "game_board_tiles", force: :cascade do |t|
-    t.integer "board_id"
+    t.integer "game_id", null: false
+    t.integer "board_id", null: false
     t.integer "column"
     t.integer "row"
     t.integer "pawn_value", default: 0
     t.integer "power_value", default: 0
     t.integer "current_card_id"
-    t.integer "game_id", null: false
     t.integer "claiming_user_id"
-    t.integer "claimed_at"
-    t.index ["board_id", "column", "row"], name: "index_game_board_tiles_on_board_id_and_column_and_row"
-    t.index ["board_id"], name: "index_game_board_tiles_on_board_id"
+    t.datetime "claimed_at"
     t.index ["claiming_user_id"], name: "index_game_board_tiles_on_claiming_user_id"
     t.index ["game_id"], name: "index_game_board_tiles_on_game_id"
   end
@@ -118,7 +119,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_25_201605) do
   create_table "game_moves", force: :cascade do |t|
     t.integer "game_id"
     t.integer "user_id"
-    t.integer "game_board_tile_id"
+    t.integer "board_tile_id"
     t.integer "card_id"
     t.integer "move_order", default: 0
     t.datetime "created_at", null: false
@@ -191,7 +192,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_25_201605) do
     t.bigint "item_id", null: false
     t.string "event", null: false
     t.string "whodunnit"
-    t.text "object", limit: 1073741823
+    t.text "object"
     t.datetime "created_at"
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
