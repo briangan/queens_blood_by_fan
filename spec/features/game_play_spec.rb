@@ -5,7 +5,7 @@ include CardsSpecHelper
 
 describe Game, type: :feature do
 
-  before(:all) do
+  before(:context) do
     reload_cards
   end
 
@@ -77,6 +77,10 @@ describe Game, type: :feature do
   def prepare_game(game_factory, cols = 5, rows = 3)
     puts "Preparing game with #{cols} columns and #{rows} rows"
     board = Board.create_board(cols, rows)
+    board_tiles = board.assign_claims_of_default_left_and_right_tiles!
+    expect(board.board_tiles.count).to eq(board_tiles.size)
+    expect(board.board_tiles.where(claiming_user_number: 1).count).to eq(board_tiles.size / 2)
+    expect(board.board_tiles.where(claiming_user_number: 2).count).to eq(board_tiles.size / 2)
 
     if User.count < 2
       find_or_create(:user_1, :username)
@@ -85,11 +89,19 @@ describe Game, type: :feature do
     users = User.limit(10).all.shuffle[0..1]
     expect(users.count).to eq(2)
 
-    # 
+    # 1st player
     game = Game.new(board_id: board.id)
     game.game_users.new(user_id: users[0].id, move_order: 1)
+    game.save!
+    expect(game.status).to eq('WAITING')
+    expect(game.game_board_tiles.where(claiming_user_id: users[0].id).count ).to eq( board.board_tiles.where(claiming_user_number: 1).count )
+
+    # 2nd player
     game.game_users.new(user_id: users[1].id, move_order: 2)
     game.save!
+    game.reload
+    expect(game.status).to eq('IN_PROGRESS')
+    expect(game.game_board_tiles.where(claiming_user_id: users[0].id).count ).to eq( board.board_tiles.where(claiming_user_number: 2).count )
 
     expect(game.player_1.id).to eq users[0].id
     expect(game.player_2.id).to eq users[1].id
