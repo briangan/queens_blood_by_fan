@@ -27,7 +27,24 @@ Turbolinks.start()
 ActiveStorage.start()
 
 $(document).on("turbolinks:load", function() {
+  // This disables Turbo prefetching for hover over links with data-turbo-prefetch
+  document.querySelectorAll("a[data-turbo-prefetch]").forEach(link => {
+    link.removeAttribute("data-turbo-prefetch");
+  });
+  document.addEventListener("mouseover", function(e) {
+    if (e.target.tagName === "A") {
+      e.target.setAttribute("data-turbo-prefetch", "false");
+    }
+  }, true);
+
   $(".best-in-place-input").best_in_place();
   $(".best-in-place").best_in_place();
   $(".best_in_place").best_in_place();
+});
+
+// Reload the page if it was loaded from the bfcache (back-forward cache)
+$(window).on('load', function(event) {
+  if (event.persisted) {
+    window.location.reload();
+  }
 });
