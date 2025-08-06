@@ -18,7 +18,7 @@
           #{game.game_moves.count} Moves
           &nbsp;
           - if which_player_number_for_current_user(game)
-            = link_to reset_game_path(game), class:'btn btn-sm btn-danger', remote: true, data:{ confirm: 'Are you sure you want to reset the game?' } do
+            = link_to reset_game_path(game), class:'btn btn-sm btn-danger', data:{ confirm: 'Are you sure you want to reset the game?' } do
               %i.bi.bi-arrow-clockwise 
               Reset Game
             = f.submit('Make Move', class:'btn btn-primary d-none', id:'game_move_submit_button')

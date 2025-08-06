@@ -14,11 +14,11 @@
         - player_1_score = total_scores_for_all_rows[row].try(:[], :player_1) || 0
         - player_2_score = total_scores_for_all_rows[row].try(:[], :player_2) || 0
         %tr(class="board-row")
-          %td(class="board-tile row-total-score-wrapper inset-shadow")
-            %span(class="row-total-score#{'-dark' if player_2_score >= player_1_score} row-total-score-player-1")= player_1_score
+          %td(id="player_1_row_#{row}_total_score" class="board-tile row-total-score-wrapper inset-shadow")
+            %span(class="row-total-score#{'-dark' if player_2_score >= player_1_score} row-total-score-player-1" data-bs-toggle="tooltip" data-bs-title="Row #{row} total score for Player 1")= player_1_score
           - 1.upto(game.board.columns) do |col|
             - board_tile_index += 1
             - board_tile = game.find_tile(col, row)
             = render partial:'game_board_tiles/table_cell', locals:{ game_board_tile: board_tile, game: game, board_tile_index: board_tile_index }
-          %td(class="board-tile row-total-score-wrapper")
-            %span(class="row-total-score#{'-dark' if player_1_score >= player_2_score} row-total-score-player-2")= player_2_score
+          %td(id="player_2_row_#{row}_total_score" class="board-tile row-total-score-wrapper")
+            %span(class="row-total-score#{'-dark' if player_1_score >= player_2_score} row-total-score-player-2" data-bs-toggle="tooltip" data-bs-title="Row #{row} total score for Player 2")= player_2_score

@@ -11,24 +11,38 @@ class GameBoardTile < ApplicationRecord
   belongs_to :current_card, class_name:'Card', optional: true
   belongs_to :claiming_user, class_name: 'User', foreign_key: 'claming_user_id', optional: true
 
-  has_many :game_board_tiles_abilities, class_name:'GameBoardTileAbility', foreign_key:'card_ability_id', dependent: :destroy
+  has_many :game_board_tiles_abilities, class_name:'GameBoardTileAbility', dependent: :destroy
+  
+  # Based on some other card(s)'s card abilities affecting this tile.
   has_many :affecting_card_abilities, class_name: 'CardAbility', source: :card_ability, through: :game_board_tiles_abilities
 
-  # Based on some other card(s)'s card abilities affecting this tile.
-  attr_accessor :effective_card_abilities # <Array of CardAbility>
-
+  # Scopes
   scope :claimed, -> { where('claming_user_id IS NOT nil') }
 
+  # Validations
   validates_presence_of :game_id, :board_id, :column, :row
 
+  # before and after callbacks
   before_save :normalize_attributes
 
+  ##
+  # The HTML data attributes for this tile.
   def cell_data_attr
     { 
       'tile-position' => "#{column},#{row}", 'game-board-tile-id' => "#{id}", 
       'claiming-user-id' => "#{claiming_user_id}", 'pawn-value' => "#{pawn_value}"
     }
-  end 
+  end
+
+  def power_value_total_change
+    game_board_tiles_abilities.collect(&:power_value_change).compact.sum
+  end
+
+  # Current card + all card abilities affecting this tile.
+  # Record not saved, just the attributes are set.
+  def recalculate_power_value
+    self.power_value = current_card&.power&.to_i + power_value_total_change
+  end
 
   private
 

@@ -1,6 +1,9 @@
 ##
 # Record to save the abilities of a card with attributes like type, when, which, action_type, :action_value.
 # Card Ability TODOs:
+# [ ] take into account when as it depends at the range of effect time when this card is played.
+# [ ] find the affected other tiles dynamically other than Affected (CardTile), for examples, enhanced_allies enfeebled_enemies
+# [ ] implement the non-integer action_value, for examples, ally.power, 
 # [ ] Card number 66 has multiple abilities
 # [ ] Card number 86 has ability "when first reaches power 7 ..."
 # [ ] Card number 142 has ability "when the rounds ends, the loser of each lane's score is added to victor's"
@@ -21,6 +24,47 @@ class CardAbility < ApplicationRecord
   validates_presence_of :card_id, :type
 
   before_save :normalize_data
+
+
+  # Either flip the claiming_user_id or add pawn_value to the tile.
+  # This assumes source_tile.claiming_user_id is already set w/ GameMove#user_id.
+  # This does not save the target_tile, just sets the attributes.
+  def self.apply_pawn_tile_effect(source_tile, target_tile)
+    game_move_user_id = source_tile.claiming_user_id
+    next_pawn_value = if (target_tile.claiming_user_id.nil? || target_tile.claiming_user_id == game_move_user_id) && target_tile.pawn_value < GameBoardTile::MAX_PAWN_VALUE
+        target_tile.pawn_value.to_i + 1
+      else
+        target_tile.pawn_value
+      end
+    target_tile.attributes = {
+      pawn_value: next_pawn_value, claiming_user_id: game_move_user_id, claimed_at: Time.now }
+  end
+
+  # Most basic: use self.class.apply_pawn_tile_effect
+  # Subclasses override of this could be used to apply more complex effects.
+  # This assumes source_tile.claiming_user_id is already set w/ GameMove#user_id.
+  # This assumes the claiming_user_id is the same as the source_tile.claiming_user_id.
+  # This sets the attribute values, but not saving @target_tile.
+  # @source_tile <GameBoardTile> the tile where the card is played from.
+  # @target_tile <GameBoardTile> the tile where the card is applied to.
+  # @options <Hash> additional options such as :dry_run [Boolean] if true, would not save records.
+  # @return <Array of GameBoardTileAbility> newly passed affected abilities from @source_tile to @target_tile.
+  def apply_effect_to_tile(source_tile, target_tile, options = {})
+    self.class.apply_pawn_tile_effect(source_tile, target_tile)
+    []
+  end
+
+  # @return <nil, Integer, ActiveRecord::Base or Array of ActiveRecord> the evaluated action_value.
+  def action_value_evaluated(target_tile)
+    return nil if action_value.blank?
+    if action_value =~ /\A\d+\z/
+      action_value.to_i
+    elsif action_value == 'ally.power'
+      target_tile.power_value.to_i
+    elsif action_value == /Card\.\w+/ # Card.find or Card.where
+      eval(action_value)
+    end
+  end
 
   # TODO: Remove this method when ensure migration from action to action_type and action_value is complete.
   def parsed_action_type
@@ -45,7 +89,9 @@ class CardAbility < ApplicationRecord
     else
       return m[2]
     end
-  end 
+  end
+
+  protected
 
   def normalize_data
     self.type = ACTION_TYPE_TO_CLASS_TYPE[action_type&.downcase] || 'CardAbility' if action_type.present?
