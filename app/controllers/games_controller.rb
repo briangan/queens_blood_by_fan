@@ -54,7 +54,7 @@ class GamesController < ::InheritedResources::Base
       
       @changed_tiles = @game.proceed_with_game_move(@game_move, dry_run: false)
 
-      logger.debug "| changed_tiles: #{@changed_tiles.collect(&:attributes).to_yaml }"
+      logger.info "| changed_tiles: #{@changed_tiles.collect(&:attributes).as_json }"
 
       flash[:notice] = 'Game move created successfully.'
 
@@ -66,7 +66,7 @@ class GamesController < ::InheritedResources::Base
     else
       @game_board_tile.current_card_id = nil if @game_board_tile
       @changed_tiles = [@game_board_tile].compact
-      logger.debug "| changd_tiles: #{@changed_tiles.collect(&:attributes).to_yaml }"
+      logger.info "| changd_tiles: #{@changed_tiles.collect(&:attributes).to_yaml }"
       flash[:warning] = @game_move.errors.full_messages.join(', ')
       flash[:warning] << "  It's not your turn to make this move." if @game.current_turn_user_id != current_user.id
       logger.warn "| create_game_move failed: #{flash[:warning]}"
@@ -88,7 +88,7 @@ class GamesController < ::InheritedResources::Base
     end
 
     respond_to do |format|
-      format.html { redirect_to @game }
+      format.html { redirect_to game_path(id: @game, t: Time.now.to_i) }
     end
   end
 
