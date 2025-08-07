@@ -34,10 +34,21 @@ module GamesHelper
   end
 
   # @the_game <Game> for efficiency, to avoid another game_board_title.game call.
-  def gamble_board_tile_cell_tag(game_board_tile, the_game = nil, board_index = nil)
+  def game_board_tile_cell_tag(game_board_tile, the_game = nil, board_index = nil)
     the_game ||= game_board_tile.game
-    content_tag :td, id: "game_board_tile_#{game_board_tile&.id}", class: "board-tile board-tile-#{board_tile_odd_or_even(game_board_tile, board_index)} droppable", data: game_board_tile.cell_data_attr.merge({ player: which_player_number_for_claiming_user(game_board_tile, the_game) }) do
+    tag.td(id: "game_board_tile_#{game_board_tile&.id}", class: "board-tile board-tile-#{board_tile_odd_or_even(game_board_tile, board_index)} droppable", data: game_board_tile.cell_data_attr.merge({ player: which_player_number_for_claiming_user(game_board_tile, the_game) }) ) do
       yield 
     end
+  end
+
+  # @row_number <Integer> 1 to rows
+  # @which_player_number <Integer> 1 or 2
+  def row_player_score_label(game, row_number, which_player_number, player_1_score = nil, player_2_score = nil)
+    total_scores = game.total_scores_for_all_rows[row_number] || {}
+    player_1_score ||= total_scores.dig(row_number, game.player_1.id) || 0
+    player_2_score ||= total_scores.dig(row_number, game.player_2.id) || 0
+    has_higher_score = (which_player_number == 1 && player_1_score > player_2_score) || (which_player_number == 2 && player_2_score > player_1_score)
+    tag.span((which_player_number == 2 ? player_2_score : player_1_score), class: "row-total-score#{'-dark' unless has_higher_score} row-total-score-player-1", 'data-bs-toggle'=>'tooltip',
+      'data-bs-title'=>"Row #{row_number} total score for Player 1")
   end
 end

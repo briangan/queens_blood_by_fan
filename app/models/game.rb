@@ -77,7 +77,7 @@ class Game < ActiveRecord::Base
     changed_tiles = []
     player_number = game_move.user_id == player_2.id ? 2 : 1
     x_sign = player_number == 2 ? -1 : 1
-    self.class.logger.debug "| proceed_with_game_move (dry_run? #{dry_run}), valid? #{game_move.valid?}:\n#{game_move.attributes.as_json }"
+    self.class.logger.info "| proceed_with_game_move (dry_run? #{dry_run}), valid? #{game_move.valid?}:\n#{game_move.attributes.as_json }"
     # Check if the move is valid (which internally checks user turn and tile and card).
     if game_move.valid?
       # Proceed with the move.
@@ -87,20 +87,18 @@ class Game < ActiveRecord::Base
       game_move.game_board_tile.current_card = game_move.card
       game_move.game_board_tile.save unless dry_run
       changed_tiles << game_move.game_board_tile
-      self.class.logger.debug "| game_board_tile: #{game_move.game_board_tile.attributes.as_json}"
+      self.class.logger.info "| game_board_tile: #{game_move.game_board_tile.attributes.as_json}"
 
       game_move.card.card_tiles.each do |card_tile|
         # next if card_tile.x.to_i < 1 && card_tile.y.to_i < 1
         other_t = self.find_tile(game_move.game_board_tile.column + card_tile.x * x_sign, game_move.game_board_tile.row + card_tile.y)
-        self.class.logger.debug "| card_tile: #{game_move.game_board_tile.column} + x #{card_tile.x * x_sign}, #{game_move.game_board_tile.row} + y #{card_tile.y} => #{other_t&.as_json}"
+        self.class.logger.info "| card_tile: #{game_move.game_board_tile.column} + x #{card_tile.x * x_sign}, #{game_move.game_board_tile.row} + y #{card_tile.y} => #{other_t&.as_json}"
         if other_t
-          other_t.attributes = { claiming_user_id: game_move.user_id, claimed_at: Time.now }
-
           if card_tile.is_a?(Affected)
             # Pass the card ability to the tile.
             game_move.card.card_abilities.each do |ca|
               ca_changes = ca.apply_effect_to_tile(game_move.game_board_tile, other_t, dry_run: dry_run)
-              self.class.logger.debug " \\_ ca_changes for #{ca.type}: #{ca_changes.as_json }"
+              self.class.logger.info " \\_ ca_changes for #{ca.type}: #{ca_changes.as_json }"
             end
           else # Pawn
             # Pawn tile, just set the pawn value.
@@ -112,6 +110,10 @@ class Game < ActiveRecord::Base
       end
       
       game_move.game_board_tile.update(pawn_value: game_move.card.pawn_rank, claiming_user_id: current_turn_user.id, claimed_at: Time.now) unless dry_run
+      
+      # Immediately update the game_board_tiles_map to include the new tile.  Mainly for debugging.
+      self.game_board_tiles_map[game_move.game_board_tile.row] ||= []
+      self.game_board_tiles_map[game_move.game_board_tile.row] << game_move.game_board_tile
 
       game_move.move_order = self.game_moves.where("id != ?", game_move.id).order(:move_order).last&.move_order.to_i + 1
       game_move.save unless dry_run
@@ -185,7 +187,7 @@ class Game < ActiveRecord::Base
       row_score = all_row_scores[row] || row_scores_sample.dup
       tiles.each do |t|
         next if t.current_card.nil? || t.claiming_user_id.nil?
-        logger.debug " \\_ tile (#{t.id}): #{t.game_board_tiles_abilities.includes(:card_ability).collect{|ga| "#{ga.card_ability.type} #{ga.power_value_change}" }.as_json }"
+        logger.info " \\_ tile (#{t.id}) at [#{t.column},#{t.row}] #{t.pawn_value} pawns, #{t.power_value} power: #{t.game_board_tiles_abilities.includes(:card_ability).collect{|ga| "#{ga.card_ability.type} #{ga.power_value_change}" }.as_json }"
         
         p = t.power_value.to_i
         # player-specific scores

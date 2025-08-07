@@ -2,6 +2,9 @@
   # the format tag may have to set 'data-turbo'="false" and have hidden field format='js'.
 -%>
 <% if @changed_tiles.present?
+    row_numbers_changed = @changed_tiles.collect(&:row).uniq
+    total_scores_for_all_rows = @game.total_scores_for_all_rows
+
     @changed_tiles.each do |tile|
 -%>
   // console.log("Updating tile at position <%= tile.column %>,<%= tile.row %> w/ card " + $("#game_board_tile_<%= tile.id %>").length );
@@ -10,7 +13,15 @@
   $("#game_board_tile_<%= tile.id %> .card[data-card-id]").on('mouseover', showDetailLinkOfCard );
   $("#game_board_tile_<%= tile.id %> .card[data-card-id]").on('mouseout', hideDetailLinkOfCard );
 
-<% end # each tile -%>
+  <% end # each tile -%>
+  <% 
+    row_numbers_changed.each do|row| 
+      player_1_score = total_scores_for_all_rows.dig(row, :player_1) || 0
+      player_2_score = total_scores_for_all_rows.dig(row, :player_2) || 0
+  -%>
+    $("#player_1_row_<%= row %>_total_score").html("<%= j row_player_score_label(@game, row, 1, player_1_score, player_2_score) %>");
+    $("#player_2_row_<%= row %>_total_score").html("<%= j row_player_score_label(@game, row, 2, player_1_score, player_2_score) %>");
+  <% end %>
 <% end # if @changed_tiles -%>
 
 $("#game_current_player_frame").html("<%= j render(partial: 'games/players_and_current_turn', locals: { game: @game }) %>");
