@@ -38,6 +38,14 @@ class GameBoardTile < ApplicationRecord
     game_board_tiles_abilities.collect(&:power_value_change).compact.sum
   end
 
+  def enhanced?
+    power_value_total_change > 0
+  end
+
+  def enfeebled?
+    power_value_total_change < 0
+  end
+
   # Current card + all card abilities affecting this tile.
   # Record not saved, just the attributes are set.
   def recalculate_power_value

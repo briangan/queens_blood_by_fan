@@ -155,6 +155,9 @@ $user-2-bg-color: rgb(196, 81, 81);
 .inset-shadow {
   box-shadow: inset 6px 4px 8px rgba(0, 0, 0, 0.7);
 }
+.outside-glow {
+  filter: drop-shadow(0 0 10px #24ecff) drop-shadow(0 0 15px #24ecff);
+}
 
 .bg-dark-info {
   background-color: rgb(191, 217, 255)

@@ -25,11 +25,16 @@ module CardsSpecHelper
     record_counts
   end
 
-  def prepare_cards_and_decks_for_user(user)
-    user.random_pick_cards()
+  def prepare_cards_and_decks_for_user(user, essential_card_numbers = nil)
+    essential_card_ids = essential_card_numbers.present? ? Card.where(card_number: essential_card_numbers).select('id').all.collect(&:id) : []
+    user.random_pick_cards(essential_card_ids)
     
     puts "Collected #{UserCard.where(user_id: user.id).count} cards for user #{user.username} (#{user.id})"
     expect(UserCard.where(user_id: user.id).count).to be >= Deck::MAX_CARDS_PER_DECK
+
+    if essential_card_numbers.present?
+      expect(user.cards.where(card_number: essential_card_numbers).count).to eq(essential_card_numbers.size), "User #{user.username} should have cards with numbers #{essential_card_numbers.join(', ')}"
+    end
 
     Deck.populate_decks_for_user(user)
     expect(Deck.where(user_id: user.id).count).to eq Deck::MAX_DECKS_PER_USER

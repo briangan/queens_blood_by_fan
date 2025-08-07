@@ -36,6 +36,16 @@ class Game < ActiveRecord::Base
     end
   end
 
+  def current_turn_player_number
+    return 1 if current_turn_user_id == player_1&.id
+    return 2 if current_turn_user_id == player_2&.id
+    nil
+  end
+
+  def the_other_player_user_id(user_id)
+    game_users.find{|gu| gu.user_id != user_id }&.user_id
+  end
+
   def create_game_board_tiles!
     tiles = []
     1.upto(columns) do |x|
@@ -215,11 +225,13 @@ class Game < ActiveRecord::Base
     players.first
   end
   alias_method :user_1, :player_1
+  alias_method :first_player, :player_1
 
   def player_2
     players[1]
   end
   alias_method :user_2, :player_2
+  alias_method :second_player, :player_2
 
 
   private

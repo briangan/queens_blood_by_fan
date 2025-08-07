@@ -11,7 +11,7 @@ class Board < ApplicationRecord
 
   def self.create_board(cols = DEFAULT_BOARD_COLUMNS, rows = DEFAULT_BOARD_ROWS)
     board = Board.where(columns: cols, rows: rows).last || Board.create(columns: cols, rows: rows)
-
+    board.assign_claims_of_default_left_and_right_tiles!
     board
   end
 

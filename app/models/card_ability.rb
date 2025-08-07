@@ -54,6 +54,39 @@ class CardAbility < ApplicationRecord
     []
   end
 
+  # Check if this ability is applicable to the target_tile based on @source_tile and @which.
+  def is_applicable_to_tile_by_which?(source_tile, target_tile)
+    return false if source_tile.nil? || target_tile.nil? || source_tile.game_id != target_tile.game_id
+    case which
+    when 'self'
+      source_tile.id == target_tile.id
+    when 'allies_on_affected_tiles'
+      source_tile.claiming_user_id == target_tile.claiming_user_id && source_tile.id != target_tile.id
+    when 'enemies_on_affected_tiles'
+      target_tile.claiming_user_id && source_tile.claiming_user_id != target_tile.claiming_user_id && source_tile.id != target_tile.id
+    when 'allies_and_enemies_on_affected_tiles'
+      target_tile.claiming_user_id && source_tile.id != target_tile.id
+    when 'enhanced_allies'
+      source_tile.claiming_user_id == target_tile.claiming_user_id && source_tile.id != target_tile.id && target_tile.enhanced?
+    when 'enhanced_enemies'
+      target_tile.claiminer_user_id && source_tile.claiming_user_id != target_tile.claiming_user_id && source_tile.id != target_tile.id && target_tile.enhanced?
+    when 'enfeebled_allies'
+      source_tile.claiming_user_id == target_tile.claiming_user_id && source_tile.id != target_tile.id && target_tile.enfeebled?
+    when 'enfeebled_enemies'
+      target_tile.claiming_user_id && source_tile.claiming_user_id != target_tile.claiming_user_id && source_tile.id != target_tile.id && target_tile.enfeebled?
+    when 'enhanced_allies_and_enemies'
+      target_tile.claiming_user_id && source_tile.id != target_tile.id && target_tile.enhanced?
+    when 'enfeebled_allies_and_enemies'
+      target_tile.claiming_user_id && source_tile.id != target_tile.id && target_tile.enfeebled?
+    when 'positions'
+      true
+    when 'empty_positions'
+      target_tile.claiming_user_id.nil?
+    else
+      false
+    end
+  end
+
   # @return <nil, Integer, ActiveRecord::Base or Array of ActiveRecord> the evaluated action_value.
   def action_value_evaluated(target_tile)
     return nil if action_value.blank?
@@ -66,7 +99,7 @@ class CardAbility < ApplicationRecord
     end
   end
 
-  # TODO: Remove this method when ensure migration from action to action_type and action_value is complete.
+  # Used to have action before being broken to action_type and action_value is complete.
   def parsed_action_type
     return nil if !self.respond_to?(:action) || action.blank?
     m = action.match(ACTION_REGEXP)
@@ -79,7 +112,7 @@ class CardAbility < ApplicationRecord
     end
   end
 
-  # TODO: Remove this method when ensure migration from action to action_type and action_value is complete.
+  # Used to have action before being broken to action_type and action_value is complete.
   def parsed_action_value
     return nil if !self.respond_to?(:action) || action.blank?
     m = action.match(ACTION_REGEXP)
