@@ -49,6 +49,8 @@ $user-2-bg-color: rgb(196, 81, 81);
   --tile-small-card-image-width: 100px;
   --tile-small-card-image-left: 0;
   --tile-small-card-image-top: 0;
+
+  --active-border-color: #24a4ff;
 }
 
 .blood-bg-color {
@@ -164,6 +166,15 @@ $user-2-bg-color: rgb(196, 81, 81);
 }
 .bg-subtle-gray {
   background-color: #f0f0f0;
+}
+
+.active-borders {
+  border-style: solid;
+  border-color: var(--active-border-color, turquoise);
+  border-width: 0 5px 2px 5px;
+}
+.active-color {
+  color: var(--active-border-color, turquoise);
 }
 
 // Vertically center text using margins

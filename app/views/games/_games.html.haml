@@ -11,11 +11,19 @@
       %th Status
   %tbody
     - games.each do |game|
-      %tr
+      %tr(class="#{'active-borders' if game.game_users.all.collect(&:user_id).include?(current_user&.id)}")
         %td
           = link_to "#{game.columns} x #{game.rows}", game_path(game)
-        %td= game.player_1&.username
-        %td= game.player_2&.username
+        %td
+          - if game.player_1&.id == current_user&.id
+            %strong.active-color * You *
+          - else
+            = game.player_1&.username
+        %td
+          - if game.player_2&.id == current_user&.id
+            %strong.active-color * You *
+          - else
+            = game.player_2&.username
         %td
           %span(title="#{game.created_at.strftime('%Y-%m-%d %H:%M')}")= game.created_at.strftime('%Y-%m-%d')
         %td

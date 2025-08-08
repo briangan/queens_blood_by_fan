@@ -1,5 +1,8 @@
-%h3 Games
 .container
+  %h2.mb-3
+    %span.bi.bi-1-square
+    %span.bi.bi-2-square-fill
+    Games
   %p 
     = link_to 'New Game', new_game_path, class: 'btn btn-success'
   = render partial: 'games', locals: { games: @games }

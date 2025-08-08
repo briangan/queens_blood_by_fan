@@ -1,12 +1,11 @@
 - content_for :more_head do
+  = javascript_pack_tag 'cards', 'data-turbolinks-track': 'reload'
   = render partial:'form_assets'
 
 %div(class="accordion container" id="cards_accordion")
   = turbo_frame_tag 'cards_filter_frame' do
     = form_with url: cards_path, method: :get, data: { turbo_frame: 'cards_frame' } do
       .row
-        .col-md-2
-          = button_tag(' Expand All Cards', type:'button', class:'btn text-primary-emphasis align-top bi bi-arrow-bar-right', data:{'expand-all-cards'=>true})
         .col-md-6
           .text-start.input-group
             %span(class="input-group-text fw-bold") Keyword 
@@ -19,9 +18,13 @@
           &nbsp;&nbsp;
         
   %br/
-  %h2.text-center.mb-3 Cards
+  %h2.mb-3 
+    %span.bi.bi-card-list
+    Cards
   = turbo_frame_tag 'cards_frame' do
     = render partial:'cards/form', collection: @cards, as: :card
     .container
       .align-center.mt-3
         = paginate @cards
+
+= render 'shared/bs/offcanvas'

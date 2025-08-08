@@ -2,11 +2,11 @@
   = hidden_field_tag :format, :js
   %div.accordion-item.d-flex.flow-row(id="card_form_#{card.id}")
     .align-self-center
-      .card(id="card_cropped_#{card.card_number}" data-card-number="#{card.card_number}")
+      .card(id="card_cropped_#{card.card_number}" data-card-id="#{card.id}" data-card-number="#{card.card_number}")
         .card-extra-image
           %img(src="#{ asset_path("cards/#{card.card_number}.png") }" title="Card ##{card.card_number}")
-      .text-start.d-none(id="card_full_#{card.card_number}" data-card-number="#{card.card_number}")
-        %img(src="#{ asset_path("detailed_cards/#{card.card_number}.png") }" title="Card ##{card.card_number}")
+        .card-detail-image.d-none
+          %button(class="btn p-0 align-top bi bi-zoom-in card-detail-link" type="button" data-bs-toggle="offcanvas" data-bs-target="#detail_offcanvas" aria-controls="offcanvasRight" data-image-url="#{asset_path("detailed_cards/#{card.card_number}.png")}" data-card-id="#{card.id}") &nbsp;
     .align-self-center.text-start
       %button(type="button" class="btn p-0 align-top bi bi-arrow-bar-right" data-collapse-card="#{card.card_number}" title="Show detailed image" data-bs-toggle="tooltip") &nbsp;
     .align-self-center.p-3
