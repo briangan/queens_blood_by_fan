@@ -1,7 +1,9 @@
 require 'rails_helper'
 require 'helpers/cards_spec_helper'
+require 'helpers/card_abilities_spec_helper'
 
 include CardsSpecHelper
+include CardAbilitiessSpecHelper
 
 describe Game, type: :feature do
 
@@ -151,6 +153,7 @@ describe Game, type: :feature do
       
       first_tile.reload
       expect(first_tile.game_board_tiles_abilities.collect(&:card_ability_id).sort).to eq(enhance_card.card_abilities.collect(&:id).sort)
+      expect_correct_card_ability_effects_on_tile(enhance_card, first_tile)
       puts "| 4.9 | First player enhancement move applied"
 
       enfeeble_card = Card.where(card_number: '26').first
@@ -165,10 +168,12 @@ describe Game, type: :feature do
       second_tile_below.reload
       expect(second_tile_below.current_card_id).to eq(enfeeble_card.id)
       expect(second_tile_below.claiming_user_id).to eq(game.player_2.id)
+      puts "| 4.11 | Second player enfeeble claimed the tile"
 
       second_player_tile.reload
       expect(second_player_tile.game_board_tiles_abilities.collect(&:card_ability_id).sort).to eq(enfeeble_card.card_abilities.collect(&:id).sort)
-      puts "| 4.11 | Second player enfeeble move applied"
+      expect_correct_card_ability_effects_on_tile(enfeeble_card, second_player_tile)
+      puts "| 4.12 | Second player enfeeble move applied"
     end
   end
 
