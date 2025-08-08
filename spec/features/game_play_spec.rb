@@ -79,12 +79,12 @@ describe Game, type: :feature do
       game.go_to_next_turn! 
       game.reload
       expect(game.game_moves.count).to eq 0
-      prepare_cards_and_decks_for_user(game.player_1, %w(1 13 26))
-      prepare_cards_and_decks_for_user(game.player_2, %w(1 13 26))
+      prepare_cards_and_decks_for_user(game.player_1, %w(1 8 13 26))
+      prepare_cards_and_decks_for_user(game.player_2, %w(1 8 13 26))
 
-      first_tile = game.find_tile(1, 2)
-      expect(first_tile).not_to eq(nil), "Tile (1, 2) should be present in the game board tiles."
-      expect(first_tile.claiming_user_id).to eq(game.player_1.id)
+      first_player_tile = game.find_tile(1, 2)
+      expect(first_player_tile).not_to eq(nil), "Tile (1, 2) should be present in the game board tiles."
+      expect(first_player_tile.claiming_user_id).to eq(game.player_1.id)
       expect(game.current_turn_player_number).to eq(1)
 
       first_trooper_card = Card.where(card_number: '1').first
@@ -95,16 +95,16 @@ describe Game, type: :feature do
       puts "| 4.1 | Player #{game.current_turn_user.username} (#{first_player_user_id}) has card #{first_player_card.id} (#{first_player_card.name})"
 
       game_move = GameMove.new(game_id: game.id, user_id: game.current_turn_user_id, 
-        game_board_tile_id: first_tile.id, card_id: first_player_card.id)
+        game_board_tile_id: first_player_tile.id, card_id: first_player_card.id)
       expect(game_move.valid?).to be(true), "Game move should be valid. Errors: #{game_move.errors.full_messages.join(', ')}"
       puts "| 4.2 | Game move"
 
       game.proceed_with_game_move(game_move, dry_run: false)
 
       # Check that the tile is claimed.
-      first_tile.reload
-      expect(first_tile.current_card_id).to eq first_player_card.id
-      expect(first_tile.claiming_user_id).to eq first_player_user_id
+      first_player_tile.reload
+      expect(first_player_tile.current_card_id).to eq first_player_card.id
+      expect(first_player_tile.claiming_user_id).to eq first_player_user_id
       puts "| 4.3 | Game move applied: #{game_move.errors.full_messages.join(', ')}"
 
       # Check card's tiles claiming other tiles.
@@ -115,7 +115,8 @@ describe Game, type: :feature do
         expect(specific_t.current_card_id).to be_nil, "Tile (#{position}) should not have card yet."
       end
 
-      second_player_card = game.player_2.cards.where(card_number: '1').first
+      # Second player
+      second_player_card = game.player_2.cards.where(card_number: '8').first
       second_player_tile = game.find_tile(3, 2)
       second_player_move = GameMove.new(game_id: game.id, user_id: game.player_2.id, 
         game_board_tile_id: second_player_tile.id, card_id: second_player_card.id)
@@ -128,7 +129,7 @@ describe Game, type: :feature do
       expect(second_player_tile.claiming_user_id).to eq game.player_2.id
       puts "| 4.5 | Second player move applied"
 
-      [[3,1], [3,3], [2,2]].each do |position|
+      [[3,1], [2,2]].each do |position|
         specific_t = game.find_tile(position[0], position[1])
         expect(specific_t.claiming_user_id).to eq(game.player_2.id), "Tile (#{position}) should be claimed by player 2."
         expect(specific_t.current_card_id).to be_nil, "Tile (#{position}) should not have card yet."
@@ -151,9 +152,9 @@ describe Game, type: :feature do
       first_player_below_tile.reload
       expect(first_player_below_tile.current_card_id).to eq enhance_card.id
       
-      first_tile.reload
-      expect(first_tile.game_board_tiles_abilities.collect(&:card_ability_id).sort).to eq(enhance_card.card_abilities.collect(&:id).sort)
-      expect_correct_card_ability_effects_on_tile(enhance_card, first_tile)
+      first_player_tile.reload
+      expect(first_player_tile.game_board_tiles_abilities.collect(&:card_ability_id).sort).to eq(enhance_card.card_abilities.collect(&:id).sort)
+      expect_correct_card_ability_effects_on_tile(enhance_card, first_player_tile)
       puts "| 4.9 | First player enhancement move applied"
 
       enfeeble_card = Card.where(card_number: '26').first
@@ -174,6 +175,33 @@ describe Game, type: :feature do
       expect(second_player_tile.game_board_tiles_abilities.collect(&:card_ability_id).sort).to eq(enfeeble_card.card_abilities.collect(&:id).sort)
       expect_correct_card_ability_effects_on_tile(enfeeble_card, second_player_tile)
       puts "| 4.12 | Second player enfeeble move applied"
+      puts game.board_ascii_s
+
+      # First player enfeeble move
+      first_corner_tile = game.find_tile(1, 1)
+      first_player_enfeeble_move = GameMove.new(game_id: game.id, user_id: game.player_1.id, 
+        game_board_tile_id: first_corner_tile.id, card_id: enfeeble_card.id)
+      expect(first_player_enfeeble_move.valid?).to be(true), "First player enfeeble move should be valid. Errors: #{first_player_enfeeble_move.errors.full_messages.join(', ')}"
+      puts "| 4.13 | First player enfeeble move valid"
+
+      game.proceed_with_game_move(first_player_enfeeble_move, dry_run: false)
+      first_player_tile.reload
+      expect_correct_card_ability_effects_on_tile(enfeeble_card, first_player_tile)
+      puts "| 4.14 | First player enfeeble move applied"
+
+      second_corner_tile = game.find_tile(3, 1)
+      second_player_enfeeble_move = GameMove.new(game_id: game.id, user_id: game.player_2.id, 
+        game_board_tile_id: second_corner_tile.id, card_id: enfeeble_card.id)
+      expect(second_player_enfeeble_move.valid?).to be(true), "Second player enfeeble move should be valid. Errors: #{second_player_enfeeble_move.errors.full_messages.join(', ')}"
+      puts "| 4.15 | Second player enfeeble move valid"
+
+      changed_tiles = game.proceed_with_game_move(second_player_enfeeble_move, dry_run: false)
+      second_player_tile.reload
+      puts game.board_ascii_s
+      binding.irb # TODO: REMOVE
+
+      expect_correct_card_ability_effects_on_tile(enfeeble_card, second_player_tile)
+      puts "| 4.16 | Second player enfeeble move applied"
     end
   end
 

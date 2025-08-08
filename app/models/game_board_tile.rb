@@ -39,11 +39,15 @@ class GameBoardTile < ApplicationRecord
   end
 
   def enhanced?
-    power_value_total_change > 0
+    game_board_tiles_abilities.find{|ca| ca.power_value_change > 0 } != nil
   end
 
   def enfeebled?
-    power_value_total_change < 0
+    game_board_tiles_abilities.find{|ca| ca.power_value_change < 0 } != nil
+  end
+
+  def claiming_player_number
+    game.which_player_number(claiming_user_id)
   end
 
   # Current card + all card abilities affecting this tile.

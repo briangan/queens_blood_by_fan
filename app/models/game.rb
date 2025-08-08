@@ -123,7 +123,10 @@ class Game < ActiveRecord::Base
       
       # Immediately update the game_board_tiles_map to include the new tile.  Mainly for debugging.
       self.game_board_tiles_map[game_move.game_board_tile.row] ||= []
-      self.game_board_tiles_map[game_move.game_board_tile.row] << game_move.game_board_tile
+      if (existing_same_tile = find_tile(game_move.game_board_tile.column, game_move.game_board_tile.row) ).nil?
+        self.game_board_tiles_map[game_move.game_board_tile.row] << game_move.game_board_tile
+        self.game_board_tiles_map[game_move.game_board_tile.row].sort!(&:column)
+      end
 
       game_move.move_order = self.game_moves.where("id != ?", game_move.id).order(:move_order).last&.move_order.to_i + 1
       game_move.save unless dry_run
@@ -197,7 +200,7 @@ class Game < ActiveRecord::Base
       row_score = all_row_scores[row] || row_scores_sample.dup
       tiles.each do |t|
         next if t.current_card.nil? || t.claiming_user_id.nil?
-        logger.info " \\_ tile (#{t.id}) at [#{t.column},#{t.row}] #{t.pawn_value} pawns, #{t.power_value} power: #{t.game_board_tiles_abilities.includes(:card_ability).collect{|ga| "#{ga.card_ability.type} #{ga.power_value_change}" }.as_json }"
+        logger.info " \\_ tile (#{t.id}) at [#{t.column},#{t.row}] card #{t.current_card&.card_number}, #{t.pawn_value} pawns, #{t.power_value} power: #{t.game_board_tiles_abilities.includes(:card_ability).collect{|ga| "#{ga.card_ability.type} #{ga.power_value_change}" }.as_json }"
         
         p = t.power_value.to_i
         # player-specific scores
@@ -233,6 +236,34 @@ class Game < ActiveRecord::Base
   alias_method :user_2, :player_2
   alias_method :second_player, :player_2
 
+  def which_player_number(user_id)
+    return 1 if player_1 && user_id == player_1&.id
+    return 2 if player_2 && user_id == player_2&.id
+    nil
+  end
+
+  # ASCII representation of the game board.  For console debugging.
+  # Each file has 2 rows of text:
+  #   " iii (30) " - pawn value and power value of the tile
+  #   " [123] p1 " - card number and claiming user number (not user.id)
+  def board_ascii_s(spaces_per_tile = 10)
+    hborder = ('+' + '-' * spaces_per_tile ) * columns + '+'
+    all_rows = [hborder] # the text of each row w/o endline
+    board_map = game_board_tiles_map
+    (1..rows).each do |row|
+      row_s = ['', ''] # 2 rows for each game board row: 
+      row_tiles = board_map[row] || []
+      row_tiles.each do |tile|
+        row_s[0] << '| ' + ('%3s (%2s) ' % ['i' * tile.pawn_value.to_i, tile.power_value.to_i] )
+        row_s[1] << '| ' + ('[%3s] %2s ' % [tile.current_card&.card_number.to_s, 
+          tile.claiming_player_number ? 'p' + tile.claiming_player_number.to_s : ''] )
+      end
+      all_rows << row_s[0] + '|'
+      all_rows << row_s[1] + '|'
+      all_rows << hborder
+    end # each row
+    all_rows.join("\n")
+  end
 
   private
 
