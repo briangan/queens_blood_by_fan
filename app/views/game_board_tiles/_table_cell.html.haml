@@ -15,9 +15,11 @@
         %span.custom-power-icon= game_board_tile.power_value
       - if (power_total_change = game_board_tile.power_value_total_change.to_i) != 0
         = raw preview_effect_label(game_board_tile)
+      .disabled-overlay.d-none
+        %i.bi.bi-slash-circle.disabled-icon
     - else 
       .pawn-icon-wrapper(title="For cards w/ up to #{game_board_tile.pawn_value} pawn rank")
         - if game_board_tile.claiming_user_id && game_board_tile.pawn_value.to_i > 0
           - game_board_tile.pawn_value.to_i.times do
             %i(class="bi bi-cone pawn-icon user-#{player_number}-color")
-        %i.bi.bi-slash-circle.disabled-icon.d-none
+        %i.bi.bi-slash-circle.disabled-icon.text-warning.d-none

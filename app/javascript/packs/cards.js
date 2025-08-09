@@ -8,8 +8,12 @@ function showBoardNotice(message, type = 'info') {
   $("#board_notice").removeClass(bgClass).addClass(bgClass).text(message).css('opacity', 1);
   window.setTimeout(function(){ $("#board_notice").css('opacity', 0); }, 2000);
 }
+function getSelectedCard() {
+  return $("#user_cards_wrapper .card-selected")[0];
+}
 window.getMainBoard = getMainBoard;
 window.showBoardNotice = showBoardNotice;
+window.droppableOptions = droppableOptions;
 let MAX_CARDS_PER_DECK = 15; // Best to refer this to backend constant
 window.MAX_CARDS_PER_DECK = MAX_CARDS_PER_DECK;
 
@@ -36,33 +40,43 @@ function shouldDragRevertDragToTile() {
 
 /* Action Handlers *************************************/
 function dropCardHandler(event, ui) {
-  var [shouldAccept, msg] = isCardAcceptableToTile( ui.draggable, $(this));
-  //console.log("Card dropped " + ui.draggable.attr('id') + " on " + $(this).attr('id') + " => "+ shouldAccept );
+  placedCardOntoTile(ui.draggable, $(this));
+}
+
+function placedCardOntoTile(card, tile) {
+  var [shouldAccept, msg] = isCardAcceptableToTile( card, tile);
+  //console.log("Card dropped " + card.attr('id') + " on " + tile.attr('id') + " => "+ shouldAccept );
 
   if (shouldAccept) {
-    ui.draggable.data('board-tile-id', $(this).attr('id') );
-    ui.draggable.draggable( 'disable' );
-    //$(this).droppable( 'disable' );
-    //ui.draggable.position( { of: $(this), my: 'left top', at: 'left top' } );
-    var whichPlayer = ui.draggable.data('player');
-    $(this).html('');
-    $(ui.draggable).detach().appendTo( $(this) );
-    ui.draggable.addClass('card-dropped');
-    ui.draggable.removeClass('small-card');
+    card.data('board-tile-id', tile.attr('id') );
+    if (card.hasClass('draggable')) {
+      card.draggable( 'disable' );
+      //tile.droppable( 'disable' );
+      //ui.draggable.position( { of: tile, my: 'left top', at: 'left top' } );
+    }
+    var whichPlayer = card.data('player');
+    tile.html('');
+    card.detach().appendTo( tile );
+    card.addClass('card-dropped');
+    card.removeClass('small-card');
 
-    ui.draggable.draggable( 'option', 'revert', false );
-
-    $("#game_move_card_id").val( ui.draggable.attr('data-card-id') );
-    $("#game_move_game_board_tile_id").val( $(this).attr('data-game-board-tile-id') );
+    if (card.hasClass('draggable')) {
+      card.draggable( 'option', 'revert', false );
+    }
+    $(".floating-card").remove();
+    
+    $("#game_move_card_id").val( card.attr('data-card-id') );
+    $("#game_move_game_board_tile_id").val( tile.attr('data-game-board-tile-id') );
     $("#game_move_submit_button").trigger('click'); // $("#game_move_form").trigger('submit');
 
-    $(this).attr('data-claiming-player', whichPlayer ); // If drop onto pawn, would be unnecessary
+    tile.attr('data-claiming-player', whichPlayer ); // If drop onto pawn, would be unnecessary
   } else {
     // console.log("> Cannot drop this card here!");
     showBoardNotice( (msg == '') ? "Cannot drop this card here!" : msg, 'warning');
   }
   resetHLTiles();
 }
+
 /* Dry run that only renders the effects of the card placement.
 * Iterates over the pawn-tiles and affected-tiles of the card to highlight the tiles that would be affected.
 */
@@ -70,7 +84,7 @@ function previewCardPlacementEffect(board, tile, card) {
   var shouldAccept = isCardAcceptableToTile( card, tile );
   //////////// console.log("Card hover - preview " + card.attr('data-player') + " on " + tile.attr('data-player') + " => "+ shouldAccept );
   if (!shouldAccept) {
-    tile.find(".disabled-icon").removeClass('d-none');
+    tile.find(".disabled-overlay").removeClass('d-none');
     return; 
   }
 
@@ -112,9 +126,10 @@ function previewCardPlacementEffect(board, tile, card) {
 function resetHLTiles() {
   let board = getMainBoard();
   board.find('.highlight-tile').removeClass('highlight-tile');
-  board.find('.center-tile').find(".disabled-icon").addClass('d-none');
+  board.find('.center-tile').find(".disabled-overlay").addClass('d-none');
   board.find('.center-tile').removeClass('center-tile');
   board.find('.preview-effect-label').each(function(n){ $(this).remove() });
+  board.find(".disabled-overlay").addClass('d-none');
 }
 /* 
 * Renders the visual effect of the card placement on the target tile based on ability.
@@ -154,6 +169,55 @@ function hideDetailLinkOfCard() {
   }, 3000);
 }
 
+function clickToUserCardHandler(event) 
+{
+  if ($(this).hasClass('card-selected') ) // deselect current card
+  {
+    $(this).removeClass('card-selected');
+    $(this).addClass('small-card');
+    $(".floating-card").remove();
+  } 
+  else {
+    // Unselect all other cards
+    $("#user_cards_wrapper .card-selected").removeClass('card-selected');
+    $("#user_cards_wrapper .card-selectable").addClass('small-card');
+    $(".floating-card").remove();
+    // select this card
+    $(this).addClass('card-selected');
+    $(this).removeClass('small-card');
+
+    // Need selected card to jump over to board and float this card at top of window's scroll position
+    var boardOffset = $("#board_table").offset();
+    var floatCard = $(this).clone().addClass('floating-card').css({
+      position: 'absolute',
+      top: boardOffset.top - 20,
+      left: boardOffset.left - 20,
+      zIndex: 1000
+    }).appendTo("body");
+    // scroll to floating card
+    $('html, body').animate({
+      scrollTop: floatCard.offset().top - 20
+    }, 300);
+
+    var tileSelector = ".board-tile[data-player='" + $(this).data('player') +"']";
+    $(tileSelector).on('mouseover', function(event) {
+        var cardDropped = $(this).find(" .card[data-card-id]");
+        if (cardDropped.length == 0) // no-card placed
+        {
+          $(this).addClass('center-tile');
+          previewCardPlacementEffect( getMainBoard(), $(this), $(".card-selected") );
+        } else {
+          $(this).find(".disabled-overlay").removeClass('d-none');
+        }
+      });
+    $(tileSelector).on('mouseout', function(event) {
+      $(this).removeClass('center-tile');
+      resetHLTiles();
+    });
+  }
+}
+
+/* User deck cards handlers ***********************************/
 function addCardToSelection(event) {
   const userCardId = $(this).data('user-card-id');
   const cardId = $(this).data('card-id');
@@ -213,11 +277,12 @@ function setupCardInteractions() {
     stack: ".card-wrapper div",
     revert: shouldDragRevertDragToTile
   });
+
+  $(".card-selectable").on('click', clickToUserCardHandler);
 }
 
-function setupBoardInteractions() {
-  
-  $(".droppable").droppable({
+function droppableOptions() {
+  return {
     hoverClass: "card-drop-hover",
     accept: '.card',
     drop: dropCardHandler, 
@@ -232,7 +297,12 @@ function setupBoardInteractions() {
       //$(ui.draggable).children(".bi").addClass('d-none');
       resetHLTiles();
     }
-  });
+  }
+}
+
+function setupBoardInteractions() {
+  
+  $(".droppable").droppable(droppableOptions());
 
   /* $(document).on("dragstart", "card", function (event) {
     console.log("Card dragging " + $(this).attr('id') );
@@ -242,11 +312,17 @@ function setupBoardInteractions() {
     $(this).children(".bi").addClass('d-none');
   });
 
-  $('.user-card-add-button').click( addCardToSelection );
-  $('.user-card-remove-button').click( removeCardFromSelection );
-  $(".card-detail-link[data-image-url]").click(showDetailOfCardInCanvas );
+  $('.user-card-add-button').on('click', addCardToSelection );
+  $('.user-card-remove-button').on('click', removeCardFromSelection );
+  $(".card-detail-link[data-image-url]").on('click', showDetailOfCardInCanvas );
   $(".card[data-card-id]").on('mouseover', showDetailLinkOfCard );
   $(".card[data-card-id]").on('mouseout', hideDetailLinkOfCard );
+  $("#board_table .board-tile[data-player]").on('click', function() {
+    var selectedCard = getSelectedCard();
+    if (selectedCard) {
+      placedCardOntoTile( $(selectedCard), $(this));
+    }
+  });
 
   window.showDetailOfCardInCanvas = showDetailOfCardInCanvas;
   window.showDetailLinkOfCard = showDetailLinkOfCard;

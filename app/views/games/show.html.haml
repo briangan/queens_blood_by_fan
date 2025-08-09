@@ -1,4 +1,6 @@
 :ruby
+  # TODOs:
+  # [ ] Add replacement card attribute to .card as exclusion to disabled droppable when already has card
   cards_per_player_count = 4 ######### 15
   player_number = which_player_number_for_current_user(@game)
   
@@ -39,7 +41,8 @@
     .row(id="user_cards_wrapper")
       .col
         %div(class="card-wrapper user-#{player_number}-border p-2")
-          - player_1_locals = { which_player: player_number, card_css_class: "card small-card draggable" }
+          %p.text-center= t('game.cards.pick_and_place')
+          - player_1_locals = { which_player: player_number, card_css_class: "card small-card card-selectable" }
           = render partial:'cards/card', collection: best_set_of_cards_for_player(current_user), as: :card, locals: player_1_locals
           .clearfix
 - if @game.players.count >= 2
