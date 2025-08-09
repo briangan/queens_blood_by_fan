@@ -65,8 +65,8 @@ class GamesController < ::InheritedResources::Base
       end
     else
       @game_board_tile.current_card_id = nil if @game_board_tile
-      @changed_tiles = [@game_board_tile].compact
-      logger.info "| changd_tiles: #{@changed_tiles.collect(&:attributes).to_yaml }"
+      @changed_tiles = [] # [@game_board_tile].compact
+      # logger.info "| changd_tiles: #{@changed_tiles.collect(&:attributes).to_yaml }"
       flash[:warning] = @game_move.errors.full_messages.join(', ')
       flash[:warning] << "  It's not your turn to make this move." if @game.current_turn_user_id != current_user.id
       logger.warn "| create_game_move failed: #{flash[:warning]}"
