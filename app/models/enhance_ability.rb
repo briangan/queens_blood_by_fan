@@ -13,7 +13,7 @@ class EnhanceAbility < CardAbility
               card_ability_id: self.id, power_value_change: power_value_change, pawn_value_change: 0)
         a.save unless options[:dry_run]
 
-        target_tile.apply_after_card_event(source_tile.game, target_tile.current_card, 'enfeebled', options)
+        target_tile.apply_after_card_event(CardEvent.new(target_tile.game, target_tile.current_card, 'enfeebled', options))
         list << a
       end
     end

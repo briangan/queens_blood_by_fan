@@ -99,7 +99,7 @@ class Game < ActiveRecord::Base
       changed_tiles << game_move.game_board_tile
       self.class.logger.info "| game_board_tile: #{game_move.game_board_tile.attributes.as_json}"
 
-      game_move.game_board_tile.apply_after_card_event(self, game_move.card, 'played', dry_run: dry_run) do |card_tile, other_t|
+      game_move.game_board_tile.apply_after_card_event(CardEvent.new(self, game_move.card, 'played', dry_run: dry_run)) do |card_tile, other_t|
         changed_tiles << other_t
       end
     

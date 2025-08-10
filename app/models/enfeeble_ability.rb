@@ -17,9 +17,9 @@ class EnfeebleAbility < CardAbility
         a.save unless options[:dry_run]
 
         if target_tile.power_value <= 0
-          target_tile.apply_after_card_event(target_tile.game, nil, 'destroyed', options)
+          target_tile.apply_after_card_event(CardEvent.new(target_tile.game, target_tile.current_card, 'destroyed', options))
         else
-          target_tile.apply_after_card_event(target_tile.game, nil, 'enfeebled', options)
+          target_tile.apply_after_card_event(CardEvent.new(target_tile.game, target_tile.current_card, 'enfeebled', options))
         end
         list << a
       end

@@ -56,11 +56,18 @@ class GameBoardTile < ApplicationRecord
     self.power_value = current_card&.power&.to_i + power_value_total_change
   end
 
-  def find_affected_tiles(card)
+  ##
+  # A CardAbility has attributes when, which, action_type, action_value.
+  # This method finds all tiles affected by a specific card event.
+  # If CardAbility 'played', it affects all tiles w/ when 'played' or 'in_play'.
+  def find_affected_tiles(card_event)
     affected_tiles = []
-    card.card_tiles.each do |card_tile|
-      other_t = game.find_tile(column + card_tile.x, row + card_tile.y)
-      affected_tiles << other_t if other_t
+    card_tile_conds = nil
+    if card_event == 'played'
+      card_tile_conds = "card_abilities.when IN ('played', 'in_play')"
+    end
+    card_event.card.card_abilities.where(card_tile_conds).each do |ca|
+      affected_tiles.concat(ca.find_affected_tiles(card_event))
     end
     affected_tiles
   end
@@ -68,20 +75,17 @@ class GameBoardTile < ApplicationRecord
   # According to certain change to a card on this tile, processes the associated CardAbility inside game_board_tiles_abilities.
   # Please set claiming_user_id to provide context of which is current player
   # To skip saving the record changes, provide @options[:dry_run] = true.
-  # @card <Card> the card being played; if nil, would use current_card
-  # @card_event <String> 1 of these card in a tile event: 'played', 'destroyed', 'enhanced', 'enfeebled'
-  # @options <Hash> additional options for the event
+  # @card_event <CardEvent>
   #   :dry_run <Boolean> if true, do not persist changes
   # @yield <CardTile>, <GameBoardTile> the other affected tiles
-  def apply_after_card_event(game, card, card_event, options = {}, &block)
-    card ||= current_card
-    case card_event
+  def apply_after_card_event(card_event, &block)
+    case card_event.card_event
       when 'played'
-        apply_played_card_event(game, card, options, &block)
+        apply_played_card_event(card_event, &block)
 
       when 'destroyed'
 
-        apply_destroyed_card_event(game, card, options, &block)
+        apply_destroyed_card_event(card_event, &block)
 
       when 'enhanced'
 
@@ -90,17 +94,17 @@ class GameBoardTile < ApplicationRecord
     end
   end
 
-  def apply_played_card_event(game, card, options = {})
-    x_sign = (game.which_player_number(claiming_user_id) == 2) ? -1 : 1
-    dry_run = options[:dry_run]
-    card.card_tiles.each do |card_tile|
+  def apply_played_card_event(card_event, &block)
+    x_sign = (card_event.game.which_player_number(claiming_user_id) == 2) ? -1 : 1
+    dry_run = card_event.dry_run?
+    card_event.card.card_tiles.each do |card_tile|
       # next if card_tile.x.to_i < 1 && card_tile.y.to_i < 1
-      other_t = game.find_tile(column + card_tile.x * x_sign, row + card_tile.y)
+      other_t = card_event.game.find_tile(column + card_tile.x * x_sign, row + card_tile.y)
       self.class.logger.info "| card_tile: #{column} + x #{card_tile.x * x_sign}, #{row} + y #{card_tile.y} => #{other_t&.as_json}"
       if other_t
         if card_tile.is_a?(Affected)
           # Pass the card ability to the tile.
-          card.card_abilities.each do |ca|
+          card_event.card.card_abilities.each do |ca|
             next unless ca.when_initially?
             ca_changes = ca.apply_effect_to_tile(self, other_t, dry_run: dry_run)
             self.class.logger.info " \\_ ca_changes for #{ca.type}: #{ca_changes.as_json }"
@@ -117,7 +121,7 @@ class GameBoardTile < ApplicationRecord
     end
   end
 
-  def apply_destroyed_card_event(game, card, options = {})
+  def apply_destroyed_card_event(card_event, &block)
     # Cancel abilities to affected tiles of current_card
     if current_card
       current_card.card_abilities.each do |a|

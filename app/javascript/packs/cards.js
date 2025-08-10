@@ -195,6 +195,7 @@ function clickToUserCardHandler(event)
       left: boardOffset.left - 20,
       zIndex: 1000
     }).appendTo("body");
+    floatCard.find(".card-detail-image").html("");
     // scroll to floating card
     $('html, body').animate({
       scrollTop: floatCard.offset().top - 20
