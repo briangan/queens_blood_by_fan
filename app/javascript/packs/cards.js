@@ -14,6 +14,7 @@ function getSelectedCard() {
 window.getMainBoard = getMainBoard;
 window.showBoardNotice = showBoardNotice;
 window.droppableOptions = droppableOptions;
+window.setupTileInteractions = setupTileInteractions;
 let MAX_CARDS_PER_DECK = 15; // Best to refer this to backend constant
 window.MAX_CARDS_PER_DECK = MAX_CARDS_PER_DECK;
 
@@ -64,7 +65,7 @@ function placedCardOntoTile(card, tile) {
       card.draggable( 'option', 'revert', false );
     }
     $(".floating-card").remove();
-    
+
     $("#game_move_card_id").val( card.attr('data-card-id') );
     $("#game_move_game_board_tile_id").val( tile.attr('data-game-board-tile-id') );
     $("#game_move_submit_button").trigger('click'); // $("#game_move_form").trigger('submit');
@@ -300,6 +301,13 @@ function droppableOptions() {
   }
 }
 
+function setupTileInteractions(){
+  var selectedCard = getSelectedCard();
+  if (selectedCard) {
+    placedCardOntoTile( $(selectedCard), $(this));
+  }
+}
+
 function setupBoardInteractions() {
   
   $(".droppable").droppable(droppableOptions());
@@ -317,12 +325,7 @@ function setupBoardInteractions() {
   $(".card-detail-link[data-image-url]").on('click', showDetailOfCardInCanvas );
   $(".card[data-card-id]").on('mouseover', showDetailLinkOfCard );
   $(".card[data-card-id]").on('mouseout', hideDetailLinkOfCard );
-  $("#board_table .board-tile[data-player]").on('click', function() {
-    var selectedCard = getSelectedCard();
-    if (selectedCard) {
-      placedCardOntoTile( $(selectedCard), $(this));
-    }
-  });
+  $("#board_table .board-tile[data-player]").on('click', setupTileInteractions);
 
   window.showDetailOfCardInCanvas = showDetailOfCardInCanvas;
   window.showDetailLinkOfCard = showDetailLinkOfCard;

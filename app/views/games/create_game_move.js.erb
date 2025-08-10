@@ -7,17 +7,19 @@
 
     @changed_tiles.each do |tile|
 -%>
+  var tileSelector = "#game_board_tile_<%= tile.id %>";
   // console.log("Updating tile at position <%= tile.column %>,<%= tile.row %> w/ card " + $("#game_board_tile_<%= tile.id %>").length );
   <% if tile.enfeebled? && tile.current_card_id.nil? %>
     $("#game_board_tile_<%= tile.id %> .card[data-card-id]").fadeOut(1000, function() {
-        $("#game_board_tile_<%= tile.id %>").replaceWith("<%= j render(partial: 'game_board_tiles/table_cell', locals: { game_board_tile: tile, game: @game }) %>");
-        $("#game_board_tile_<%= tile.id %>").droppable(droppableOptions());
+        $(tileSelector).replaceWith("<%= j render(partial: 'game_board_tiles/table_cell', locals: { game_board_tile: tile, game: @game }) %>");
+        $(tileSelector).droppable(droppableOptions());
+        $(tileSelector).on('click', setupTileInteractions);
       } );
   <% else -%>
-    $("#game_board_tile_<%= tile.id %>").replaceWith("<%= j render(partial: 'game_board_tiles/table_cell', locals: { game_board_tile: tile, game: @game }) %>");
-    $("#game_board_tile_<%= tile.id %> .card-detail-link[data-image-url]").click(showDetailOfCardInCanvas );
-    $("#game_board_tile_<%= tile.id %> .card[data-card-id]").on('mouseover', showDetailLinkOfCard );
-    $("#game_board_tile_<%= tile.id %> .card[data-card-id]").on('mouseout', hideDetailLinkOfCard );
+    $(tileSelector).replaceWith("<%= j render(partial: 'game_board_tiles/table_cell', locals: { game_board_tile: tile, game: @game }) %>");
+    $(tileSelector + " .card-detail-link[data-image-url]").click(showDetailOfCardInCanvas );
+    $(tileSelector + " .card[data-card-id]").on('mouseover', showDetailLinkOfCard );
+    $(tileSelector + " .card[data-card-id]").on('mouseout', hideDetailLinkOfCard );
   <% end # tile's update -%>
   <% end # each tile -%>
   <% 
