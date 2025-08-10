@@ -9,6 +9,9 @@ class Board < ApplicationRecord
 
   has_many :board_tiles, dependent: :destroy
 
+  validates_numericality_of :columns, only_integer: true, greater_than: 2, less_than: 8
+  validates_numericality_of :rows, only_integer: true, greater_than: 2, less_than: 6
+
   def self.create_board(cols = DEFAULT_BOARD_COLUMNS, rows = DEFAULT_BOARD_ROWS)
     board = Board.where(columns: cols, rows: rows).last || Board.create(columns: cols, rows: rows)
     board.assign_claims_of_default_left_and_right_tiles!

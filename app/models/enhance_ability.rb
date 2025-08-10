@@ -1,8 +1,9 @@
 class EnhanceAbility < CardAbility
   validate :check_action_value
 
+  # To skip saving the record changes, provide @options[:dry_run] = true.
   def apply_effect_to_tile(source_tile, target_tile, options = {})
-    list = super(source_tile, target_tile)
+    list = super(source_tile, target_tile, options)
     if action_value 
       if action_type == 'power_up'
         # where action_value=ally.power would mean double power.
@@ -11,6 +12,8 @@ class EnhanceAbility < CardAbility
         a = target_tile.game_board_tiles_abilities.new(source_game_board_tile_id: source_tile.id, 
               card_ability_id: self.id, power_value_change: power_value_change, pawn_value_change: 0)
         a.save unless options[:dry_run]
+
+        target_tile.apply_after_card_event(source_tile.game, target_tile.current_card, 'enfeebled', options)
         list << a
       end
     end

@@ -99,26 +99,10 @@ class Game < ActiveRecord::Base
       changed_tiles << game_move.game_board_tile
       self.class.logger.info "| game_board_tile: #{game_move.game_board_tile.attributes.as_json}"
 
-      game_move.card.card_tiles.each do |card_tile|
-        # next if card_tile.x.to_i < 1 && card_tile.y.to_i < 1
-        other_t = self.find_tile(game_move.game_board_tile.column + card_tile.x * x_sign, game_move.game_board_tile.row + card_tile.y)
-        self.class.logger.info "| card_tile: #{game_move.game_board_tile.column} + x #{card_tile.x * x_sign}, #{game_move.game_board_tile.row} + y #{card_tile.y} => #{other_t&.as_json}"
-        if other_t
-          if card_tile.is_a?(Affected)
-            # Pass the card ability to the tile.
-            game_move.card.card_abilities.each do |ca|
-              ca_changes = ca.apply_effect_to_tile(game_move.game_board_tile, other_t, dry_run: dry_run)
-              self.class.logger.info " \\_ ca_changes for #{ca.type}: #{ca_changes.as_json }"
-            end
-          else # Pawn
-            # Pawn tile, just set the pawn value.
-            CardAbility.apply_pawn_tile_effect(game_move.game_board_tile, other_t)
-          end
-          other_t.save unless dry_run
-          changed_tiles << other_t
-        end
+      game_move.game_board_tile.apply_after_card_event(self, game_move.card, 'played', dry_run: dry_run) do |card_tile, other_t|
+        changed_tiles << other_t
       end
-      
+    
       game_move.game_board_tile.update(claiming_user_id: current_turn_user.id, claimed_at: Time.now) unless dry_run
       
       # Immediately update the game_board_tiles_map to include the new tile.  Mainly for debugging.

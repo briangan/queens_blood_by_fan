@@ -29,7 +29,8 @@ class CardAbility < ApplicationRecord
   # Either flip the claiming_user_id or add pawn_value to the tile.
   # This assumes source_tile.claiming_user_id is already set w/ GameMove#user_id.
   # This does not save the target_tile, just sets the attributes.
-  def self.apply_pawn_tile_effect(source_tile, target_tile)
+  # To skip saving the record changes, provide @options[:dry_run] = true.
+  def self.apply_pawn_tile_effect(source_tile, target_tile, options = {})
     game_move_user_id = source_tile.claiming_user_id
     next_pawn_value = if (target_tile.claiming_user_id.nil? || target_tile.claiming_user_id == game_move_user_id) && target_tile.pawn_value < GameBoardTile::MAX_PAWN_VALUE
         target_tile.pawn_value.to_i + 1
@@ -38,6 +39,7 @@ class CardAbility < ApplicationRecord
       end
     target_tile.attributes = {
       pawn_value: next_pawn_value, claiming_user_id: game_move_user_id, claimed_at: Time.now }
+    target_tile.save unless options[:dry_run]
   end
 
   # Most basic: use self.class.apply_pawn_tile_effect
@@ -50,7 +52,7 @@ class CardAbility < ApplicationRecord
   # @options <Hash> additional options such as :dry_run [Boolean] if true, would not save records.
   # @return <Array of GameBoardTileAbility> newly passed affected abilities from @source_tile to @target_tile.
   def apply_effect_to_tile(source_tile, target_tile, options = {})
-    self.class.apply_pawn_tile_effect(source_tile, target_tile)
+    self.class.apply_pawn_tile_effect(source_tile, target_tile, options)
     []
   end
 
@@ -97,6 +99,10 @@ class CardAbility < ApplicationRecord
     elsif action_value == /Card\.\w+/ # Card.find or Card.where
       eval(action_value)
     end
+  end
+
+  def when_initially?
+    %w(played in_play).include?(self.when)
   end
 
   # Used to have action before being broken to action_type and action_value is complete.

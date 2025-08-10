@@ -224,7 +224,8 @@ describe Game, type: :feature do
     expect(first_player_tile.current_card_id).to eq first_player_card.id
     expect(first_player_tile.claiming_user_id).to eq first_player_user_id
     puts "| 4.3 | Game move applied: #{game_move.errors.full_messages.join(', ')}"
-
+    puts game.board_ascii_s
+    
     # Check card's tiles claiming other tiles.
     [[1,1], [1,3], [2,2]].each do |position|
       specific_t = game.find_tile(position[0], position[1])
