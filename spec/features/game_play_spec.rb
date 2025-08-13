@@ -74,9 +74,9 @@ describe Game, type: :feature do
       puts "| 3.7 | Game move w/ replacement card valid"
     end
 
-    it 'Should claim a tile with a card' do
+    it 'Should Have Working Enhance and Enfeeble Cards/Moves' do
       game = start_game_with_left_and_right_claims(%w(1 8 13 26))
-
+      
       first_player_tile = game.game_moves.first.game_board_tile
       second_player_tile = game.game_moves[1].game_board_tile
 
@@ -142,10 +142,44 @@ describe Game, type: :feature do
       expect_correct_card_ability_effects_on_tile(enfeeble_card, second_player_tile)
       puts "| 4.16 | Second player enfeeble move applied"
     end
+
+
+    it 'Should Have Working RaiseRank Ability in Card' do
+      game = start_game_with_left_and_right_claims(%w(1 8 71))
+      
+      first_player_tile = game.game_moves.first.game_board_tile
+      second_player_tile = game.game_moves[1].game_board_tile
+
+      raise_rank_card = Card.where(card_number: '71').first
+      expect(raise_rank_card).not_to be_nil, "RaiseRank card should be present"
+
+      first_player_above_tile = game.find_tile(first_player_tile.column, first_player_tile.row - 1)
+      original_pawn_value = first_player_above_tile.pawn_value
+      first_player_below_tile = game.find_tile(first_player_tile.column, first_player_tile.row + 1)
+      first_player_raise_rank = GameMove.new(game_id: game.id, user_id: game.player_1.id, 
+        game_board_tile_id: first_player_below_tile.id, card_id: raise_rank_card.id)
+      expect(first_player_raise_rank.valid?).to be(true), "First player raise rank move should be valid. Errors: #{first_player_raise_rank.errors.full_messages.join(', ')}"
+      puts "| 4.8 | First player raise rank move valid"
+
+      game.proceed_with_game_move(first_player_raise_rank, dry_run: false)
+      first_player_below_tile.reload
+      expect(first_player_below_tile.current_card_id).to eq raise_rank_card.id
+      
+      expect(first_player_above_tile.game_board_tiles_abilities.collect(&:card_ability_id).sort).to eq(raise_rank_card.card_abilities.collect(&:id).sort)
+      expected_pawn_value = original_pawn_value + raise_rank_card.card_abilities.collect{|ca| ca.action_value_evaluated(first_player_above_tile)}.sum
+      expected_pawn_value = [GameBoardTile::MAX_PAWN_VALUE, expected_pawn_value].min
+      expect(first_player_above_tile.pawn_value).to eq(expected_pawn_value), "Tile pawn_value should be raised to #{expected_pawn_value}"
+
+      expect_correct_card_ability_effects_on_tile(raise_rank_card, first_player_above_tile)
+      puts "| 4.9 | First player enhancement move applied"
+
+    end
   end
 
   private 
 
+  ##
+  # Create a game, check board and create players.
   def prepare_game(game_factory, cols = 5, rows = 3)
     puts "Preparing game with #{cols} columns and #{rows} rows"
     board = Board.create_board(cols, rows)
@@ -192,11 +226,17 @@ describe Game, type: :feature do
     game
   end
 
+  ##
+  # Start a game with left and right claims for both players.
+  # Initial 2 moves have their validations.
+  # Use @prepare_game within.
   def start_game_with_left_and_right_claims(essential_card_numbers = [])
     game = prepare_game(:game, 3, 3)
     game.go_to_next_turn! 
     game.reload
     expect(game.game_moves.count).to eq 0
+    essential_card_numbers += %w(1 8)
+    essential_card_numbers.uniq!
     prepare_cards_and_decks_for_user(game.player_1, essential_card_numbers)
     prepare_cards_and_decks_for_user(game.player_2, essential_card_numbers)
 

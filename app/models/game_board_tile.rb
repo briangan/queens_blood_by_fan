@@ -46,6 +46,10 @@ class GameBoardTile < ApplicationRecord
     game_board_tiles_abilities.find{|ca| ca.power_value_change < 0 } != nil
   end
 
+  def raised?
+    game_board_tiles_abilities.find{|ca| ca.pawn_value_change > 0 } != nil
+  end
+
   def claiming_player_number
     game.which_player_number(claiming_user_id)
   end
@@ -60,18 +64,87 @@ class GameBoardTile < ApplicationRecord
   # A CardAbility has attributes when, which, action_type, action_value.
   # This method finds all tiles affected by a specific card event.
   # If CardAbility 'played', it affects all tiles w/ when 'played' or 'in_play'.
-  def find_affected_tiles(card_event)
-    affected_tiles = []
+  # @yield <CardTile, GameBoardTile>
+  def for_each_related_tile_and_card_ability(card_event)
+    x_sign = (card_event.game.which_player_number(claiming_user_id) == 2) ? -1 : 1
     card_tile_conds = nil
     if card_event == 'played'
       card_tile_conds = "card_abilities.when IN ('played', 'in_play')"
     end
-    card_event.card.card_abilities.where(card_tile_conds).each do |ca|
-      affected_tiles.concat(ca.find_affected_tiles(card_event))
+
+    card_event.card.card_tiles.each do|card_tile|
+      legit_tile = nil
+      if card_tile.is_a?(Affected)
+
+        card_event.card.card_abilities.where(card_tile_conds).each do |ca|
+          if ca.which.blank? || ca.which =~ /^(\w+)_on_affected_tiles$/
+            other_t = card_event.game.find_tile(column + card_tile.x * x_sign, row + card_tile.y)
+            if ca.blank? || ca.which == 'allies_on_affected_tiles'
+              legit_tile = other_t if other_t && claiming_user_id == other_t.claiming_user_id
+            elsif $1 == 'enemies'
+              legit_tile = other_t if other_t&.claiming_user_id && claiming_user_id != other_t.claiming_user_id
+            elsif $1 == 'allies_and_enemies'
+              legit_tile = other_t if other_t&.claiming_user_id
+            end
+          end
+        end # each CardAbility
+        
+      else # Pawn tile
+
+        legit_tile = card_event.game.find_tile(column + card_tile.x * x_sign, row + card_tile.y)
+
+      end
+
+      if legit_tile
+        yield card_tile, legit_tile if block_given?
+      end
+    end # each CardTile
+
+    # Some which not based on preset tiles:
+    # enhanced_allies enhanced_enemies enfeebled_allies enfeebled_enemies enhanced_allies_and_enemies enfeebled_allies_and_enemies positions empty_positions
+    if current_card && current_card.card_tiles.size == 0
+      card_event.card.card_abilities.where(card_tile_conds).each do |ca|
+        case ca.which
+        when 'enhanced_allies'
+          card_event.game.game_board_tiles.includes(:game_board_tiles_abilities).where(claiming_user_id: claiming_user_id).each do |other_t|
+            next unless other_t.enhanced?
+            yield other_t if block_given?              
+          end
+        when 'enhanced_enemies'
+          card_event.game.game_board_tiles.includes(:game_board_tiles_abilities).where(claiming_user_id: game.the_other_player_user_id(claiming_user_id)).each do |other_t|
+            next unless other_t.enhanced?
+            yield other_t if block_given?              
+          end
+        when 'enfeebled_allies'
+          card_event.game.game_board_tiles.includes(:game_board_tiles_abilities).where(claiming_user_id: claiming_user_id).each do |other_t|
+            next unless other_t.enfeebled?
+            yield other_t if block_given?              
+          end
+        when 'enfeebled_enemies'
+          card_event.game.game_board_tiles.includes(:game_board_tiles_abilities).where(claiming_user_id: game.the_other_player_user_id(claiming_user_id)).each do |other_t|
+            next unless other_t.enfeebled?
+            yield other_t if block_given?              
+          end
+        when 'enhanced_allies_and_enemies'
+          card_event.game.game_board_tiles.includes(:game_board_tiles_abilities).where("claiming_user_id IS NOT NULL").each do |other_t|
+            next unless other_t.enhanced?
+            yield other_t if block_given?              
+          end
+        when 'enfeebled_allies_and_enemies'
+          card_event.game.game_board_tiles.includes(:game_board_tiles_abilities).where("claiming_user_id IS NOT NULL").each do |other_t|
+            next unless other_t.enfeebled?
+            yield other_t if block_given?              
+          end
+        when 'positions'
+        when 'empty_positions'
+        end
+      end
     end
-    affected_tiles
   end
 
+  ##
+  # To be called after a card event is applied to this tile, not only card being placed but also
+  # other effects like enhanced, enfeebled or destroyed, etc.
   # According to certain change to a card on this tile, processes the associated CardAbility inside game_board_tiles_abilities.
   # Please set claiming_user_id to provide context of which is current player
   # To skip saving the record changes, provide @options[:dry_run] = true.
@@ -94,30 +167,36 @@ class GameBoardTile < ApplicationRecord
     end
   end
 
+  ACCEPTABLE_ABILITY_WHICH_FOR_PAWN_TILES = ['positions', 'empty_positions']
+
   def apply_played_card_event(card_event, &block)
     x_sign = (card_event.game.which_player_number(claiming_user_id) == 2) ? -1 : 1
     dry_run = card_event.dry_run?
-    card_event.card.card_tiles.each do |card_tile|
+    for_each_related_tile_and_card_ability(card_event) do |card_tile, other_t|
       # next if card_tile.x.to_i < 1 && card_tile.y.to_i < 1
-      other_t = card_event.game.find_tile(column + card_tile.x * x_sign, row + card_tile.y)
+      
       self.class.logger.info "| card_tile: #{column} + x #{card_tile.x * x_sign}, #{row} + y #{card_tile.y} => #{other_t&.as_json}"
-      if other_t
-        if card_tile.is_a?(Affected)
-          # Pass the card ability to the tile.
-          card_event.card.card_abilities.each do |ca|
-            next unless ca.when_initially?
-            ca_changes = ca.apply_effect_to_tile(self, other_t, dry_run: dry_run)
-            self.class.logger.info " \\_ ca_changes for #{ca.type}: #{ca_changes.as_json }"
-          end
-        else # Pawn
-          # Pawn tile, just set the pawn value.
-          CardAbility.apply_pawn_tile_effect(self, other_t)
+      if card_tile.is_a?(Affected)
+        # Pass the card ability to the tile.
+        card_event.card.card_abilities.each do |ca|
+          next unless ca.when_initially?
+          ca_changes = ca.apply_effect_to_tile(self, other_t, dry_run: dry_run)
+          self.class.logger.info " \\_ ca_changes for #{ca.type}: #{ca_changes.as_json }"
         end
-        other_t.save unless dry_run
+      else # Pawn
+        # Pawn tile, just set the pawn value.
+        CardAbility.apply_pawn_tile_effect(self, other_t)
 
-        yield card_tile, other_t if block_given?
-          
+        card_event.card.card_abilities.each do |ca|
+          next unless ACCEPTABLE_ABILITY_WHICH_FOR_PAWN_TILES.include?(ca.which)
+          ca_changes = ca.apply_effect_to_tile(self, other_t, dry_run: dry_run)
+          self.class.logger.info " \\_ ca_changes for #{ca.type}: #{ca_changes.as_json }"
+        end
       end
+      other_t.save unless dry_run
+
+      yield card_tile, other_t if block_given?
+        
     end
   end
 
