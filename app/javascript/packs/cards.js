@@ -23,9 +23,9 @@ window.MAX_CARDS_PER_DECK = MAX_CARDS_PER_DECK;
 function isCardAcceptableToTile(card, tile) {
   var isAcceptable = ( card.attr('data-player') == tile.attr('data-player') );
   var msg = (isAcceptable) ? '' : "Currently this tile is not claimed by you.";
-  var currentTurnUserId = $("#game_current_turn_user_id").val();
-  if (isAcceptable && currentTurnUserId && currentTurnUserId != '') {
-    isAcceptable = (card.attr('data-player') == currentTurnUserId);
+  var currentPlayerNumber = $("#game_current_turn_player_number").val();
+  if (isAcceptable && currentPlayerNumber && currentPlayerNumber != '') {
+    isAcceptable = (card.attr('data-player') == currentPlayerNumber);
     msg = (isAcceptable) ? '' : "Currently it is not your turn to make move.";
   }
   // check card's pawn_rank vs tile's pawn_value

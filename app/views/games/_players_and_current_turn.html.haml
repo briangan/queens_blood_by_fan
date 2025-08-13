@@ -7,6 +7,7 @@
   = hidden_field_tag :game_board_tile_id, nil, id: 'game_move_game_board_tile_id'
   = hidden_field_tag :card_id, nil, id: 'game_move_card_id'
   = hidden_field_tag :current_turn_user_id, game.current_turn_user_id, id: 'game_current_turn_user_id'
+  = hidden_field_tag :current_turn_player_number, game.current_turn_player_number, id: 'game_current_turn_player_number'
   .row(id="game_user_turn_wrapper")
     .col.text-end
       - if game.player_1 && game.player_1.id == game.current_turn_user_id
