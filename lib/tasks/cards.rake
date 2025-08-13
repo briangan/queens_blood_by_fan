@@ -1,9 +1,6 @@
 namespace :cards do
-  task export_to_yaml: :environment do
-    ARGV.shift
-    file_path = ARGV.shift || File.join(Rails.root, 'data/cards.yml')
-    Card.export_to_file
-  end
+  # task export_to_yaml YAML format is very limited w/o ability to find & create associations like CardTile
+  
 
   task batch_rename: :environment do
     SOURCE_PATH = '/Users/brian/Downloads/pages/All\ Queen\'s\ Blood\ Cards\ In\ Final\ Fantasy\ 7\ Rebirth_files'
