@@ -4,3 +4,6 @@
   .container
     .align-center.mt-3
       = paginate @cards
+  :javascript
+    setupCardInteractions();
+    $('[data-bs-toggle="tooltip"]').tooltip();

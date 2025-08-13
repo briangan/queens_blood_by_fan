@@ -14,6 +14,7 @@ function getSelectedCard() {
 window.getMainBoard = getMainBoard;
 window.showBoardNotice = showBoardNotice;
 window.droppableOptions = droppableOptions;
+window.setupCardInteractions = setupCardInteractions;
 window.setupTileInteractions = setupTileInteractions;
 let MAX_CARDS_PER_DECK = 15; // Best to refer this to backend constant
 window.MAX_CARDS_PER_DECK = MAX_CARDS_PER_DECK;
@@ -281,6 +282,10 @@ function setupCardInteractions() {
   });
 
   $(".card-selectable").on('click', clickToUserCardHandler);
+
+  $(".card-detail-link[data-image-url]").on('click', showDetailOfCardInCanvas );
+  $(".card[data-card-id]").on('mouseover', showDetailLinkOfCard );
+  $(".card[data-card-id]").on('mouseout', hideDetailLinkOfCard );
 }
 
 function droppableOptions() {
@@ -323,9 +328,6 @@ function setupBoardInteractions() {
 
   $('.user-card-add-button').on('click', addCardToSelection );
   $('.user-card-remove-button').on('click', removeCardFromSelection );
-  $(".card-detail-link[data-image-url]").on('click', showDetailOfCardInCanvas );
-  $(".card[data-card-id]").on('mouseover', showDetailLinkOfCard );
-  $(".card[data-card-id]").on('mouseout', hideDetailLinkOfCard );
   $("#board_table .board-tile[data-player]").on('click', setupTileInteractions);
 
   window.showDetailOfCardInCanvas = showDetailOfCardInCanvas;

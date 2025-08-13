@@ -1,3 +1,7 @@
 - content_for :more_head do
+  = javascript_pack_tag 'cards', 'data-turbolinks-track': 'reload'
   = render partial:'form_assets'
 = render partial:'form', locals:{ card: @card }
+
+
+= render 'shared/bs/offcanvas'

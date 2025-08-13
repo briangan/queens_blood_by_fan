@@ -130,8 +130,6 @@ class CardAbility < ApplicationRecord
     end
   end
 
-  protected
-
   def normalize_data
     self.type = ACTION_TYPE_TO_CLASS_TYPE[action_type&.downcase] || 'CardAbility' if action_type.present?
     self.when = self.when&.downcase

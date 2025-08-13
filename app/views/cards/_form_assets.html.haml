@@ -67,7 +67,7 @@
   }
 
 :javascript
-  function setCardInteractions() 
+  function setupCardFormInteractions() 
   {
     $('[data-bs-toggle="tooltip"]').tooltip();
 
@@ -91,7 +91,7 @@
     
     cardInteractionsLoaded = true;
     return true;
-  } // setCardInteractions
+  } // setupCardFormInteractions
 
   function flipCardDetailedImage()
   {
@@ -121,4 +121,13 @@
     });
   } // expandAllDetailImages
 
-  $(document).on("turbolinks:load", setCardInteractions );
+  window.setupCardFormInteractions = setupCardFormInteractions;
+  $(document).on("turbolinks:load", function() {
+    setupCardInteractions();
+    setupCardFormInteractions();
+  } );
+
+  document.addEventListener("turbo:frame-load", () => {
+    console.log("Turbo frame loaded, setting up card interactions.");
+    setupCardInteractions();
+  });
