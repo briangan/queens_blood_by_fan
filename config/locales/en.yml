@@ -34,4 +34,4 @@ en:
   copyright_explanation: "This application is a similation of Queen's Blood inside Square Enix's RPG game, Final Fantasy VII Rebirth (2024).  The intention of this project is entirely for fan entertainment as we are so addicted to the card game.  We do not own any rights to the game, the characters, or the assets.  If you are part of Square Enix's copyright team that needs to discuss some things, you can contact us."
   game:
     cards:
-      pick_and_place: "When it's your turn, pick a card and place onto one of the tiles in game board."
+      pick_and_place: "When it's your turn, pick a card and place onto one of your claimed tiles in the board."

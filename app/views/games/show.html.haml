@@ -41,7 +41,9 @@
     .row(id="user_cards_wrapper")
       .col
         %div(class="card-wrapper user-#{player_number}-border p-2")
-          %p.text-center= t('game.cards.pick_and_place')
+          %p.text-center
+            = t('game.cards.pick_and_place') 
+            %i(class="bi bi-cone text-lg user-#{@game.which_player_number(current_user.id)}-color") 
           - player_1_locals = { which_player: player_number, card_css_class: "card small-card card-selectable" }
           = render partial:'cards/card', collection: best_set_of_cards_for_player(current_user), as: :card, locals: player_1_locals
           .clearfix
