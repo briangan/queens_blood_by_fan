@@ -21,6 +21,9 @@ class Card < ApplicationRecord
   has_many :card_tiles, dependent: :destroy
   has_many :pawn_tiles, -> { where(type: 'Pawn') }, class_name: 'Pawn'
   has_many :affected_tiles, -> { where(type: 'Affected') }, class_name: 'Affected'
+  has_many :children_cards, class_name: 'Card', foreign_key: 'parent_card_id'
+
+  belongs_to :parent_card, class_name: 'Card', optional: true
 
   attr_accessor :ability_effects
 
@@ -29,7 +32,7 @@ class Card < ApplicationRecord
   before_save :normalize_data
 
   TYPES = %w[Card ReplacementCard]
-  CATEGORIES = %w[Standard Legendary]
+  CATEGORIES = %w[Standard Legendary Child]
 
   # 'Ying & Yang' to 'ying-yang'
   def dash_id

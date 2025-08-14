@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_08_08_005503) do
+ActiveRecord::Schema[7.2].define(version: 2025_08_14_002942) do
   create_table "board_tiles", force: :cascade do |t|
     t.integer "board_id", null: false
     t.integer "column", null: false
@@ -65,8 +65,10 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_08_005503) do
     t.integer "pawn_rank", default: -1, null: false
     t.integer "power", default: 0
     t.integer "raise_pawn_rank", default: 1
+    t.integer "parent_card_id"
     t.index ["card_number"], name: "index_cards_on_card_number"
     t.index ["name"], name: "index_cards_on_name"
+    t.index ["parent_card_id"], name: "index_cards_on_parent_card_id"
     t.index ["pawn_rank"], name: "index_cards_on_pawn_rank"
     t.index ["power"], name: "index_cards_on_power"
   end
