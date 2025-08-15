@@ -1,3 +1,4 @@
+# Some card can add other cards to user's deck while not placed on tile.  Different from SpawnAbility.
 class AddCardAbility < CardAbility
 
   validate :check_card_to_add

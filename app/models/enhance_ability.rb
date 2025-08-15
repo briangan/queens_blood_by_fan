@@ -9,7 +9,7 @@ class EnhanceAbility < CardAbility
         # where action_value=ally.power would mean double power.
         power_value_change = action_value_evaluated(target_tile).to_i
         target_tile.power_value = target_tile.power_value.to_i + power_value_change
-        a = target_tile.game_board_tiles_abilities.new(source_game_board_tile_id: source_tile.id, 
+        a = target_tile.affected_tiles_to_abilities.new(source_game_board_tile_id: source_tile.id, 
               card_ability_id: self.id, power_value_change: power_value_change, pawn_value_change: 0)
         a.save unless options[:dry_run]
 

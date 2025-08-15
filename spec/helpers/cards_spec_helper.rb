@@ -4,6 +4,8 @@ module CardsSpecHelper
   def reload_cards
     Board.all.each(&:destroy)
     Card.all.each(&:destroy)
+    CardTile.all.each(&:destroy)
+    CardAbility.all.each(&:destroy)
     record_counts = {} # Class name => count
     File.open( Rails.root.join('db', 'seeds.rb'), 'r') do |f|
       f.each_line do |line|

@@ -6,7 +6,7 @@ module CardsHelper
   end
 
   def custom_power_icon(game_board_tile)
-    content_tag :span, class: "custom-power-icon#{' enhanced-glowing-border' if game_board_tile.enhanced?}#{' enfeebled-glowing-border' if game_board_tile.enfeebled?}" do
+    content_tag :span, class: "custom-power-icon#{' enhanced-glowing-border' if game_board_tile.power_raised?}#{' enfeebled-glowing-border' if game_board_tile.power_lowered?}" do
       game_board_tile.power_value.to_s
     end
   end

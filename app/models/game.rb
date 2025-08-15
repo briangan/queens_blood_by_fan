@@ -184,7 +184,7 @@ class Game < ActiveRecord::Base
       row_score = all_row_scores[row] || row_scores_sample.dup
       tiles.each do |t|
         next if t.current_card.nil? || t.claiming_user_id.nil?
-        # logger.info " \\_ tile (#{t.id}) at [#{t.column},#{t.row}] card #{t.current_card&.card_number}, #{t.pawn_value} pawns, #{t.power_value} power: #{t.game_board_tiles_abilities.includes(:card_ability).collect{|ga| "#{ga.card_ability.type} #{ga.power_value_change}" }.as_json }"
+        # logger.info " \\_ tile (#{t.id}) at [#{t.column},#{t.row}] card #{t.current_card&.card_number}, #{t.pawn_value} pawns, #{t.power_value} power: #{t.affected_tiles_to_abilities.includes(:card_ability).collect{|ga| "#{ga.card_ability.type} #{ga.power_value_change}" }.as_json }"
         
         p = t.power_value.to_i
         # player-specific scores

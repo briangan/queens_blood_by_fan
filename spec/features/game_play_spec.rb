@@ -93,7 +93,7 @@ describe Game, type: :feature do
       expect(first_player_below_tile.current_card_id).to eq enhance_card.id
       
       first_player_tile.reload
-      expect(first_player_tile.game_board_tiles_abilities.collect(&:card_ability_id).sort).to eq(enhance_card.card_abilities.collect(&:id).sort)
+      expect(first_player_tile.affected_tiles_to_abilities.collect(&:card_ability_id).sort).to eq(enhance_card.card_abilities.collect(&:id).sort)
       expect_correct_card_ability_effects_on_tile(enhance_card, first_player_tile)
       puts "| 4.9 | First player enhancement move applied"
 
@@ -112,7 +112,7 @@ describe Game, type: :feature do
       puts "| 4.11 | Second player enfeeble claimed the tile"
 
       second_player_tile.reload
-      expect(second_player_tile.game_board_tiles_abilities.collect(&:card_ability_id).sort).to eq(enfeeble_card.card_abilities.collect(&:id).sort)
+      expect(second_player_tile.affected_tiles_to_abilities.collect(&:card_ability_id).sort).to eq(enfeeble_card.card_abilities.collect(&:id).sort)
       expect_correct_card_ability_effects_on_tile(enfeeble_card, second_player_tile)
       puts "| 4.12 | Second player enfeeble move applied"
       puts game.board_ascii_s
@@ -135,7 +135,7 @@ describe Game, type: :feature do
       expect(second_player_enfeeble_move.valid?).to be(true), "Second player enfeeble move should be valid. Errors: #{second_player_enfeeble_move.errors.full_messages.join(', ')}"
       puts "| 4.15 | Second player enfeeble move valid"
 
-      changed_tiles = game.proceed_with_game_move(second_player_enfeeble_move, dry_run: false)
+      game.proceed_with_game_move(second_player_enfeeble_move, dry_run: false)
       second_player_tile.reload
       puts game.board_ascii_s
 
@@ -165,7 +165,7 @@ describe Game, type: :feature do
       first_player_below_tile.reload
       expect(first_player_below_tile.current_card_id).to eq raise_rank_card.id
       
-      expect(first_player_above_tile.game_board_tiles_abilities.collect(&:card_ability_id).sort).to eq(raise_rank_card.card_abilities.collect(&:id).sort)
+      expect(first_player_above_tile.affected_tiles_to_abilities.collect(&:card_ability_id).sort).to eq(raise_rank_card.card_abilities.collect(&:id).sort)
       expected_pawn_value = original_pawn_value + raise_rank_card.card_abilities.collect{|ca| ca.action_value_evaluated(first_player_above_tile)}.sum
       expected_pawn_value = [GameBoardTile::MAX_PAWN_VALUE, expected_pawn_value].min
       expect(first_player_above_tile.pawn_value).to eq(expected_pawn_value), "Tile pawn_value should be raised to #{expected_pawn_value}"
@@ -173,6 +173,71 @@ describe Game, type: :feature do
       expect_correct_card_ability_effects_on_tile(raise_rank_card, first_player_above_tile)
       puts "| 4.9 | First player enhancement move applied"
 
+    end
+
+    it 'Should Have After CardEvent Ability in Affected Card' do
+      game = start_game_with_left_and_right_claims(%w(1 8 36))
+      
+      first_player_tile = game.game_moves.first.game_board_tile
+      second_player_tile = game.game_moves[1].game_board_tile
+      after_destroy_card = Card.where(card_number: '36').first
+      expect(after_destroy_card).not_to be_nil, "AfterDestroy card should be present"
+
+      # Card w/ after_destroy ability should not have effect when 1st played
+      first_player_tile_below = game.find_tile(first_player_tile.column, first_player_tile.row + 1)
+      expect(first_player_tile_below).not_to be_nil, "First player tile below should be present"
+
+      first_player_tile_original_power = first_player_tile.power_value
+      after_destroy_card_move = GameMove.new(game_id: game.id, user_id: game.player_1.id,
+        game_board_tile_id: first_player_tile_below.id, card_id: after_destroy_card.id)
+      expect(after_destroy_card_move.valid?).to be(true), "AfterDestroy card move should be valid. Errors: #{after_destroy_card_move.errors.full_messages.join(', ')}"
+      puts "| 4.8 | AfterDestroy card move valid"
+
+      game.proceed_with_game_move(after_destroy_card_move, dry_run: false)
+      first_player_tile.reload
+      expect(first_player_tile.power_value).to eq(first_player_tile_original_power), "First player tile initially should not be affected by AfterDestroy card"
+    end
+    
+
+    it 'Should Have Working Spawn Ability in Card' do
+      game = start_game_with_left_and_right_claims(%w(1 8 96))
+      
+      first_player_tile = game.game_moves.first.game_board_tile
+      second_player_tile = game.game_moves[1].game_board_tile
+
+      spawn_card = Card.where(card_number: '96').first
+      expect(spawn_card).not_to be_nil, "Spawn card should be present"
+      expect(spawn_card.children_cards.count).to be >=(1), "Spawn card should have child card(s)"
+
+      # just to make sure CardAbiltity correct
+      ca = spawn_card.card_abilities.find_or_create_by(type: "SpawnAbility") do|_ca|
+        _ca.assign_attributes("when"=>"played", "action_type"=>"spawn")
+      end
+      ca.which = "empty_positions"
+      ca.action_value = "target_tile.pawn_value*2"
+      ca.save
+
+      first_player_above_tile = game.find_tile(first_player_tile.column, first_player_tile.row - 1)
+      first_player_below_tile = game.find_tile(first_player_tile.column, first_player_tile.row + 1)
+      first_player_spawn = GameMove.new(game_id: game.id, user_id: game.player_1.id,
+        game_board_tile_id: first_player_below_tile.id, card_id: spawn_card.id)
+      expect(first_player_spawn.valid?).to be(true), "First player spawn move should be valid. Errors: #{first_player_spawn.errors.full_messages.join(', ')}"
+      puts "| 4.8 | First player spawn move valid"
+
+      game.proceed_with_game_move(first_player_spawn, dry_run: false)
+      first_player_below_tile.reload
+      first_player_above_tile.reload
+      first_player_above_tile.affected_tiles_to_abilities.reload
+      game.reload
+      expect(first_player_below_tile.current_card_id).to eq spawn_card.id
+      puts "| 4.9 | Spawn card placed"
+
+      puts game.board_ascii_s
+
+      expect(first_player_above_tile.current_card_id).to eq(spawn_card.children_cards.first.id)
+      expected_spawned_tile_power = ca.action_value_evaluated(first_player_above_tile)
+      expect(first_player_above_tile.power_value).to eq( expected_spawned_tile_power )
+      expect(first_player_above_tile.affected_tiles_to_abilities.collect(&:card_ability_id).sort).to eq( [ca.id] )
     end
   end
 

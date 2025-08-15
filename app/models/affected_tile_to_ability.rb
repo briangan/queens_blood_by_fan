@@ -1,6 +1,6 @@
 ##
 # The association between CardAbility and targeted tile on the game board that has card abilities affecting it by other tile(s).
-class GameBoardTileAbility < ApplicationRecord
+class AffectedTileToAbility < ApplicationRecord
   self.table_name = 'game_board_tiles_abilities'
   
   belongs_to :game_board_tile

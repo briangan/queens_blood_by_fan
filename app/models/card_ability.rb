@@ -50,7 +50,7 @@ class CardAbility < ApplicationRecord
   # @source_tile <GameBoardTile> the tile where the card is played from.
   # @target_tile <GameBoardTile> the tile where the card is applied to.
   # @options <Hash> additional options such as :dry_run [Boolean] if true, would not save records.
-  # @return <Array of GameBoardTileAbility> newly passed affected abilities from @source_tile to @target_tile.
+  # @return <Array of AffectedTileToAbility> newly passed affected abilities from @source_tile to @target_tile.
   def apply_effect_to_tile(source_tile, target_tile, options = {})
     self.class.apply_pawn_tile_effect(source_tile, target_tile, options)
     []
@@ -96,7 +96,7 @@ class CardAbility < ApplicationRecord
       action_value.to_i
     elsif action_value == 'ally.power'
       target_tile.power_value.to_i
-    elsif action_value == /Card\.\w+/ # Card.find or Card.where
+    elsif action_value =~ /\w+\.\w+/ # object method call like Card.find or Card.where
       eval(action_value)
     end
   end

@@ -12,7 +12,7 @@ class EnfeebleAbility < CardAbility
         power_value_change = -1 * power_value_change if power_value_change > 0 # Enfeeble ability reduces power
         target_tile.power_value = target_tile.power_value.to_i + power_value_change
         
-        a = target_tile.game_board_tiles_abilities.new(source_game_board_tile_id: source_tile.id, 
+        a = target_tile.affected_tiles_to_abilities.new(source_game_board_tile_id: source_tile.id, 
               card_ability_id: self.id, power_value_change: power_value_change, pawn_value_change: 0)
         a.save unless options[:dry_run]
 

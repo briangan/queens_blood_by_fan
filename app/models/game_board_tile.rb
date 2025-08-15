@@ -11,10 +11,10 @@ class GameBoardTile < ApplicationRecord
   belongs_to :current_card, class_name:'Card', optional: true
   belongs_to :claiming_user, class_name: 'User', foreign_key: 'claming_user_id', optional: true
 
-  has_many :game_board_tiles_abilities, class_name:'GameBoardTileAbility', dependent: :destroy
+  has_many :affected_tiles_to_abilities, class_name:'AffectedTileToAbility', dependent: :destroy
   
   # Based on some other card(s)'s card abilities affecting this tile.
-  has_many :affecting_card_abilities, class_name: 'CardAbility', source: :card_ability, through: :game_board_tiles_abilities
+  has_many :affecting_card_abilities, class_name: 'CardAbility', source: :card_ability, through: :affected_tiles_to_abilities
 
   # Scopes
   scope :claimed, -> { where('claming_user_id IS NOT nil') }
@@ -24,6 +24,10 @@ class GameBoardTile < ApplicationRecord
 
   # before and after callbacks
   before_save :normalize_attributes
+
+  def to_s
+    "<GameBoardTile #{id}: [#{column}, #{row}]>"
+  end
 
   ##
   # The HTML data attributes for this tile.
@@ -35,19 +39,27 @@ class GameBoardTile < ApplicationRecord
   end
 
   def power_value_total_change
-    game_board_tiles_abilities.collect(&:power_value_change).compact.sum
+    affected_tiles_to_abilities.collect(&:power_value_change).compact.sum
+  end
+
+  def power_raised?
+    power_value_total_change > 0
+  end
+
+  def power_lowered?
+    power_value_total_change < 0
   end
 
   def enhanced?
-    game_board_tiles_abilities.find{|ca| ca.power_value_change > 0 } != nil
+    affected_tiles_to_abilities.find{|ca| ca.power_value_change > 0 } != nil
   end
 
   def enfeebled?
-    game_board_tiles_abilities.find{|ca| ca.power_value_change < 0 } != nil
+    affected_tiles_to_abilities.find{|ca| ca.power_value_change < 0 } != nil
   end
 
   def raised?
-    game_board_tiles_abilities.find{|ca| ca.pawn_value_change > 0 } != nil
+    affected_tiles_to_abilities.find{|ca| ca.pawn_value_change > 0 } != nil
   end
 
   def claiming_player_number
@@ -64,8 +76,10 @@ class GameBoardTile < ApplicationRecord
   # A CardAbility has attributes when, which, action_type, action_value.
   # This method finds all tiles affected by a specific card event.
   # If CardAbility 'played', it affects all tiles w/ when 'played' or 'in_play'.
+  # But 'which' tiles would not only be on static CardTile but possibly dynamic ones like 'empty_positions'.
+  # And some cards might have Affected CardTile.
   # @yield <CardTile, GameBoardTile>
-  def for_each_related_tile_and_card_ability(card_event)
+  def for_each_related_tile_affected_by_card_ability(card_event, &block)
     x_sign = (card_event.game.which_player_number(claiming_user_id) == 2) ? -1 : 1
     card_tile_conds = nil
     if card_event == 'played'
@@ -95,6 +109,9 @@ class GameBoardTile < ApplicationRecord
 
       end
 
+      if card_event == 'played' && card_event.card.card_number == 26
+        binding.irb # TODO: REMOVE
+      end
       if legit_tile
         yield card_tile, legit_tile if block_given?
       end
@@ -106,37 +123,43 @@ class GameBoardTile < ApplicationRecord
       card_event.card.card_abilities.where(card_tile_conds).each do |ca|
         case ca.which
         when 'enhanced_allies'
-          card_event.game.game_board_tiles.includes(:game_board_tiles_abilities).where(claiming_user_id: claiming_user_id).each do |other_t|
+          card_event.game.game_board_tiles.includes(:affected_tiles_to_abilities).where(claiming_user_id: claiming_user_id).each do |other_t|
             next unless other_t.enhanced?
-            yield other_t if block_given?              
+            yield nil, other_t if block_given?              
           end
         when 'enhanced_enemies'
-          card_event.game.game_board_tiles.includes(:game_board_tiles_abilities).where(claiming_user_id: game.the_other_player_user_id(claiming_user_id)).each do |other_t|
+          card_event.game.game_board_tiles.includes(:affected_tiles_to_abilities).where(claiming_user_id: game.the_other_player_user_id(claiming_user_id)).each do |other_t|
             next unless other_t.enhanced?
-            yield other_t if block_given?              
+            yield nil, other_t if block_given?
           end
         when 'enfeebled_allies'
-          card_event.game.game_board_tiles.includes(:game_board_tiles_abilities).where(claiming_user_id: claiming_user_id).each do |other_t|
+          card_event.game.game_board_tiles.includes(:affected_tiles_to_abilities).where(claiming_user_id: claiming_user_id).each do |other_t|
             next unless other_t.enfeebled?
-            yield other_t if block_given?              
+            yield nil, other_t if block_given?
           end
         when 'enfeebled_enemies'
-          card_event.game.game_board_tiles.includes(:game_board_tiles_abilities).where(claiming_user_id: game.the_other_player_user_id(claiming_user_id)).each do |other_t|
+          card_event.game.game_board_tiles.includes(:affected_tiles_to_abilities).where(claiming_user_id: game.the_other_player_user_id(claiming_user_id)).each do |other_t|
             next unless other_t.enfeebled?
-            yield other_t if block_given?              
+            yield nil, other_t if block_given?
           end
         when 'enhanced_allies_and_enemies'
-          card_event.game.game_board_tiles.includes(:game_board_tiles_abilities).where("claiming_user_id IS NOT NULL").each do |other_t|
+          card_event.game.game_board_tiles.includes(:affected_tiles_to_abilities).where("claiming_user_id IS NOT NULL").each do |other_t|
             next unless other_t.enhanced?
-            yield other_t if block_given?              
+            yield nil, other_t if block_given?
           end
         when 'enfeebled_allies_and_enemies'
-          card_event.game.game_board_tiles.includes(:game_board_tiles_abilities).where("claiming_user_id IS NOT NULL").each do |other_t|
+          card_event.game.game_board_tiles.includes(:affected_tiles_to_abilities).where("claiming_user_id IS NOT NULL").each do |other_t|
             next unless other_t.enfeebled?
-            yield other_t if block_given?              
+            yield nil, other_t if block_given?
           end
         when 'positions'
+          card_event.game.game_board_tiles.includes(:affected_tiles_to_abilities).where("claiming_user_id IS NULL").each do |other_t|
+            yield nil, other_t if block_given?
+          end
         when 'empty_positions'
+          card_event.game.game_board_tiles.includes(:affected_tiles_to_abilities).where("claiming_user_id=? AND current_card_id IS NULL", self.claiming_user_id).each do |other_t|
+            yield nil, other_t if block_given?
+          end
         end
       end
     end
@@ -145,19 +168,23 @@ class GameBoardTile < ApplicationRecord
   ##
   # To be called after a card event is applied to this tile, not only card being placed but also
   # other effects like enhanced, enfeebled or destroyed, etc.
-  # According to certain change to a card on this tile, processes the associated CardAbility inside game_board_tiles_abilities.
+  # According to certain change to a card on this tile, processes the associated CardAbility inside affected_tiles_to_abilities.
   # Please set claiming_user_id to provide context of which is current player
   # To skip saving the record changes, provide @options[:dry_run] = true.
   # @card_event <CardEvent>
   #   :dry_run <Boolean> if true, do not persist changes
   # @yield <CardTile>, <GameBoardTile> the other affected tiles
   def apply_after_card_event(card_event, &block)
+    unless card_event && card_event.card && card_event.card_event
+      self.class.logger.error "apply_after_card_event: card_event is not valid: #{card_event.inspect}"
+      return
+    end
     case card_event.card_event
       when 'played'
         apply_played_card_event(card_event, &block)
 
       when 'destroyed'
-
+        logger.info "\\ apply_after_card_event destroyed card #{card_event.card&.name} from #{self}"
         apply_destroyed_card_event(card_event, &block)
 
       when 'enhanced'
@@ -172,10 +199,10 @@ class GameBoardTile < ApplicationRecord
   def apply_played_card_event(card_event, &block)
     x_sign = (card_event.game.which_player_number(claiming_user_id) == 2) ? -1 : 1
     dry_run = card_event.dry_run?
-    for_each_related_tile_and_card_ability(card_event) do |card_tile, other_t|
+    for_each_related_tile_affected_by_card_ability(card_event) do |card_tile, other_t|
       # next if card_tile.x.to_i < 1 && card_tile.y.to_i < 1
-      
-      self.class.logger.info "| card_tile: #{column} + x #{card_tile.x * x_sign}, #{row} + y #{card_tile.y} => #{other_t&.as_json}"
+
+      self.class.logger.info "| card_tile: #{card_tile&.x} + x #{card_tile&.x.to_i * x_sign}, #{row} + y #{row + card_tile&.y.to_i} => #{other_t&.as_json}"
       if card_tile.is_a?(Affected)
         # Pass the card ability to the tile.
         card_event.card.card_abilities.each do |ca|
@@ -202,22 +229,20 @@ class GameBoardTile < ApplicationRecord
 
   def apply_destroyed_card_event(card_event, &block)
     # Cancel abilities to affected tiles of current_card
-    if current_card
-      current_card.card_abilities.each do |a|
-        # TODO: a.card_ability.cancel_effect_on_tile(self, dry_run: options[:dry_run])
+
+    for_each_related_tile_affected_by_card_ability(card_event) do |card_tile, other_t|
+      card_event.card.card_abilities.each do |ca|
+        self.class.logger.info "    +- After destroyed_card, applying #{ca.type} to #{other_t.to_s}"
+        ca.apply_effect_to_tile(self, other_t, dry_run: card_event.dry_run?)
       end
     end
-    self.current_card_id = self.current_card = nil
 
-    # Effects to affected tiles
-    game_board_tiles_abilities.joins(:card_ability).where("'when' LIKE '%destroyed'").each do |a|
-      case a.when
-        when 'destroyed'
-                    
-        when 'allies_destroyed'
-        when 'enemies_destroyed'
-        when 'allies_and_enemies_destroyed'
-      end
+    self.current_card_id = self.current_card = nil
+    if card_event.dry_run?
+      self.affected_tiles_to_abilities = []
+    else
+      self.affected_tiles_to_abilities.delete_all
+      self.save
     end
   end
 
