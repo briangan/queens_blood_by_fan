@@ -12,7 +12,9 @@ class SpawnAbility < CardAbility
       a = target_tile.affected_tiles_to_abilities.new(source_game_board_tile_id: source_tile.id, 
             card_ability_id: self.id, power_value_change: power_value_change, pawn_value_change: 0)
       a.save unless options[:dry_run]
+      list << a
     end
+    list
   end
 
 end

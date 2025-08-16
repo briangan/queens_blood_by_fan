@@ -8,8 +8,7 @@ module CardAbilitiessSpecHelper
       game_board_tile_ability = target_tile.affected_tiles_to_abilities.where(card_ability_id: ca.id).first
       expect(game_board_tile_ability).not_to be_nil, "AffectedTileToAbility for #{ca.type}"
       
-      action_value_sign = ca.type == 'EnfeebleAbility' ? -1 : 1
-      expected_evaluated_value = action_value_sign * ca.action_value_evaluated(target_tile)
+      expected_evaluated_value = ca.action_value_evaluated(target_tile)
 
       if ca.is_a?(EnhanceAbility)
         expect(game_board_tile_ability.power_value_change).to eq(expected_evaluated_value), "Power value change for #{ca.type} should be #{expected_evaluated_value}"

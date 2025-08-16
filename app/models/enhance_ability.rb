@@ -3,8 +3,8 @@ class EnhanceAbility < CardAbility
 
   # To skip saving the record changes, provide @options[:dry_run] = true.
   def apply_effect_to_tile(source_tile, target_tile, options = {})
-    list = super(source_tile, target_tile, options)
-    if action_value 
+    list = [] # super(source_tile, target_tile, options)
+    if action_value && target_tile
       if action_type == 'power_up'
         # where action_value=ally.power would mean double power.
         power_value_change = action_value_evaluated(target_tile).to_i

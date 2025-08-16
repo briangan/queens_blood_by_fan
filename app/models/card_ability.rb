@@ -33,7 +33,7 @@ class CardAbility < ApplicationRecord
   def self.apply_pawn_tile_effect(source_tile, target_tile, options = {})
     game_move_user_id = source_tile.claiming_user_id
     next_pawn_value = if (target_tile.claiming_user_id.nil? || target_tile.claiming_user_id == game_move_user_id) && target_tile.pawn_value < GameBoardTile::MAX_PAWN_VALUE
-        target_tile.pawn_value.to_i + 1
+        target_tile.pawn_value.to_i + (source_tile.current_card&.raise_pawn_rank || 1)
       else
         target_tile.pawn_value
       end

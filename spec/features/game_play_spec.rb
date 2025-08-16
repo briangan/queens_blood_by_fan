@@ -54,7 +54,7 @@ describe Game, type: :feature do
 
       game_move = GameMove.new(game_id: game.id, user_id: game.current_turn_user_id, 
         game_board_tile_id: valid_game_board_tile.id, card_id: first_player_card.id)
-      expect(game_move.valid?).to be(true), "Game move should be valid. Errors: #{game_move.errors.full_messages.join(', ')}"
+      expect(game_move.valid?).to be_truthy, "Game move should be valid. Errors: #{game_move.errors.full_messages.join(', ')}"
       puts "| 3.5 | Game move valid"
 
       valid_game_board_tile.update_columns(current_card_id: first_player_card.id, claiming_user_id: game.current_turn_user_id)
@@ -70,7 +70,7 @@ describe Game, type: :feature do
       end
       game_move = GameMove.new(game_id: game.id, user_id: game.current_turn_user_id, 
         game_board_tile_id: valid_game_board_tile.id, card_id: first_replacement_card.id)
-      expect(game_move.valid?).to be(true), "Game move should be valid. Errors: #{game_move.errors.full_messages.join(', ')}"
+      expect(game_move.valid?).to be_truthy, "Game move should be valid. Errors: #{game_move.errors.full_messages.join(', ')}"
       puts "| 3.7 | Game move w/ replacement card valid"
     end
 
@@ -85,7 +85,7 @@ describe Game, type: :feature do
       first_player_below_tile = game.find_tile(first_player_tile.column, first_player_tile.row + 1)
       first_player_enhancement_move = GameMove.new(game_id: game.id, user_id: game.player_1.id, 
         game_board_tile_id: first_player_below_tile.id, card_id: enhance_card.id)
-      expect(first_player_enhancement_move.valid?).to be(true), "First player enhancement move should be valid. Errors: #{first_player_enhancement_move.errors.full_messages.join(', ')}"
+      expect(first_player_enhancement_move.valid?).to be_truthy, "First player enhancement move should be valid. Errors: #{first_player_enhancement_move.errors.full_messages.join(', ')}"
       puts "| 4.8 | First player enhancement move valid"
 
       game.proceed_with_game_move(first_player_enhancement_move, dry_run: false)
@@ -101,7 +101,7 @@ describe Game, type: :feature do
       second_tile_below = game.find_tile(second_player_tile.column, second_player_tile.row + 1)
       second_player_enfeeble_move = GameMove.new(game_id: game.id, user_id: game.player_2.id, 
         game_board_tile_id: second_tile_below.id, card_id: enfeeble_card.id)
-      expect(second_player_enfeeble_move.valid?).to be(true), "Second player enfeeble move should be valid. Errors: #{second_player_enfeeble_move.errors.full_messages.join(',')}"
+      expect(second_player_enfeeble_move.valid?).to be_truthy, "Second player enfeeble move should be valid. Errors: #{second_player_enfeeble_move.errors.full_messages.join(',')}"
       puts "| 4.10 | Second player enfeeble move valid"
 
       game.proceed_with_game_move(second_player_enfeeble_move, dry_run: false)
@@ -121,7 +121,7 @@ describe Game, type: :feature do
       first_corner_tile = game.find_tile(1, 1)
       first_player_enfeeble_move = GameMove.new(game_id: game.id, user_id: game.player_1.id, 
         game_board_tile_id: first_corner_tile.id, card_id: enfeeble_card.id)
-      expect(first_player_enfeeble_move.valid?).to be(true), "First player enfeeble move should be valid. Errors: #{first_player_enfeeble_move.errors.full_messages.join(', ')}"
+      expect(first_player_enfeeble_move.valid?).to be_truthy, "First player enfeeble move should be valid. Errors: #{first_player_enfeeble_move.errors.full_messages.join(', ')}"
       puts "| 4.13 | First player enfeeble move valid"
 
       game.proceed_with_game_move(first_player_enfeeble_move, dry_run: false)
@@ -132,7 +132,7 @@ describe Game, type: :feature do
       second_corner_tile = game.find_tile(3, 1)
       second_player_enfeeble_move = GameMove.new(game_id: game.id, user_id: game.player_2.id, 
         game_board_tile_id: second_corner_tile.id, card_id: enfeeble_card.id)
-      expect(second_player_enfeeble_move.valid?).to be(true), "Second player enfeeble move should be valid. Errors: #{second_player_enfeeble_move.errors.full_messages.join(', ')}"
+      expect(second_player_enfeeble_move.valid?).to be_truthy, "Second player enfeeble move should be valid. Errors: #{second_player_enfeeble_move.errors.full_messages.join(', ')}"
       puts "| 4.15 | Second player enfeeble move valid"
 
       game.proceed_with_game_move(second_player_enfeeble_move, dry_run: false)
@@ -158,8 +158,8 @@ describe Game, type: :feature do
       first_player_below_tile = game.find_tile(first_player_tile.column, first_player_tile.row + 1)
       first_player_raise_rank = GameMove.new(game_id: game.id, user_id: game.player_1.id, 
         game_board_tile_id: first_player_below_tile.id, card_id: raise_rank_card.id)
-      expect(first_player_raise_rank.valid?).to be(true), "First player raise rank move should be valid. Errors: #{first_player_raise_rank.errors.full_messages.join(', ')}"
-      puts "| 4.8 | First player raise rank move valid"
+      expect(first_player_raise_rank.valid?).to be_truthy, "First player raise rank move should be valid. Errors: #{first_player_raise_rank.errors.full_messages.join(', ')}"
+      puts "| 5.8 | First player raise rank move valid"
 
       game.proceed_with_game_move(first_player_raise_rank, dry_run: false)
       first_player_below_tile.reload
@@ -171,12 +171,12 @@ describe Game, type: :feature do
       expect(first_player_above_tile.pawn_value).to eq(expected_pawn_value), "Tile pawn_value should be raised to #{expected_pawn_value}"
 
       expect_correct_card_ability_effects_on_tile(raise_rank_card, first_player_above_tile)
-      puts "| 4.9 | First player enhancement move applied"
+      puts "| 5.9 | First player enhancement move applied"
 
     end
 
     it 'Should Have After CardEvent Ability in Affected Card' do
-      game = start_game_with_left_and_right_claims(%w(1 8 36))
+      game = start_game_with_left_and_right_claims(%w(1 8 3 36))
       
       first_player_tile = game.game_moves.first.game_board_tile
       second_player_tile = game.game_moves[1].game_board_tile
@@ -190,14 +190,53 @@ describe Game, type: :feature do
       first_player_tile_original_power = first_player_tile.power_value
       after_destroy_card_move = GameMove.new(game_id: game.id, user_id: game.player_1.id,
         game_board_tile_id: first_player_tile_below.id, card_id: after_destroy_card.id)
-      expect(after_destroy_card_move.valid?).to be(true), "AfterDestroy card move should be valid. Errors: #{after_destroy_card_move.errors.full_messages.join(', ')}"
-      puts "| 4.8 | AfterDestroy card move valid"
+      expect(after_destroy_card_move.valid?).to be_truthy, "AfterDestroy card move should be valid. Errors: #{after_destroy_card_move.errors.full_messages.join(', ')}"
+      puts "| 6.8 | AfterDestroy card move valid"
 
       game.proceed_with_game_move(after_destroy_card_move, dry_run: false)
       first_player_tile.reload
+      first_player_tile_below.reload
+      game.reload
       expect(first_player_tile.power_value).to eq(first_player_tile_original_power), "First player tile initially should not be affected by AfterDestroy card"
+      puts "| 6.9 | AfterDestroy card placed"
+
+      puts game.board_ascii_s
+
+      expect(first_player_tile_below.claiming_player_number).to eq(1)
+      expect(first_player_tile_below.current_card_id).to eq(after_destroy_card.id)
+
+      second_player_tile_below = game.find_tile(second_player_tile.column, second_player_tile.row + 1)
+      expect(second_player_tile_below).not_to be_nil, "Second player tile below should be present"
+      second_player_tile_below.update(pawn_value: 2) # for quick use of enfeeble card
+
+      grenadier_card = Card.find_by(card_number: '3') # shoots an enfeeble effect only at x2 away
+      expect(grenadier_card).not_to be_nil, "Grenadier card should be present"
+      second_player_enfeeble_move = GameMove.new(game_id: game.id, user_id: game.player_2.id,
+        game_board_tile_id: second_player_tile_below.id, card_id: grenadier_card.id)
+      expect(second_player_enfeeble_move.valid?).to be_truthy, "Second player enfeeble move should be valid. Errors: #{second_player_enfeeble_move.errors.full_messages.join(', ')}"
+      puts "| 6.10 | Second player enfeeble move valid"
+
+      expected_first_player_tile_power = first_player_tile.power_value + after_destroy_card.card_abilities.first.action_value_evaluated(first_player_tile)
+
+      game.proceed_with_game_move(second_player_enfeeble_move, dry_run: false)
+      second_player_tile_below.reload
+      expect(second_player_tile_below.current_card_id).to eq(grenadier_card.id)
+      puts "| 6.11 | Grenadier card placed"
+
+      game.reload
+      first_player_tile.reload
+      puts game.board_ascii_s
+
+      bombed_tile = game.find_tile(second_player_tile_below.column - 2, second_player_tile_below.row)
+
+      expect(bombed_tile.current_card_id).to be_nil, "Bombed tile should be destroyed"
+      puts "| 6.12 | Bombed tile destroyed"
+
+      expect_correct_card_ability_effects_on_tile(after_destroy_card, first_player_tile)
+      expect(first_player_tile.power_value).to eq(expected_first_player_tile_power), "First player tile power expected #{expected_first_player_tile_power} b/c after_destroy effect"
+
     end
-    
+
 
     it 'Should Have Working Spawn Ability in Card' do
       game = start_game_with_left_and_right_claims(%w(1 8 96))
@@ -221,8 +260,8 @@ describe Game, type: :feature do
       first_player_below_tile = game.find_tile(first_player_tile.column, first_player_tile.row + 1)
       first_player_spawn = GameMove.new(game_id: game.id, user_id: game.player_1.id,
         game_board_tile_id: first_player_below_tile.id, card_id: spawn_card.id)
-      expect(first_player_spawn.valid?).to be(true), "First player spawn move should be valid. Errors: #{first_player_spawn.errors.full_messages.join(', ')}"
-      puts "| 4.8 | First player spawn move valid"
+      expect(first_player_spawn.valid?).to be_truthy, "First player spawn move should be valid. Errors: #{first_player_spawn.errors.full_messages.join(', ')}"
+      puts "| 7.8 | First player spawn move valid"
 
       game.proceed_with_game_move(first_player_spawn, dry_run: false)
       first_player_below_tile.reload
@@ -230,7 +269,7 @@ describe Game, type: :feature do
       first_player_above_tile.affected_tiles_to_abilities.reload
       game.reload
       expect(first_player_below_tile.current_card_id).to eq spawn_card.id
-      puts "| 4.9 | Spawn card placed"
+      puts "| 7.9 | Spawn card placed"
 
       puts game.board_ascii_s
 
@@ -241,6 +280,7 @@ describe Game, type: :feature do
     end
   end
 
+  ################################################
   private 
 
   ##
@@ -319,7 +359,7 @@ describe Game, type: :feature do
 
     game_move = GameMove.new(game_id: game.id, user_id: game.current_turn_user_id, 
       game_board_tile_id: first_player_tile.id, card_id: first_player_card.id)
-    expect(game_move.valid?).to be(true), "Game move should be valid. Errors: #{game_move.errors.full_messages.join(', ')}"
+    expect(game_move.valid?).to be_truthy, "Game move should be valid. Errors: #{game_move.errors.full_messages.join(', ')}"
     puts "| 4.2 | Game move"
 
     game.proceed_with_game_move(game_move, dry_run: false)
@@ -344,7 +384,7 @@ describe Game, type: :feature do
     second_player_tile = game.find_tile(3, 2)
     second_player_move = GameMove.new(game_id: game.id, user_id: game.player_2.id, 
       game_board_tile_id: second_player_tile.id, card_id: second_player_card.id)
-    expect(second_player_move.valid?).to be(true), "Second player move should be valid. Errors: #{second_player_move.errors.full_messages.join(', ')}"
+    expect(second_player_move.valid?).to be_truthy, "Second player move should be valid. Errors: #{second_player_move.errors.full_messages.join(', ')}"
     puts "| 4.4 | Second player move valid"
 
     game.proceed_with_game_move(second_player_move, dry_run: false)
