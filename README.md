@@ -85,6 +85,12 @@ Currently this is a publicly free to access source code repository, so you are f
   [ ] There r some "create another card after usage" cards such as Grangalan that can create Grangalan Junior.
   [ ] Different card image than its parent
   [ ] Use of AddCardAbility to add GameCard to associate child Card
+* Browse, Search
+  [x] turbo_stream reset search/empty keyword would not re-render the long list to all the cards => update instead of replace
+  [ ] show card to non-manager more details: card tiles, abilities
+  [ ] homepage
+    [ ] added dynamic carousel
+
 * Data entry of cards
   - Enter attributes, abilities and tiles of each card into data/cards.yml file.  This would be valid values into DB table.
   - Can refer to card images inside public/cards that have explanations exactly from the game.  
@@ -93,6 +99,16 @@ Currently this is a publicly free to access source code repository, so you are f
   - Each pawn_tile or affected_tile should have array of x & y positions away from center of the card, either positive or negative, for example, "[0,1]" being on the same column (x tile horizontally) and 1 row above (y tile veritically).  Negative values means going either left or below direction.
   - Questionable behaviors of affective_tiles: do the affected tiles claim or raise pawn rank of each tile also?  For example, Card #83, all red affected tiles are dotted; yet for instance, Card #86 Cloud has all red affected tiles dotted except one being solid red.
   - Fetch data of added card when triggered, such as Card #94 Vincent.  Added card is not in numbered card list.  Thus, how to save the condition in data/DB to interpret adding or spawning which card.
+
+## Game Play
+[ ]
+
+## Users
+* User Control
+  [x] added cancancan, added roles, key controller actions added w/ authorize_user
+
+## User Interactions
+* action streaming - broadcast
 
 ## Game Play
 * While watching opponent's making a move, disable any action by this player.

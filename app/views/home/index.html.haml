@@ -8,19 +8,22 @@
 %h5.text-secondary A personal attempt to copy the the mini game inside Square Enix's #{link_to('Final Fantasy VII Rebirth', 'https://ffvii.square-enix-games.com/en-us/games/rebirth', target:'_blank') } game.
 %br/
 .container
-  .row
-    .col-auto
-      .card
-        .card-header
-          = link_to 'Cards', cards_path
-    .col-auto
-      .card
-        .card-header
-          = link_to 'Boards', boards_path
+  - if false
+    .row
+      .col-auto
+        .card
+          .card-header
+            = link_to 'Cards', cards_path
+      .col-auto
   %br/
   %br/
   %ul(class="nav nav-tabs")
-    %li(class="nav-item bg-success")
-      %h4.nav-link.bg-success.text-light Current Games
+    %li(class="nav-item bg-primary")
+      %h4.nav-link.bg-primary.text-light Current Games
+    %li(class="nav-item")
+      = link_to new_game_path, class: 'nav-link text-success' do
+        %i.bi.bi-plus-circle.text-success
+        New Game
+
   = turbo_frame_tag 'games_frame' do
     = render partial:'games/games', locals:{ games: @games }

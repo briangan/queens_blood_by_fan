@@ -2,6 +2,8 @@ class BoardsController < InheritedResources::Base
 
   actions :index, :show, :new, :create, :edit, :update
 
+  authorize_resource class: 'Board'
+
   def new
     @board = Board.new(columns: permitted_params[:columns] || Board::DEFAULT_BOARD_COLUMNS, 
       rows: permitted_params[:rows] || Board::DEFAULT_BOARD_ROWS )

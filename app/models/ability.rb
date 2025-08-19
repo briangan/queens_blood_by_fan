@@ -29,6 +29,8 @@ class Ability
     # See the wiki for details:
     # https://github.com/CanCanCommunity/cancancan/blob/develop/docs/define_check_abilities.md
     #
+    permitForGames(user)
+    permitForBoards(user)
     permitForCards(user)
 
     if user.admin?
@@ -37,6 +39,10 @@ class Ability
   end
 
   protected 
+
+  def permitForBoards(user)
+    can :read, Board
+  end
 
   def permitForGames(user)
     return unless user.present?
