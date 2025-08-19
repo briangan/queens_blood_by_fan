@@ -6,6 +6,8 @@
         .card-extra-image
           %a(href="#{asset_path("detailed_cards/#{card.card_number}.png")}" target="_blank" title="Detailed image of card ##{card.card_number}")
             %img(src="#{ asset_path("cards/#{card.card_number}.png") }" title="Card ##{card.card_number}")
+        .card-detail-image.d-none
+          %button(class="btn p-0 align-top bi bi-zoom-in card-detail-link" type="button" data-bs-toggle="offcanvas" data-bs-target="#detail_offcanvas" aria-controls="offcanvasRight" data-image-url="#{asset_path("detailed_cards/#{card.card_number}.png")}" data-card-id="#{card.id}") &nbsp;
     .align-self-center.p-3
       .row
         .col-auto.align-middle.mb-3

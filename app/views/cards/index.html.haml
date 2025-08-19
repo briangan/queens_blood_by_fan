@@ -10,21 +10,27 @@
         Cards
     .col-8.text-end
       = turbo_frame_tag 'cards_filter_frame' do
-        = form_with url: cards_path, method: :get, data: { turbo_frame: 'cards_frame' } do
+        = form_with url: cards_path, method: :get do
           .row
             .col-md-6
               .text-start.input-group
+                %a(href="#{cards_path}" data-turbo-action="replace" class="align-middle") All Cards
+                &nbsp;&nbsp;
                 %span(class="input-group-text fw-bold") Keyword 
-                = text_field_tag :keyword, params[:keyword], class: 'form-control', placeholder: 'Search by card name, description or number', data: { turbo_frame: 'cards_frame' }
-            .col.ml-3.mr-3
+                = text_field_tag :keyword, params[:keyword], class: 'form-control', placeholder: 'Search by card name, description or number'
+            .col.ml-3.mr-3.text-start
               = hidden_field_tag :format, :turbo_stream
               %label{for: 'limit'} Per Page: 
               = select_tag :limit, options_for_select([5, 10, 20, 50, 100], params[:limit] || 20)
-              = submit_tag 'Apply', class: 'btn btn-primary ml-5'
               &nbsp;&nbsp;
-            
+              = submit_tag 'Search', class: 'btn btn-primary ml-5', disable_with:'Searching ..'
+              &nbsp;&nbsp;
+
   = turbo_frame_tag 'cards_frame' do
-    = render partial:'cards/form', collection: @cards, as: :card
+    - if current_user.can? :manage, Card
+      = render partial:'cards/form', collection: @cards, as: :card
+    - else
+      = render partial: 'cards/card', collection: @cards, as: :card
     .container
       .align-center.mt-3
         = paginate @cards

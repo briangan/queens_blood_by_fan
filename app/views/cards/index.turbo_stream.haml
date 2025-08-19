@@ -1,4 +1,4 @@
-= turbo_stream.replace 'cards_frame' do
+= turbo_stream.update 'cards_frame' do
   = render 'cards/form_assets'
   = render partial:'cards/form', collection: @cards, as: :card
   .container

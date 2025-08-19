@@ -1,0 +1,12 @@
+:ruby
+%br/
+.container
+  - if flash.empty?
+    .alert.alert-warning
+      %h3
+        %i.bi.bi-sign-stop-fill 
+        Access Denied
+    %br/
+    %br/
+  = link_to 'Return Home', root_path, class: 'btn btn-primary'
+  

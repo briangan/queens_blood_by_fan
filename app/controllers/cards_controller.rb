@@ -1,5 +1,7 @@
 class CardsController < InheritedResources::Base
   helper CardAbilitiesHelper
+
+  authorize_resource class: 'Card'
   
   def index
     @cards = Card.includes(:card_tiles, :card_abilities)

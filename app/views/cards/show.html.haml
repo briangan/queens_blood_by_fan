@@ -1,7 +1,10 @@
 - content_for :more_head do
   = javascript_pack_tag 'cards', 'data-turbolinks-track': 'reload'
   = render partial:'form_assets'
-= render partial:'form', locals:{ card: @card }
+- if current_user.can? :manage, Card
+  = render partial:'form', locals:{ card: @card }
+- else
+  = render partial: 'cards/card', locals:{ card: @card }
 
 
 = render 'shared/bs/offcanvas'

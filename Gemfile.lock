@@ -92,6 +92,7 @@ GEM
       popper_js (>= 2.11.8, < 3)
     builder (3.3.0)
     byebug (12.0.0)
+    cancancan (3.6.1)
     capybara (3.40.0)
       addressable
       matrix
@@ -469,6 +470,7 @@ DEPENDENCIES
   bootsnap (>= 1.4.4)
   bootstrap
   byebug
+  cancancan
   capybara (>= 3.26)
   debug
   devise

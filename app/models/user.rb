@@ -17,6 +17,35 @@ class User < ApplicationRecord
 
   after_create :random_pick_cards
 
+
+  ####################################
+  # Permissions
+
+  ROLES = %w[admin manager player guest]
+
+  def roles
+    roles = ['guest']
+    roles << 'admin' if %w(brian).include?(username&.downcase)
+    roles << 'player' if id
+    roles
+  end
+
+  ROLES.each do|r|
+    unless User.respond_to?(r + '?')
+      User.define_method(r + '?') do
+        roles.include?(r)
+      end
+    end
+  end
+
+  delegate :can?, :cannot?, to: :ability
+
+  def ability
+    @ability ||= Ability.new(self)
+  end
+
+  ####################################
+
   ## 
   # Creates at least Deck::MAX_CARDS_PER_DECK entries of UserCard referencing random selection cards.
   # @essential_card_ids [Array] Optional array of card IDs that must be included in the selection.

@@ -43,16 +43,22 @@ class Card < ApplicationRecord
   # @which_player [Integer] 1 or 2, to flip the x coordinate for player 2.  Default 1.
   # @return [Array] of [x, y] coordinates of pawn tiles
   def pawn_tiles_data(which_player = 1)
+    # instead of calling .pawn_tiles
     x_sign = which_player == 2 ? -1 : 1
-    pawn_tiles.map { |tile| [tile.x * x_sign, tile.y] }
+    list = []
+    card_tiles.each {|tile| list << [tile.x * x_sign, tile.y] if tile.is_a?(Pawn) }
+    list
   end
 
   ##
   # @which_player [Integer] 1 or 2, to flip the x coordinate for player 2.  Default 1.
   # @return [Array] of [x, y] coordinates of affected tiles
   def affected_tiles_data(which_player = 1)
+    # instead of calling .affected_tiles
     x_sign = which_player == 2 ? -1 : 1
-    affected_tiles.map { |tile| [tile.x * x_sign, tile.y] }
+    list = []
+    card_tiles.each {|tile| list << [tile.x * x_sign, tile.y] if tile.is_a?(Affected) }
+    list
   end
 
   ##

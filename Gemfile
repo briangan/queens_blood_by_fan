@@ -57,6 +57,7 @@ gem "best_in_place", '~> 4.0'
 # Authentication
 
 gem 'devise'
+gem 'cancancan'
 
 ####################
 # Server

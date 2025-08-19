@@ -2,6 +2,11 @@ class ApplicationController < ActionController::Base
 
   before_action :authenticate_user!
 
+  # rescue AccessDenied exception
+  rescue_from CanCan::AccessDenied do |exception|
+    redirect_to access_denied_path, alert: exception.message
+  end
+
   ##
   # @page_title_suffix is used to append to the end of the page title in layouts/application.
   # 
