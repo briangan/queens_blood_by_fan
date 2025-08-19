@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_08_16_160845) do
+ActiveRecord::Schema[7.2].define(version: 2025_08_19_032034) do
   create_table "board_tiles", force: :cascade do |t|
     t.integer "board_id", null: false
     t.integer "column", null: false
@@ -166,7 +166,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_16_160845) do
     t.string "type", limit: 32, default: "User"
     t.string "email", limit: 100
     t.string "username", limit: 64, null: false
-    t.string "password", limit: 127
     t.integer "rank", default: 0
     t.float "rating", default: 0.0
     t.datetime "created_at", null: false

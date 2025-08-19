@@ -1,3 +1,8 @@
+admin_user = User.find_or_create_by(username: 'brian') do|_u|
+  _u.email = 'brian@me.com'
+  _u.password = 's'
+  _u.password_confirmation = 'password'
+end
 card = Card.create!({"type"=>"Card", "name"=>"Security Officer", "category"=>"Standard", "card_number"=>1, "description"=>"", "pawn_rank"=>1, "power"=>1, "raise_pawn_rank"=>1})
   a = card.card_tiles.create!({"type"=>"Pawn", "x"=>0, "y"=>-1})
   a = card.card_tiles.create!({"type"=>"Pawn", "x"=>-1, "y"=>0})
