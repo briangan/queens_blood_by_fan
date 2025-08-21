@@ -13,8 +13,8 @@
         = form_with url: cards_path, method: :get do
           .row
             .col-md-6
-              .text-start.input-group
-                %a(href="#{cards_path}" data-turbo-action="replace" class="align-middle") All Cards
+              .text-start.input-group.align-items-center
+                %a(href="#{cards_path}" data-turbo-action="replace" class="align-middle" style="line-height: 100%;") All Cards
                 &nbsp;&nbsp;
                 %span(class="input-group-text fw-bold") Keyword 
                 = text_field_tag :keyword, params[:keyword], class: 'form-control', placeholder: 'Search by card name, description or number'
