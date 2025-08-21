@@ -1,16 +1,18 @@
-<% if @changed_tiles.present?
-    @changed_tiles.each do |tile|
--%>
-<%= turbo_stream.replace("board_tile_#{tile.column}_#{tile.row}") do %>
-  <%= render(partial: 'game_board_tiles/table_cell', locals: { game_board_tile: tile, game: @game }) %>
-<%  end # turbo_stream -%>
-<% end -%>
-<% end # if @changed_tiles -%>
-<% turbo_stream.replace 'game_current_player_frame' do %>
+<%= turbo_stream.update 'game_current_player_frame' do %>
   <%= render 'games/players_and_current_turn', game: @game %>
 <% end %>
-<% if flash[:warning].present? -%>
-  <% turbo_stream.replace("board_notice") do %>
-    <%= flash[:warning] %>
+<%= turbo_stream.update 'game_board_frame' do %>
+    <%= render partial:'board', locals:{ game: @game } %>
+<% end %>
+
+<%= turbo_stream.append "body" do %>
+  <script>
+    setupCardInteractions();
+    setupBoardInteractions();
+  </script>
+  <% if flash[:warning].present? %>
+    <script>
+      showBoardNotice('<%= j flash[:warning] %>', 'warning');
+    </script>
   <% end %>
-<% end -%>
+<% end %>

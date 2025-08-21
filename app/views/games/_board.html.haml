@@ -2,9 +2,9 @@
   # Required locals:
   #   game <Game>
   total_scores_for_all_rows = @game.total_scores_for_all_rows
-
-%div(id="board_notice" class="text-center" role="alert")
-  &nbsp;
+= turbo_frame_tag "board_notice_frame" do
+  %div(id="board_notice" class="text-center" role="alert")
+    &nbsp;
 .board-wrapper(id="board_wrapper" data-board-id="#{@game.board.id}")
   - player_user_ids = [nil] + game.players.collect(&:id)
   %table(id="board_table" class="board-table")
@@ -19,6 +19,7 @@
           - 1.upto(game.board.columns) do |col|
             - board_tile_index += 1
             - board_tile = game.find_tile(col, row)
-            = render partial:'game_board_tiles/table_cell', locals:{ game_board_tile: board_tile, game: game, board_tile_index: board_tile_index }
+            = turbo_frame_tag "game_board_tile_frame_#{board_tile.id}" do
+              = render partial:'game_board_tiles/table_cell', locals:{ game_board_tile: board_tile, game: game, board_tile_index: board_tile_index }
           %td(id="player_2_row_#{row}_total_score" class="board-tile row-total-score-wrapper")
             = raw row_player_score_label(game, row, 2, player_1_score, player_2_score)

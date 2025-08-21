@@ -16,6 +16,7 @@ window.showBoardNotice = showBoardNotice;
 window.droppableOptions = droppableOptions;
 window.setupCardInteractions = setupCardInteractions;
 window.setupTileInteractions = setupTileInteractions;
+window.setupBoardInteractions = setupBoardInteractions;
 let MAX_CARDS_PER_DECK = 15; // Best to refer this to backend constant
 window.MAX_CARDS_PER_DECK = MAX_CARDS_PER_DECK;
 
