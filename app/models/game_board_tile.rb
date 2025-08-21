@@ -223,7 +223,7 @@ class GameBoardTile < ApplicationRecord
         end
       else # Pawn
         # Pawn tile, just set the pawn value.
-        CardAbility.apply_pawn_tile_effect(self, other_t)
+        CardAbility.apply_pawn_tile_effect(self, other_t, dry_run: dry_run)
 
         card_event.card.card_abilities.each do |ca|
           next unless ACCEPTABLE_ABILITY_WHICH_FOR_PAWN_TILES.include?(ca.which)
