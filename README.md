@@ -101,7 +101,15 @@ Currently this is a publicly free to access source code repository, so you are f
   - Fetch data of added card when triggered, such as Card #94 Vincent.  Added card is not in numbered card list.  Thus, how to save the condition in data/DB to interpret adding or spawning which card.
 
 ## Game Play
-[ ]
+* Initial Game
+  [ ] Randomly out initial cards, and ask players to skip some
+
+* Check next turn
+  [ ] option to pass
+  [ ] both side passing to end game
+
+* After create move
+  [ ] after o
 
 ## Users
 * User Control

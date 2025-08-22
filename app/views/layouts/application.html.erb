@@ -15,7 +15,7 @@
     <%= yield :more_head %>
   </head>
 
-  <body>
+  <body data-game-id="<%= @game&.id %>">
     <%= render 'shared/top_nav_bar' %>
     <div id="flash_messages_wrapper">
       <% if flash[:notice].present? %><div class="mb-3 alert alert-success" role="alert"><%= flash[:notice] %></div><% end -%>
@@ -29,6 +29,7 @@
     <br/>
     <div class="text-center">
       <p>Application Developed by <a href="https://www.linkedin.com/in/brian-gan-6a037533/" target="_blank">Brian Gan</a></p>
+      <p>The game is still in progress.  <a href="<%= asset_path('diagrams/EER.png') %>" target="_blank">View EER Diagram</a></p>
     </div>
     <br/>
     <br/>
