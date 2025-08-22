@@ -3,4 +3,10 @@
 
 import { createConsumer } from "@rails/actioncable"
 
-export default createConsumer()
+// Make ActionCable available globally for debugging
+import * as ActionCable from "@rails/actioncable"
+window.ActionCable = ActionCable;
+
+window.consumer = createConsumer();
+
+export default window.consumer;

@@ -6,7 +6,6 @@
 import Rails from "@rails/ujs"
 import Turbolinks from "turbolinks"
 import * as ActiveStorage from "@rails/activestorage"
-import "channels"
 import jQuery from "jquery"
 
 // Set globals BEFORE importing plugins
@@ -20,6 +19,7 @@ import "jquery-ui/ui/widgets/droppable"
 import * as bootstrap from 'bootstrap'
 
 // These need jQuery and $
+import "channels"
 
 
 Rails.start()

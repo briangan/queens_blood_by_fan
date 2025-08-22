@@ -18,6 +18,10 @@ Rails.application.routes.draw do
     end
   end
   resources :boards
+
+  # Streaming #################
+  
+  mount ActionCable.server => '/cable'
   
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   match 'access_denied', to: 'home#access_denied', via: [:get, :post]
