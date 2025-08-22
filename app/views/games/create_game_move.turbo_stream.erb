@@ -1,18 +1,14 @@
 <%= turbo_stream.update 'game_current_player_frame' do %>
-  <%= render 'games/players_and_current_turn', game: @game %>
+  <% players_and_turn_content = render 'games/players_and_current_turn', game: @game %>
+  <%= raw players_and_turn_content %>
+  <%
+    #ActionCable.server.broadcast("game_#{@game.id}_channel", { action: "update_board", selector: "#game_current_player_frame", html: players_and_turn_content })
+  -%>
 <% end %>
 <%= turbo_stream.update 'game_board_frame' do %>
-    <%= render partial:'board', locals:{ game: @game } %>
-<% end %>
-
-<%= turbo_stream.append "body" do %>
-  <script>
-    setupCardInteractions();
-    setupBoardInteractions();
-  </script>
-  <% if flash[:warning].present? %>
-    <script>
-      showBoardNotice('<%= j flash[:warning] %>', 'warning');
-    </script>
-  <% end %>
+  <% board_content = render partial:'board', locals:{ game: @game } %>
+  <%= raw board_content %>
+  <%
+    #ActionCable.server.broadcast("game_#{@game.id}_channel", { action: "update_board", selector: "#game_board_frame", html: board_content, js: "setupTileInteractions(); #{"showBoardNotice('#{ j flash[:warning] }', 'warning');" if flash[:warning].present?}" })
+  -%>
 <% end %>
