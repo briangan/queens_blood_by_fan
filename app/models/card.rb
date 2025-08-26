@@ -17,6 +17,9 @@
 # [ ] Add Donberry card
 # [ ] Add Hype Johnny card
 class Card < ApplicationRecord
+  include CardSearchable
+
+  # Associations
   has_many :card_abilities, dependent: :destroy
   has_many :card_tiles, dependent: :destroy
   has_many :pawn_tiles, -> { where(type: 'Pawn') }, class_name: 'Pawn'

@@ -92,3 +92,22 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 =end
 end
+
+
+def no_output(&block)
+  original_stdout = $stdout.dup
+  $stdout.reopen('/dev/null')
+  $stdout.sync = true
+  yield
+ensure
+  $stdout.reopen(original_stdout)
+end
+
+def capture_output(&block)
+  original_stdout = $stdout.dup
+  $stdout = StringIO.new
+  yield
+  $stdout.string
+ensure
+  $stdout.reopen(original_stdout)
+end

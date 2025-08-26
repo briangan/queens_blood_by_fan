@@ -2,8 +2,14 @@ module CardsSpecHelper
   # Erases all existing cards and reloads them from the seeds file.
   # @return [Hash] Record counts of Card, card_tiles, and card_abilities.
   def reload_cards
+    Card.__elasticsearch__.create_index!(force: true) if Elasticsearch.available?
     Board.all.each(&:destroy)
-    Card.all.each(&:destroy)
+    Card.all.each do|c|
+      begin
+        c.destroy
+      rescue Elastic::Transport::Transport::Errors::NotFound => e
+      end
+    end
     CardTile.all.each(&:destroy)
     CardAbility.all.each(&:destroy)
     record_counts = {} # Class name => count

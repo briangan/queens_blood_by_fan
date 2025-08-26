@@ -24,6 +24,12 @@ gem 'paper_trail', '~> 15'
 
 gem 'seed_dump'
 
+###################
+# Data
+
+gem 'elasticsearch-model'
+gem 'elasticsearch-rails'
+
 ###############
 # Fontend
 
