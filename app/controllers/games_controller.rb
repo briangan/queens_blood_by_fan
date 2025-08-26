@@ -49,10 +49,8 @@ class GamesController < ::InheritedResources::Base
 
     @game_move = GameMove.new(game_id: @game.id, user_id: current_user.id, game_board_tile_id: @game_board_tile&.id, card_id: p[:card_id])
     if @game.current_turn_user_id == current_user.id && @game_move.valid?
-      
-      # @game_move.save!
-      
-      @changed_tiles = @game.proceed_with_game_move(@game_move, dry_run: false)
+      @game_move.save!
+      @changed_tiles = @game.proceed_with_game_move(@game_move) # , dry_run: true)
 
       logger.info "| changed_tiles: #{@changed_tiles.collect(&:attributes).as_json }"
 
@@ -60,7 +58,7 @@ class GamesController < ::InheritedResources::Base
 
       respond_to do |format|
         format.turbo_stream
-        format.js
+        format.js { render template: 'games/broadcast_game_move' }
         format.html { redirect_to game_path(id: @game.id, t: Time.now.to_i) }
       end
     else

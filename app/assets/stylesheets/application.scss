@@ -141,7 +141,10 @@ $user-2-bg-color: rgb(196, 81, 81);
 .text-deco-none, .text-decoration-none {
   text-decoration: none;
 }
-.text-lg, .text-larege {
+.text-xlg, .text-extra-large {
+  font-size: 1.8em;
+}
+.text-lg, .text-large {
   font-size: 1.5em;
 }
 .text-md, .text-medium {

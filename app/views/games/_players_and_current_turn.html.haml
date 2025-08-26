@@ -1,29 +1,18 @@
 :ruby
   # Required locals:
   #   game <Game>
-= form_for game, url: create_game_move_game_path, method: :post, remote: true, html:{ id:"game_move_form" } do|f|
-  = hidden_field_tag :format, :turbo_stream
-  = hidden_field_tag :authenticity_token, form_authenticity_token
-  = hidden_field_tag :game_board_tile_id, nil, id: 'game_move_game_board_tile_id'
-  = hidden_field_tag :card_id, nil, id: 'game_move_card_id'
-  = hidden_field_tag :current_turn_user_id, game.current_turn_user_id, id: 'game_current_turn_user_id'
-  = hidden_field_tag :current_turn_player_number, game.current_turn_player_number, id: 'game_current_turn_player_number'
-  .row(id="game_user_turn_wrapper")
-    .col.text-end
-      - if game.player_1 && game.player_1.id == game.current_turn_user_id
-        %span(id="user_1_turn_cursor" class="bi bi-arrow-down-square-fill user-1-color" style="font-size: 1.6rem;")
-          = game.player_1.id == current_user.id ? ' Your Turn' : " #{game.player_1.username}'s Turn"
-    .col.text-center
-      - if game.in_progress?
-        %h4.mt-0.mb-3
-          #{game.game_moves.count} Moves
-          &nbsp;
-          - if which_player_number_for_current_user(game)
-            = link_to reset_game_path(game), class:'btn btn-sm btn-danger', data:{ confirm: 'Are you sure you want to reset the game?' } do
-              %i.bi.bi-arrow-clockwise 
-              Reset Game
-            = f.submit('Make Move', class:'btn btn-primary d-none', id:'game_move_submit_button')
-    .col.text-begin
-      - if game.player_2 && game.player_2&.id == game.current_turn_user_id
-        %span(id="user_1_turn_cursor" class="bi bi-arrow-down-square-fill user-2-color" style="font-size: 1.6rem;")
-          = game.player_2.id == current_user.id ? ' Your Turn' : " #{game.player_2.username}'s Turn"
+
+.row(id="game_user_turn_wrapper")
+  .col.text-end
+    %span(id="user_1_turn_cursor" class="bi bi-arrow-down-square-fill user-1-color text-xlg#{' d-none' unless game.player_1 && game.player_1.id == game.current_turn_user_id}")
+      = t('game.turn.this_players_turn')
+      -#= game.player_1.id == current_user.id ? ' Your Turn' : " #{game.player_1.username}'s Turn"
+  .col.text-center
+    - if game.in_progress?
+      %h4.mt-0.mb-3
+        #{game.game_moves.count} Moves
+        &nbsp;
+  .col.text-begin
+    %span(id="user_2_turn_cursor" class="bi bi-arrow-down-square-fill user-2-color text-xlg#{' d-none' unless game.player_2 && game.player_2&.id == game.current_turn_user_id}")
+      = t('game.turn.this_players_turn')
+      -#= game.player_2.id == current_user.id ? ' Your Turn' : " #{game.player_2.username}'s Turn"

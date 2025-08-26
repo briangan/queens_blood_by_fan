@@ -35,3 +35,7 @@ en:
   game:
     cards:
       pick_and_place: "When it's your turn, pick a card and place onto one of your claimed tiles in the board."
+    turn:
+      your_turn: "Your Turn"
+      opponents_turn: "Opponent's Turn"
+      this_players_turn: "This Player's Turn"

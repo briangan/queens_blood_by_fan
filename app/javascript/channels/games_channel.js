@@ -19,16 +19,14 @@ $(document).on("turbolinks:load", function() {
 
       received(data) {
         // Handle broadcasted data here
-        if (data.action === "move_made") {
-          // Example: update the UI with new move info
-          console.log("Move made:", data);
+        if (data.action === "game_move_made") {
           // Update the board or notify users as needed
         }
         // General DOM updates w/ selector, so works for any element
         else if (data.action === "update_board" && data.selector && data.html) {
-          $(data.selector).replaceWith(data.html);
-          setupTileInteractions();
-          console.log("Updated board, and given JS:", data.js);
+          $(data.selector).html(data.html);
+          
+          // console.log("Updated board "+ data.selector + " and given JS:", data.js);
           if (data.js) {
             eval(data.js);
           }

@@ -17,7 +17,10 @@ window.droppableOptions = droppableOptions;
 window.setupCardInteractions = setupCardInteractions;
 window.setupTileInteractions = setupTileInteractions;
 window.selectTileHandler = selectTileHandler;
+window.syncCardSelectionToInputs = syncCardSelectionToInputs;
 window.setupBoardInteractions = setupBoardInteractions;
+window.switchTurnToPlayer = switchTurnToPlayer;
+
 let MAX_CARDS_PER_DECK = 15; // Best to refer this to backend constant
 window.MAX_CARDS_PER_DECK = MAX_CARDS_PER_DECK;
 
@@ -79,6 +82,20 @@ function placedCardOntoTile(card, tile) {
     showBoardNotice( (msg == '') ? "Cannot drop this card here!" : msg, 'warning');
   }
   resetHLTiles();
+}
+
+function switchTurnToPlayer(current_turn_user_id, current_turn_player_number) {
+  // Update the current turn user ID and player number
+  $("#game_current_turn_user_id").val(current_turn_user_id);
+  $("#game_current_turn_player_number").val(current_turn_player_number);
+
+  if (current_turn_player_number == 1) {
+    $("#user_1_turn_cursor").removeClass('d-none');
+    $("#user_2_turn_cursor").addClass('d-none');
+  } else {
+    $("#user_1_turn_cursor").addClass('d-none');
+    $("#user_2_turn_cursor").removeClass('d-none');
+  }
 }
 
 /* Dry run that only renders the effects of the card placement.

@@ -19,7 +19,6 @@
           - 1.upto(game.board.columns) do |col|
             - board_tile_index += 1
             - board_tile = game.find_tile(col, row)
-            = turbo_frame_tag "game_board_tile_frame_#{board_tile.id}" do
-              = render partial:'game_board_tiles/table_cell', locals:{ game_board_tile: board_tile, game: game, board_tile_index: board_tile_index }
+            = render partial:'game_board_tiles/table_cell', locals:{ game_board_tile: board_tile, game: game, board_tile_index: board_tile_index }
           %td(id="player_2_row_#{row}_total_score" class="board-tile row-total-score-wrapper")
             = raw row_player_score_label(game, row, 2, player_1_score, player_2_score)

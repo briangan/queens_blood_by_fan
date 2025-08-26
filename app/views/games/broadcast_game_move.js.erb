@@ -1,0 +1,13 @@
+<%
+=begin
+  Instead of individual updates to multiple components via JS like create_game_move.js.erb, 
+  this uses ActionCable to pass onto all subscribers then 2 higher level components: players_and_turn, game_board, 
+  and calls the few necessary JS functions to update the UI.
+=end
+  @game.reload
+  players_and_turn_content = render 'games/players_and_current_turn', game: @game
+  ActionCable.server.broadcast("game_#{@game.id}_channel", { action: "update_board", selector: "#game_current_player_frame", html: players_and_turn_content })
+
+  board_content = render partial:'board', locals:{ game: @game } 
+  ActionCable.server.broadcast("game_#{@game.id}_channel", { action: "update_board", selector: "#game_board_frame", html: board_content, js: "setupBoardInteractions(); switchTurnToPlayer(#{@game.current_turn_user_id}, #{@game.current_turn_player_number}); #{"showBoardNotice('#{ j flash[:warning] }', 'warning');" if flash[:warning].present?}" })
+-%>
