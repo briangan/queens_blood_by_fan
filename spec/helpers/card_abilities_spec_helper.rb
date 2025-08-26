@@ -1,4 +1,4 @@
-module CardAbilitiessSpecHelper
+module CardAbilitiesSpecHelper
   def expect_correct_card_ability_effects_on_tile(card, target_tile)
     if ( target_tile.current_card_id.nil? || target_tile.current_card.nil? )
       expect(target_tile.affected_tiles_to_abilities.where("pawn_value_change IS NULL OR pawn_value_change = 0").count).to eq(0), "Tile has no current card, so should not have any GameBoardTileAbilities"
