@@ -53,12 +53,10 @@ module CardSearchable
           bool: {
             should: should_clauses
           }
-        },
-        from: options[:page] ? (options[:page] - 1) * (options[:limit] || 20) : 0,
-        size: options[:limit] || 20
+        }
       }
 
-      self.__elasticsearch__.search(params).records
+      self.__elasticsearch__.search(params).records.page(params[:page] || 1).per(options[:limit] || 20)
     end
     
     
