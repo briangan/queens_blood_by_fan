@@ -1,0 +1,10 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Generate GamesChannel",
+			"type": "shell",
+			"command": "bin/rails generate channel Games"
+		}
+	]
+}

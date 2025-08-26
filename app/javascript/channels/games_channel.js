@@ -25,8 +25,8 @@ $(document).on("turbolinks:load", function() {
         // General DOM updates w/ selector, so works for any element
         else if (data.action === "update_board" && data.selector && data.html) {
           $(data.selector).html(data.html);
-          
-          // console.log("Updated board "+ data.selector + " and given JS:", data.js);
+
+          //console.log("Updated board "+ data.selector + " and given JS:", data.js);
           if (data.js) {
             eval(data.js);
           }

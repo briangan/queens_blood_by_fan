@@ -4,7 +4,8 @@
   this uses ActionCable to pass onto all subscribers then 2 higher level components: players_and_turn, game_board, 
   and calls the few necessary JS functions to update the UI.
 =end
-  @game.reload
+  # Erase cached game_board_tiles
+  @game = Game.includes(:game_users, :game_board_tiles => [:current_card]).find(params[:id])
   players_and_turn_content = render 'games/players_and_current_turn', game: @game
   ActionCable.server.broadcast("game_#{@game.id}_channel", { action: "update_board", selector: "#game_current_player_frame", html: players_and_turn_content })
 
