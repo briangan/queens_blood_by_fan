@@ -33,6 +33,6 @@
       = render partial: 'cards/card', collection: @cards, as: :card
     .container
       .align-center.mt-3
-        = paginate @cards
+        = paginate @cards, params: { keyword: params[:keyword], limit: params[:limit], format: :turbo_stream }
 
 = render 'shared/bs/offcanvas'
