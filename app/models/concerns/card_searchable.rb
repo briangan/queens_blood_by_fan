@@ -3,7 +3,10 @@ module CardSearchable
 
   included do
     include Elasticsearch::Model
-    include Elasticsearch::Model::Callbacks
+
+    # Override the callback to check availability
+    # include Elasticsearch::Model::Callbacks
+    after_commit :index_document_unless_es_unavailable, on: [:create, :update]
 
     index_name [Rails.env, 'cards'].join('_')
 
@@ -16,6 +19,11 @@ module CardSearchable
       indexes :pawn_rank, type: 'integer'
       indexes :power, type: 'integer'
       indexes :parent_card_id, type: 'integer'
+    end
+
+    def index_document_unless_es_unavailable
+      return unless Elasticsearch.available?
+      __elasticsearch__.index_document
     end
 
     # Would use if ElasticSearch is available; else would build 

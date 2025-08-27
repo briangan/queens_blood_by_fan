@@ -32,9 +32,9 @@
           = f.label :power
           = f.select :power, options_for_select( 1.upto(10).collect{|p| [p,p]}, card.power), {}, class: 'form-control-sm', title:'Power Increase for Own Tile', data:{ 'bs-toggle'=>'tooltip'}
       .row
-        .col-auto.mb-3
+        .col-12.mb-3
           = f.label :description, class:'align-top'
-          = f.text_area :description, class: 'form-control-sm align-middle'
+          = f.text_area :description, class: 'form-control-sm align-middle w-100'
       .row
         .col.mb-3.text-end
           %button(type='submit' class='btn btn-primary btn-sm' data-disable-with='Updating...')

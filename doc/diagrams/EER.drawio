@@ -528,7 +528,7 @@
             <mxPoint x="20" y="610" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="PTlwTQifetZBmxdGKie6-5" value="" style="endArrow=ERmany;html=1;rounded=0;entryX=0.838;entryY=0.011;entryDx=0;entryDy=0;startArrow=diamondThin;startFill=1;endFill=0;entryPerimeter=0;dashed=1;exitX=0.45;exitY=1.003;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" target="PTlwTQifetZBmxdGKie6-2" edge="1" source="_FI4FavQm8VD4Ou4lNko-14">
+        <mxCell id="PTlwTQifetZBmxdGKie6-5" value="" style="endArrow=ERmany;html=1;rounded=0;entryX=0.838;entryY=0.011;entryDx=0;entryDy=0;startArrow=diamondThin;startFill=1;endFill=0;entryPerimeter=0;dashed=1;exitX=0.45;exitY=1.003;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="_FI4FavQm8VD4Ou4lNko-14" target="PTlwTQifetZBmxdGKie6-2" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="10" y="270" as="sourcePoint" />
             <mxPoint y="693" as="targetPoint" />
@@ -555,10 +555,10 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="n5KL9pSzOatZ4EzuZmkm-17" value="&lt;b style=&quot;font-family: Verdana; text-wrap-mode: nowrap;&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;game_board_tile&lt;/font&gt;&lt;/b&gt;&lt;div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;card_number&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;pawn_rank&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;power&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;" parent="1" vertex="1">
-          <mxGeometry x="-1280" y="740" width="340" height="360" as="geometry" />
+          <mxGeometry x="-1260" y="740" width="320" height="360" as="geometry" />
         </mxCell>
         <mxCell id="n5KL9pSzOatZ4EzuZmkm-10" value="&lt;b style=&quot;font-family: Verdana; text-wrap-mode: nowrap;&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;card&lt;/font&gt;&lt;/b&gt;&lt;div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;card_number&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;pawn_rank&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;power&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#CCFFFF;strokeColor=#6c8ebf;verticalAlign=top;" parent="1" vertex="1">
-          <mxGeometry x="-1180" y="820" width="160" height="260" as="geometry" />
+          <mxGeometry x="-1240" y="820" width="280" height="260" as="geometry" />
         </mxCell>
         <mxCell id="n5KL9pSzOatZ4EzuZmkm-18" value="&lt;b style=&quot;font-family: Verdana; text-wrap-mode: nowrap;&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;card_ability&lt;/font&gt;&lt;/b&gt;&lt;div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;type&lt;/span&gt;&lt;/div&gt;&lt;div&gt;when&lt;/div&gt;&lt;div&gt;which&lt;/div&gt;&lt;div&gt;action_type&lt;/div&gt;&lt;div&gt;action_value&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#CCFFFF;strokeColor=#6c8ebf;verticalAlign=top;" parent="1" vertex="1">
           <mxGeometry x="-920" y="895" width="120" height="110" as="geometry" />
@@ -575,7 +575,7 @@
         <mxCell id="n5KL9pSzOatZ4EzuZmkm-22" value="Pawn/&lt;div&gt;Claim&lt;/div&gt;&lt;div&gt;Tile&lt;/div&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;fillColor=#fff2cc;strokeColor=#d6b656;" parent="n5KL9pSzOatZ4EzuZmkm-24" vertex="1">
           <mxGeometry x="160" y="80" width="80" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="n5KL9pSzOatZ4EzuZmkm-23" value="Effect&lt;div&gt;Tile&lt;/div&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;fillColor=#f0a30a;strokeColor=#BD7000;fontColor=#000000;" parent="n5KL9pSzOatZ4EzuZmkm-24" vertex="1">
+        <mxCell id="n5KL9pSzOatZ4EzuZmkm-23" value="Affected&lt;div&gt;Tile&lt;/div&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;fillColor=#f0a30a;strokeColor=#BD7000;fontColor=#000000;" parent="n5KL9pSzOatZ4EzuZmkm-24" vertex="1">
           <mxGeometry x="80" width="80" height="80" as="geometry" />
         </mxCell>
         <mxCell id="n5KL9pSzOatZ4EzuZmkm-25" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="n5KL9pSzOatZ4EzuZmkm-23" target="n5KL9pSzOatZ4EzuZmkm-18" edge="1">
@@ -587,7 +587,7 @@
         <mxCell id="n5KL9pSzOatZ4EzuZmkm-26" value="&lt;span style=&quot;font-size: 14px; font-weight: 700; text-wrap-mode: nowrap;&quot;&gt;Play: placing a card at legit tile&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-765" y="680" width="260" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="n5KL9pSzOatZ4EzuZmkm-27" value="Set current card" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="n5KL9pSzOatZ4EzuZmkm-27" value="Set current card" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;" parent="1" vertex="1">
           <mxGeometry x="-695" y="780" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="n5KL9pSzOatZ4EzuZmkm-29" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" target="n5KL9pSzOatZ4EzuZmkm-27" edge="1">
@@ -596,8 +596,8 @@
             <mxPoint x="-725" y="740" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="n5KL9pSzOatZ4EzuZmkm-30" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;Check card&#39;s immediate abilities (w/o tile, e.g.&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;font-size: 10px; background-color: transparent; color: light-dark(rgb(128, 128, 128), rgb(127, 127, 127));&quot;&gt;fill empty tiles)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontColor=#808080;" parent="1" vertex="1">
-          <mxGeometry x="-715" y="855" width="160" height="40" as="geometry" />
+        <mxCell id="n5KL9pSzOatZ4EzuZmkm-30" value="&lt;font&gt;Check card&#39;s immediate abilities (w/o tile, e.g.&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(128, 128, 128), rgb(127, 127, 127));&quot;&gt;fill empty tiles)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontColor=#808080;fontSize=13;" parent="1" vertex="1">
+          <mxGeometry x="-750" y="855" width="230" height="40" as="geometry" />
         </mxCell>
         <mxCell id="n5KL9pSzOatZ4EzuZmkm-32" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;width=4.444444444444445;endSize=4.075555555555556;endWidth=8.69135802469136;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="n5KL9pSzOatZ4EzuZmkm-27" target="n5KL9pSzOatZ4EzuZmkm-30" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
@@ -605,7 +605,7 @@
             <mxPoint x="-605" y="850" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="n5KL9pSzOatZ4EzuZmkm-33" value="Check card tiles" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="n5KL9pSzOatZ4EzuZmkm-33" value="Check card tiles" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;" parent="1" vertex="1">
           <mxGeometry x="-715" y="930" width="160" height="30" as="geometry" />
         </mxCell>
         <mxCell id="n5KL9pSzOatZ4EzuZmkm-34" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;width=4.444444444444445;endSize=4.075555555555556;endWidth=8.69135802469136;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="n5KL9pSzOatZ4EzuZmkm-30" target="n5KL9pSzOatZ4EzuZmkm-33" edge="1">
@@ -615,19 +615,19 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="n5KL9pSzOatZ4EzuZmkm-35" value="Pawn/Claim or&amp;nbsp;&lt;div&gt;Effect tile?&lt;/div&gt;" style="rhombus;whiteSpace=wrap;html=1;fontSize=9;" parent="1" vertex="1">
-          <mxGeometry x="-680" y="990" width="90" height="60" as="geometry" />
+          <mxGeometry x="-690" y="990" width="110" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="n5KL9pSzOatZ4EzuZmkm-36" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="n5KL9pSzOatZ4EzuZmkm-35" target="n5KL9pSzOatZ4EzuZmkm-38" edge="1">
+        <mxCell id="n5KL9pSzOatZ4EzuZmkm-36" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="n5KL9pSzOatZ4EzuZmkm-35" target="MBYqyQMq8Igke2TgfzJY-1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-575" y="1050" as="sourcePoint" />
             <mxPoint x="-635" y="1070" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="n5KL9pSzOatZ4EzuZmkm-37" value="&lt;span style=&quot;font-size: 9px; text-wrap-mode: wrap;&quot;&gt;Pawn/Claim&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=12;fontColor=default;spacing=0;" parent="1" vertex="1">
-          <mxGeometry x="-710" y="1045" width="70" height="20" as="geometry" />
+          <mxGeometry x="-700" y="1050" width="70" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="n5KL9pSzOatZ4EzuZmkm-38" value="&lt;font style=&quot;font-size: 9px;&quot;&gt;Flip the user claim or&amp;nbsp;&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 9px;&quot;&gt;raise the pawn rank&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="-685" y="1070" width="100" height="40" as="geometry" />
+        <mxCell id="n5KL9pSzOatZ4EzuZmkm-38" value="&lt;font&gt;Flip the user claim&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="-702.5" y="1170" width="135" height="30" as="geometry" />
         </mxCell>
         <mxCell id="n5KL9pSzOatZ4EzuZmkm-39" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=-0.041;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="n5KL9pSzOatZ4EzuZmkm-33" target="n5KL9pSzOatZ4EzuZmkm-35" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
@@ -642,16 +642,16 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="n5KL9pSzOatZ4EzuZmkm-41" value="&lt;span style=&quot;font-size: 9px; text-wrap-mode: wrap;&quot;&gt;Effect&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=12;fontColor=default;spacing=0;" parent="1" vertex="1">
-          <mxGeometry x="-595" y="1020" width="40" height="20" as="geometry" />
+          <mxGeometry x="-612.5" y="1027.5" width="40" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="n5KL9pSzOatZ4EzuZmkm-42" value="Not implemented" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=8;fontColor=#808080;" parent="1" vertex="1">
-          <mxGeometry x="-790" y="865" width="80" height="20" as="geometry" />
+        <mxCell id="n5KL9pSzOatZ4EzuZmkm-42" value="Not implemented" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=10;fontColor=#808080;" parent="1" vertex="1">
+          <mxGeometry x="-784" y="823" width="100" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="n5KL9pSzOatZ4EzuZmkm-43" value="&lt;font style=&quot;font-size: 9px;&quot;&gt;Apply the effect to the tile/card (e.g. raise power)&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 9px;&quot;&gt;according to affected tiles&amp;nbsp;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 9px;&quot;&gt;(e.g. card tile or all allies)&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="-400" y="985" width="120" height="70" as="geometry" />
+        <mxCell id="n5KL9pSzOatZ4EzuZmkm-43" value="&lt;font&gt;Apply the effect to the tile/card (e.g. raise power)&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;according to affected tiles&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;(e.g. card tile or all allies)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;" parent="1" vertex="1">
+          <mxGeometry x="-360" y="970" width="150" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="n5KL9pSzOatZ4EzuZmkm-44" value="&lt;font&gt;Notify the tile/card the effect, and check for after calls by card abilities&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=9;" parent="1" vertex="1">
-          <mxGeometry x="-240" y="992.5" width="125" height="55" as="geometry" />
+        <mxCell id="n5KL9pSzOatZ4EzuZmkm-44" value="&lt;font&gt;Notify the tile/card the effect, and check for after calls by card abilities&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;" parent="1" vertex="1">
+          <mxGeometry x="-160" y="980" width="140" height="80" as="geometry" />
         </mxCell>
         <mxCell id="n5KL9pSzOatZ4EzuZmkm-46" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="n5KL9pSzOatZ4EzuZmkm-43" target="n5KL9pSzOatZ4EzuZmkm-44" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
@@ -664,19 +664,19 @@
             <mxPoint x="-310" y="1150" as="sourcePoint" />
             <mxPoint x="-260" y="1100" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="-177" y="1100" />
-              <mxPoint x="-342" y="1100" />
+              <mxPoint x="-90" y="1100" />
+              <mxPoint x="-288" y="1100" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="UXWryNyjHYuytCqDVRUD-1" value="Pass w/ card_event&amp;nbsp;&lt;div&gt;&quot;played&quot;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=9;" parent="1" vertex="1">
-          <mxGeometry x="-612.5" y="985" width="100" height="40" as="geometry" />
+        <mxCell id="UXWryNyjHYuytCqDVRUD-1" value="Pass w/ card_event&amp;nbsp;&lt;div&gt;&quot;played&quot;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=10;" parent="1" vertex="1">
+          <mxGeometry x="-510" y="940" width="110" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="UXWryNyjHYuytCqDVRUD-2" value="Pass w/ card_event (enfeebled, destroyed, etc.)" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=9;" parent="1" vertex="1">
-          <mxGeometry x="-360" y="1100" width="210" height="20" as="geometry" />
+        <mxCell id="UXWryNyjHYuytCqDVRUD-2" value="Pass w/ card_event (enfeebled, destroyed, etc.)" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="-330" y="1095" width="280" height="30" as="geometry" />
         </mxCell>
         <mxCell id="UXWryNyjHYuytCqDVRUD-3" value="card_event&amp;nbsp;&lt;div&gt;matches &quot;when&quot; condition?&lt;/div&gt;" style="rhombus;whiteSpace=wrap;html=1;fontSize=9;" parent="1" vertex="1">
-          <mxGeometry x="-530" y="990" width="90" height="60" as="geometry" />
+          <mxGeometry x="-490" y="990" width="90" height="60" as="geometry" />
         </mxCell>
         <mxCell id="UXWryNyjHYuytCqDVRUD-4" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="UXWryNyjHYuytCqDVRUD-3" target="n5KL9pSzOatZ4EzuZmkm-43" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
@@ -684,17 +684,35 @@
             <mxPoint x="-440" y="1060" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="UXWryNyjHYuytCqDVRUD-5" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.649;exitY=0.929;exitDx=0;exitDy=0;entryX=1.002;entryY=0.181;entryDx=0;entryDy=0;entryPerimeter=0;exitPerimeter=0;" parent="1" source="UXWryNyjHYuytCqDVRUD-1" target="n5KL9pSzOatZ4EzuZmkm-38" edge="1">
+        <mxCell id="UXWryNyjHYuytCqDVRUD-5" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" target="n5KL9pSzOatZ4EzuZmkm-33" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="-530" y="1070" as="sourcePoint" />
-            <mxPoint x="-480" y="1020" as="targetPoint" />
+            <mxPoint x="-510" y="1020" as="sourcePoint" />
+            <mxPoint x="-520" y="940" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="-550" y="1070" />
+              <mxPoint x="-510" y="945" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="UXWryNyjHYuytCqDVRUD-6" value="Also this" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=9;" parent="1" vertex="1">
-          <mxGeometry x="-559" y="1055" width="60" height="20" as="geometry" />
+        <mxCell id="MBYqyQMq8Igke2TgfzJY-1" value="User already&amp;nbsp;&lt;div&gt;claimed this tile?&lt;/div&gt;" style="rhombus;whiteSpace=wrap;html=1;fontSize=9;" parent="1" vertex="1">
+          <mxGeometry x="-690" y="1080" width="110" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="MBYqyQMq8Igke2TgfzJY-2" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="MBYqyQMq8Igke2TgfzJY-1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-410" y="990" as="sourcePoint" />
+            <mxPoint x="-635" y="1169" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MBYqyQMq8Igke2TgfzJY-3" value="No" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="-674" y="1133" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="MBYqyQMq8Igke2TgfzJY-4" value="&lt;font&gt;Raise pawn rank&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="-550" y="1095" width="135" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="MBYqyQMq8Igke2TgfzJY-5" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="MBYqyQMq8Igke2TgfzJY-1" target="MBYqyQMq8Igke2TgfzJY-4" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-640" y="970" as="sourcePoint" />
+            <mxPoint x="-640" y="998" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>

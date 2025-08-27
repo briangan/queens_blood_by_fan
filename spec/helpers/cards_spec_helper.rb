@@ -7,7 +7,7 @@ module CardsSpecHelper
     Card.all.each do|c|
       begin
         c.destroy
-      rescue Elastic::Transport::Transport::Errors::NotFound => e
+      rescue Elastic::Transport::Transport::Error
       end
     end
     CardTile.all.each(&:destroy)
