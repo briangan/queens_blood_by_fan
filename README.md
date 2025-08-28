@@ -105,11 +105,14 @@ Currently this is a publicly free to access source code repository, so you are f
   [ ] Randomly out initial cards, and ask players to skip some
 
 * Check next turn
+  [ ] when not your turn, overlay cards wrapper w/ another layer
   [ ] option to pass
   [ ] both side passing to end game
 
 * After create move
-  [ ] after o
+  [ ] check if 2 players have passed consecutively, then game over
+  [ ] calculate total based on winning lanes; then who wins
+  [ ] close up game
 
 ## Users
 * User Control
@@ -117,6 +120,8 @@ Currently this is a publicly free to access source code repository, so you are f
 
 ## User Interactions
 * action streaming - broadcast
+  [x] broadcast to the other player
+  [ ] move broadcast to background job
 
 ## Game Play
 * While watching opponent's making a move, disable any action by this player.
@@ -130,3 +135,6 @@ Currently this is a publicly free to access source code repository, so you are f
   - Claimed tile would have different CSS based on player 1 or player 2
 * Admins
   - Ideal UI tool to set the affected_tiles of a card would be grid of tiles for selection, and output into raw data like JSON or save into database table.
+
+## Security
+  [ ] analyize whether player can cheat w/ custom Javascript calls

@@ -4,9 +4,9 @@ function getMainBoard() {
   return mainBoard;
 }
 function showBoardNotice(message, type = 'info') {
-  var bgClass = 'bg-' + type;
-  $("#board_notice").removeClass(bgClass).addClass(bgClass).text(message).css('opacity', 1);
-  window.setTimeout(function(){ $("#board_notice").css('opacity', 0); }, 2000);
+  var classList = $("#board_notice").prop('class').replaceAll(/\b(bg\-\w+)\b/g, '');
+  $("#board_notice").prop('class', classList + ' bg-' + type).text(message).css('opacity', 1);
+  window.setTimeout(function(){ $("#board_notice").css('opacity', 0); }, 3000);
 }
 function getSelectedCard() {
   return $("#user_cards_wrapper .card-selected")[0];
