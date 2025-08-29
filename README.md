@@ -14,9 +14,23 @@ This application is a simulation of Queen's Blood inside Square Enix's RPG game,
 It's developed in Ruby on Rails platform based in Unix/Linux operating system.  You can try on other RoR compatible systems.
 * Ruby: v3.3.8 tested
 * Rails: v7.1
+  - ActiveRecord
+  - ActionCable broadcast
+  - Hotwire/Turbostream
+* Rubygems
+  - Rspec
+  - factory_bot_rails
+  - papertrails
+  - devise
+  - cancancan
+  - best_in_place
 * JQuery: v3.7
 * JQuery-UI: v1.13
+  - drag on drop
+* Bootstrap
+* Bootstrap Icons
 * SQLite
+* ElasticSearch 7
 
 # Resources
 * Graphics
