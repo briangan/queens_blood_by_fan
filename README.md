@@ -82,14 +82,14 @@ Currently this is a publicly free to access source code repository, so you are f
 # TODOs:
 ## Cards
 * Implement "create another card after usage" cards 
-  [ ] There r some "create another card after usage" cards such as Grangalan that can create Grangalan Junior.
-  [ ] Different card image than its parent
-  [ ] Use of AddCardAbility to add GameCard to associate child Card
+    [ ] There r some "create another card after usage" cards such as Grangalan that can create Grangalan Junior.
+    [ ] Different card image than its parent
+    [ ] Use of AddCardAbility to add GameCard to associate child Card
 * Browse, Search
-  [x] turbo_stream reset search/empty keyword would not re-render the long list to all the cards => update instead of replace
-  [ ] show card to non-manager more details: card tiles, abilities
-  [ ] homepage
-    [ ] added dynamic carousel
+    [x] turbo_stream reset search/empty keyword would not re-render the long list to all the cards => update instead of replace
+    [ ] show card to non-manager more details: card tiles, abilities
+    [ ] homepage
+      [ ] added dynamic carousel
 
 * Data entry of cards
   - Enter attributes, abilities and tiles of each card into data/cards.yml file.  This would be valid values into DB table.
@@ -102,26 +102,26 @@ Currently this is a publicly free to access source code repository, so you are f
 
 ## Game Play
 * Initial Game
-  [ ] Randomly out initial cards, and ask players to skip some
+    [ ] Randomly out initial cards, and ask players to skip some
 
 * Check next turn
-  [ ] when not your turn, overlay cards wrapper w/ another layer
-  [ ] option to pass
-  [ ] both side passing to end game
+    [ ] when not your turn, overlay cards wrapper w/ another layer
+    [ ] option to pass
+    [ ] both side passing to end game
 
 * After create move
-  [ ] check if 2 players have passed consecutively, then game over
-  [ ] calculate total based on winning lanes; then who wins
-  [ ] close up game
+    [ ] check if 2 players have passed consecutively, then game over
+    [ ] calculate total based on winning lanes; then who wins
+    [ ] close up game
 
 ## Users
 * User Control
-  [x] added cancancan, added roles, key controller actions added w/ authorize_user
+    [x] added cancancan, added roles, key controller actions added w/ authorize_user
 
 ## User Interactions
 * action streaming - broadcast
-  [x] broadcast to the other player
-  [ ] move broadcast to background job
+    [x] broadcast to the other player
+    [ ] move broadcast to background job
 
 ## Game Play
 * While watching opponent's making a move, disable any action by this player.
@@ -137,4 +137,4 @@ Currently this is a publicly free to access source code repository, so you are f
   - Ideal UI tool to set the affected_tiles of a card would be grid of tiles for selection, and output into raw data like JSON or save into database table.
 
 ## Security
-  [ ] analyize whether player can cheat w/ custom Javascript calls
+* [ ] analyize whether player can cheat w/ custom Javascript calls
