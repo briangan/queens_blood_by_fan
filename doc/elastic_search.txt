@@ -16,3 +16,30 @@ How to run ElasticSearch: Elastic Cloud vs OnePremises/OnPrem
   * knowledge to ingest data and use the UI
   * deployable to ur Servers
   * free or annual costs if license has been purchased
+
+====================================
+Design ElasticSearch
+
+For production Servers
+* if using other paid services, calculate sizes b4 ordering
+* use multiple nodes (server)
+* for example, one ES server is divided into 3 indices
+  * spread out among 3 nodes, w/ each index available on 2 nodes, in other words,
+    2 copies of one index on diff nodes
+    Node 1  [Index 1][Index 2]
+    Node 2  [Index 1][Index 3]
+    Node 3  [Index 3][Index 2]
+* other hot nodes (fastest servers, actively used), may implement some warm & cold nodes
+  * warm - bigger storage but slower processing; suggestion: copy from hot to warm after 2 days
+  * cold - more bigger storage but slower processing; suggestion: copy from hot to warm after 5 days
+
+
+=======================================
+Using Docker to Run ES
+
+One on https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
+Set .env w/ passwords and settings
+docker-compose.yml w/ 
+  array of nodes w/ diff persistent storage & settings, command, health_check
+  SSL certificates (key, crt, and ca signed crt) for access and transport (node communication w/ another)
+  kibana - conditions to check health of nodes, volumes

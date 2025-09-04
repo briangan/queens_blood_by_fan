@@ -42,9 +42,16 @@ gem 'rails', '~> 7.2'
 gem 'importmap-rails'
 gem 'hotwire-rails'
 gem 'turbo-rails'
+```
+Run 
+bin/rails importmap:install
+bin/rails hotwire:install
+bin/rails turbo:install
 
-Run bin/rails importmap:install then bin/rails hotwire:install then bin/rails turbo:install
-
+nvm install 16.20.2
+nvm use 16.20.2
+bin/rails webpacker:install:react
+```
 
 # Configuration
 * Before running database migrations, ensure your database server has the necessary database/repository according to running Rails environment, and authentication.
