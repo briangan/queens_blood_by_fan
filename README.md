@@ -62,32 +62,30 @@ bin/rails webpacker:install:react
 * Test environment for now uses sqlite3 instead of MySQL: inside folder db/test.sqlite3
 * Production environment is set to run with Postgresql based database.  
 
-The settings inside config/database.yml
+## Settings for other environments
+The settings inside config/database.yml for example, heroku:
 heroku config:set DATABASE_URL='NEON_DATABASE_CONNECTION_STRING' -a neon-heroku-example
 
 # Deployment
 * Run the puma Rails server: bin/rails s
 * If using the MySQL database, ensure that's running.
 
-## Heroku Usage for Hosting
-* Staging site domain: https://boiling-beach-44284-60e062035d00.herokuapp.com/ 
-* GIT: https://git.heroku.com/boiling-beach-44284.git
 
 ```
 Steps to setup GIT w/ heroku:
 install local heroku program; for example, Mac would run `brew install heroku`
 
-Set necessary environment variables on heroku's site:
+Set necessary environment variables on heroku's site, in case your app is apple-orange-1234:
 
 
 Then run:
 heroku login
 heroku create
-heroku git:remote -a boiling-beach-44284
+heroku git:remote -a apple-orange-1234
 heroku buildpacks:add heroku/nodejs --index 1
 
 git add heroku master
-git remote add heroku https://git.heroku.com/boiling-beach-44284.git
+git remote add heroku https://git.heroku.com/apple-orange-1234.git
 git push heroku master
 
 To run commands on heroku, such as initial `bin/rails db:migrate` and `bin/rails db:seed`
