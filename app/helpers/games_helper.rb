@@ -2,7 +2,7 @@ module GamesHelper
   # TODO: Pick best set cards for the player: deck w/ most cards, or random from all user cards
   # If game is in progress, subtract copies of cards already on the board
   def best_set_of_cards_for_player(player, game = nil)
-    cards = player.cards.includes(:card_abilities, :card_tiles, :pawn_tiles, :affected_tiles).order('RANDOM()').limit(Deck::MAX_CARDS_PER_DECK).all
+    cards = player.cards.includes(:card_abilities, :card_tiles, :pawn_tiles, :affected_tiles).order('RANDOM()').limit(Deck::MAX_CARDS_PER_DECK).all.to_a
     if game.is_a?(Game) && game.in_progress?
       game.game_board_tiles.where(claiming_user_id: player.id).where('current_card_id IS NOT NULL').each do |tile|
         cards.delete(tile.current_card)

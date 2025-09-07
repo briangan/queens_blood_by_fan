@@ -19,6 +19,8 @@
 class Card < ApplicationRecord
   include CardSearchable
 
+  has_paper_trail
+
   # Associations
   has_many :card_abilities, dependent: :destroy
   has_many :card_tiles, dependent: :destroy
