@@ -22,9 +22,8 @@ class DecksController < InheritedResources::Base
     params.permit!
     if params[:card_ids].present?
       @deck.deck_cards.destroy_all
-      params[:card_ids].each do |card_id|
-        DeckCard.create(deck_id: @deck.id, card_id: card_id)
-      end
+      # batch insert
+      DeckCard.insert_all(params[:card_ids].reject(&:blank?).map { |card_id| { deck_id: @deck.id, card_id: card_id.to_i } })
       flash[:notice] = 'Deck cards updated successfully.'
     else
       flash[:alert] = 'No cards selected.'

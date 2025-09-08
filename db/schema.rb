@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_08_19_032034) do
+ActiveRecord::Schema[7.2].define(version: 2025_09_08_033025) do
   create_table "board_tiles", force: :cascade do |t|
     t.integer "board_id", null: false
     t.integer "column", null: false
@@ -117,6 +117,18 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_19_032034) do
     t.index ["source_game_board_tile_id"], name: "index_game_board_tiles_abilities_on_source_game_board_tile_id"
   end
 
+  create_table "game_cards", force: :cascade do |t|
+    t.integer "game_id", null: false
+    t.integer "card_id", null: false
+    t.integer "user_id"
+    t.integer "deck_order", default: 0
+    t.integer "usage_order"
+    t.index ["game_id", "deck_order"], name: "index_game_cards_on_game_id_and_deck_order", unique: true
+    t.index ["game_id", "usage_order"], name: "index_game_cards_on_game_id_and_usage_order"
+    t.index ["game_id", "user_id"], name: "index_game_cards_on_game_id_and_user_id"
+    t.index ["game_id"], name: "index_game_cards_on_game_id"
+  end
+
   create_table "game_moves", force: :cascade do |t|
     t.integer "game_id"
     t.integer "user_id"
@@ -138,18 +150,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_19_032034) do
     t.datetime "updated_at", null: false
     t.integer "current_turn_user_id"
     t.index ["created_at"], name: "index_games_on_created_at"
-  end
-
-  create_table "games_cards", force: :cascade do |t|
-    t.integer "game_id", null: false
-    t.integer "card_id", null: false
-    t.integer "user_id"
-    t.integer "deck_order", default: 0
-    t.integer "usage_order"
-    t.index ["game_id", "deck_order"], name: "index_games_cards_on_game_id_and_deck_order", unique: true
-    t.index ["game_id", "usage_order"], name: "index_games_cards_on_game_id_and_usage_order"
-    t.index ["game_id", "user_id"], name: "index_games_cards_on_game_id_and_user_id"
-    t.index ["game_id"], name: "index_games_cards_on_game_id"
   end
 
   create_table "games_users", force: :cascade do |t|

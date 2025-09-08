@@ -25,5 +25,6 @@
     Choose From Your Collection
   .card-wrapper.bg-secondary.p-2(id="user_cards_wrapper")
     - user_cards_after_deck_changes(current_user.user_cards.includes(:card).all, @deck).each do |user_card|
+      - next if user_card.card.nil?
       = render 'user_cards/user_card', user_card: user_card, card_css_class: "card small-card-with-note d-inline-flex"
     .clearfix

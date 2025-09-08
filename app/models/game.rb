@@ -6,8 +6,8 @@ class Game < ActiveRecord::Base
   belongs_to :winner, class_name: 'User', foreign_key: 'winner_user_id', optional: true
   belongs_to :current_turn_user, class_name: 'User', foreign_key: 'current_turn_user_id', optional: true
 
-  has_many :games_cards, dependent: :destroy
-  has_many :cards, through: :games_cards
+  has_many :game_cards, dependent: :destroy
+  has_many :cards, through: :game_cards
   belongs_to :board, optional: true
 
   has_many :game_moves, dependent: :destroy
