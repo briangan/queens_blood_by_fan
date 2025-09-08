@@ -12,8 +12,19 @@ import jQuery from "jquery"
 window.jQuery = jQuery
 window.$ = jQuery
 
+// Also set the global scope for module environments
+if (typeof global !== 'undefined') {
+  global.jQuery = jQuery
+  global.$ = jQuery
+}
+
+// Import jQuery UI and plugins after jQuery is set up
 import "jquery-ui/ui/widgets/draggable"
 import "jquery-ui/ui/widgets/droppable"
+import "jquery-ui/ui/widgets/datepicker"
+import "../best_in_place"
+import "../best_in_place.jquery-ui"
+import "../best_in_place.purr"
 
 //import "./controllers"
 import * as bootstrap from 'bootstrap'
@@ -37,9 +48,13 @@ $(document).on("turbolinks:load", function() {
     }
   }, true);
 
-  $(".best-in-place-input").best_in_place();
-  $(".best-in-place").best_in_place();
-  $(".best_in_place").best_in_place();
+  // Initialize best_in_place
+  if (typeof $.fn.best_in_place !== 'undefined') {
+    $(".best_in_place").best_in_place();
+    $(".best-in-place").best_in_place();
+    $(".best-in-place-input").best_in_place();
+  }
+  $("*[data-bs-toggle='tooltip']").tooltip();
 });
 
 // Reload the page if it was loaded from the bfcache (back-forward cache)

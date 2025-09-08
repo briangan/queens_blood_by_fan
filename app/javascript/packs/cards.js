@@ -1,3 +1,9 @@
+// Import jQuery UI widgets needed for drag and drop functionality
+import "jquery-ui/ui/widget"
+import "jquery-ui/ui/widgets/mouse"
+import "jquery-ui/ui/widgets/draggable"
+import "jquery-ui/ui/widgets/droppable"
+
 function getMainBoard() {
   let mainBoard = $(".board-wrapper > table > tbody").first();
   window.mainBoard = mainBoard;
@@ -359,7 +365,6 @@ function setupBoardInteractions() {
 
   syncCardSelectionToInputs();
 
-  $("*[data-bs-toggle='tooltip'").tooltip();
 }
 
 // Initialization
@@ -367,5 +372,4 @@ $(document).on("turbolinks:load", function(){
   setupCardInteractions();
   setupBoardInteractions();
 
-  $("*[data-bs-toggle='tooltip'").tooltip();
 });

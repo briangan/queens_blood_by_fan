@@ -684,5 +684,8 @@ jQuery.fn.best_in_place = function () {
     return this;
 };
 
+// Export BestInPlaceEditor globally for use by other modules
+window.BestInPlaceEditor = BestInPlaceEditor;
+
 
 
