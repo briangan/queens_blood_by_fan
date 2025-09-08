@@ -3,9 +3,7 @@
   # [ ] Add replacement card attribute to .card as exclusion to disabled droppable when already has card
   cards_per_player_count = 4 ######### 15
   player_number = which_player_number_for_current_user(@game)
-  
-- content_for :more_head do
-  = javascript_pack_tag 'cards', 'data-turbolinks-track': 'reload'
+  add_to_javascript_packs 'cards'
 
 = form_for @game, url: create_game_move_game_path, method: :post, remote: true, html:{ id:"game_move_form" }, data: { turbo: false } do|f|
   = hidden_field_tag :format, :js

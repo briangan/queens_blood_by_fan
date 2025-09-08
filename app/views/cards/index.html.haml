@@ -1,5 +1,6 @@
+- add_to_javascript_packs 'cards'
+
 - content_for :more_head do
-  = javascript_pack_tag 'cards', 'data-turbolinks-track': 'reload'
   = render partial:'form_assets'
 
 %div(class="accordion container" id="cards_accordion")
