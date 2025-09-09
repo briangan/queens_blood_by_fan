@@ -15,9 +15,8 @@
         %span(id="max_cards_per_deck_note") Max #{Deck::MAX_CARDS_PER_DECK} cards per deck &nbsp;
         = submit_tag('Update Deck', class: 'btn btn-sm btn-primary', data:{ disable_with: 'Updating...'} )
       %div(id='deck_cards_wrapper' class="droppable ui-droppable small-card border w-100 text-start" data-player="1")
-        - @deck.cards.each do |card|
-          - user_card = UserCard.new(card: card, card_id: card.id, quantity: 1)
-          = render 'user_cards/user_card', user_card: user_card, show_add_button: false, show_remove_button: true, which_player: 1, card_css_class: "card small-card-with-note d-inline-flex"
+        = render partial:'user_cards/user_card', collection: @deck.cards.collect{|c| UserCard.new(card: c, card_id: c.id, quantity: 1) }, as: :user_card, locals:{ which_player: 1, card_css_class: "card small-card-with-note d-inline-flex", show_remove_button: true, show_add_button: false }
+        .clearfix
 %br/
 .container
   %h4 
@@ -26,5 +25,5 @@
   .card-wrapper.bg-secondary.p-2(id="user_cards_wrapper")
     - user_cards_after_deck_changes(current_user.user_cards.includes(:card).all, @deck).each do |user_card|
       - next if user_card.card.nil?
-      = render 'user_cards/user_card', user_card: user_card, card_css_class: "card small-card-with-note d-inline-flex"
+      = render 'user_cards/user_card', user_card: user_card, card_css_class: "card small-card-with-note d-inline-flex", show_remove_button: false, show_add_button: true
     .clearfix
