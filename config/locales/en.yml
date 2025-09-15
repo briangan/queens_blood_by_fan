@@ -39,3 +39,14 @@ en:
       your_turn: "Your Turn"
       opponents_turn: "Opponent's Turn"
       this_players_turn: "This Player's Turn"
+    game_moves:
+      errors:
+        not_your_turn: "It's not your turn."
+        invalid_move: "This move is not valid."
+        tile_not_claimed: "This tile is not claimed by you."
+        card_not_in_hand: "You do not have this card in your hand."
+        cannot_play_on_opponents_tile: "You cannot play on your opponent's tile."
+        cannot_replace_card_on_tile: "Your card cannot replace the card on this tile."
+        card_pawn_rank_higher_than_tile: "Your card pawn rank is higher than the tile pawn value."
+        pass_move_cannot_have_card: "Pass move cannot have a card associated with it."
+        pass_move_cannot_have_tile: "Pass move cannot have a game board tile associated with it."

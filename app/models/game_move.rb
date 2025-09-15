@@ -6,9 +6,9 @@ class GameMove < ApplicationRecord
   belongs_to :card, optional: true
   belongs_to :user, optional: true
 
-  validates :game_board_tile_id, presence: true
+  validates :game_board_tile_id, presence: true, unless: -> { self.is_a?(PassMove) }
   validates :game_id, presence: true
-  validates :card_id, presence: true
+  validates :card_id, presence: true, unless: -> { self.is_a?(PassMove) }
   validates :user_id, presence: true
 
   validate :check_user_turn_and_tile
@@ -19,30 +19,30 @@ class GameMove < ApplicationRecord
   
   def check_user_turn_and_tile
     if game.current_turn_user_id != user_id
-      errors.add(:user_id, 'It is not your turn to make a move.')
+      errors.add(:user_id, I18n.t('game.game_moves.errors.not_your_turn'))
       return false
     end
     self.game_board_tile ||= GameBoardTile.find_by(id: game_board_tile_id)
     if self.game_board_tile.nil?
-      errors.add(:game_board_tile_id, 'Game board tile is not found.')
+      errors.add(:game_board_tile_id, I18n.t('game.game_moves.errors.tile_not_claimed'))
       return false
     end
     self.card ||= Card.find_by(id: card_id)
     if self.card.nil?
-      errors.add(:card_id, 'Card being used is not found.')
+      errors.add(:card_id, I18n.t('game.game_moves.errors.card_not_in_hand'))
       return false
     end
     if game_board_tile.claiming_user_id
       if game_board_tile.claiming_user_id != user_id
-        errors.add(:game_board_tile_id, "You cannot place the card on other player's claimed tile.")
+        errors.add(:game_board_tile_id, I18n.t('game.game_moves.errors.cannot_play_on_opponents_tile'))
         return false
       elsif game_board_tile.current_card_id && !self.card.can_replace_card_on_tile?
-        errors.add(:card_id, 'Your card cannot replace the card on this tile.')
+        errors.add(:card_id, I18n.t('game.game_moves.errors.card_cannot_replace'))
         return false
       end
     end
     if card.pawn_rank && card.pawn_rank > game_board_tile.pawn_value
-      errors.add(:card_id, 'Your card pawn rank is higher than the tile pawn value.')
+      errors.add(:card_id, I18n.t('game.game_moves.errors.card_pawn_rank_higher_than_tile'))
       return false
     end
     true
