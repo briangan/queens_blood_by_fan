@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_09_08_033025) do
+ActiveRecord::Schema[7.2].define(version: 2025_09_10_013910) do
   create_table "board_tiles", force: :cascade do |t|
     t.integer "board_id", null: false
     t.integer "column", null: false
@@ -137,9 +137,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_08_033025) do
     t.integer "move_order", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "type", limit: 36, default: "GameMove", null: false
     t.index ["game_id", "move_order"], name: "index_game_moves_on_game_id_and_move_order"
     t.index ["game_id", "user_id"], name: "index_game_moves_on_game_id_and_user_id"
     t.index ["game_id"], name: "index_game_moves_on_game_id"
+    t.index ["type"], name: "index_game_moves_on_type"
   end
 
   create_table "games", force: :cascade do |t|
