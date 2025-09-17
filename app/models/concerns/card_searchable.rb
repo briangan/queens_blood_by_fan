@@ -35,7 +35,7 @@ module CardSearchable
       else
         cards = Card.includes(:card_tiles, :card_abilities)
         if query.present?
-          cards = cards.where('name LIKE ? OR description LIKE ? OR card_number=?', "%#{query}%", "%#{query}%", query )
+          cards = cards.where('name LIKE ? OR description LIKE ? OR card_number=?', "%#{query}%", "%#{query}%", query.to_i )
         end
         cards = cards.order(:card_number).page(options[:page]).per(options[:limit] || 20)
       end
