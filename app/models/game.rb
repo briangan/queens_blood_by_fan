@@ -78,7 +78,8 @@ class Game < ActiveRecord::Base
     end
   end
 
-  # @game_move <GameMove> expected valid.
+  # If @game_move is PassMove, would skip to call @pass_and_process instead.
+  # @game_move <GameMove or PassMove> expected valid.
   # @options <Hash> additional
   #   :dry_run [Boolean] if true, do not save the game_move, just return affected tiles.
   # @return <Array of GameBoardTile> affected tiles.
@@ -89,6 +90,9 @@ class Game < ActiveRecord::Base
     x_sign = player_number == 2 ? -1 : 1
     self.class.logger.info "| proceed_with_game_move (dry_run? #{dry_run}), valid? #{game_move.valid?}:\n#{game_move.attributes.as_json }"
     # Check if the move is valid (which internally checks user turn and tile and card).
+    if game_move.is_a?(PassMove)
+      return pass_and_process(game_move, options)
+    end
     if game_move.valid?
       # Proceed with the move.
       game_move.save unless dry_run
@@ -125,6 +129,17 @@ class Game < ActiveRecord::Base
     changed_tiles
   end
 
+  ##
+  # Process a PassMove.
+  def pass_and_process(game_move, options = {})
+    dry_run = options[:dry_run] || false
+
+    game_move.save unless dry_run
+
+    # Go to the next turn
+    go_to_next_turn!
+  end
+
   # Either start 1st turn for nil @current_turn_user_id or switch to next player.
   # @return [Integer] current_turn_user_id
   def go_to_next_turn!
@@ -159,8 +174,9 @@ class Game < ActiveRecord::Base
   # @return [GameBoardTile] or nil
   def find_tile(column, row)
     t = nil
-    if (row_list = game_board_tiles_map[row] )
-      t = row_list.find{|bt| bt.column == column } 
+    if (row_list = game_board_tiles_map[row < 0 ? (rows + 1 + row) : row] )
+      _col = column < 0 ? (columns + 1 + column) : column
+      t = row_list.find{|bt| bt.column == _col } 
     end
     t
   end

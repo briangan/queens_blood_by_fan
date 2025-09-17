@@ -52,7 +52,7 @@ module GamesSpecHelper
   # Initial 2 moves have their validations.
   # Use @prepare_game within.
   def start_game_with_left_and_right_claims(essential_card_numbers = [])
-    game = prepare_game(:game, 3, 3)
+    game = prepare_game(:game, 5, 3)
     game.go_to_next_turn! 
     game.reload
     expect(game.game_moves.count).to eq 0
@@ -97,7 +97,7 @@ module GamesSpecHelper
 
     # Second player
     second_player_card = game.player_2.cards.where(card_number: '8').first
-    second_player_tile = game.find_tile(3, 2)
+    second_player_tile = game.find_tile(-1, 2)
     second_player_move = GameMove.new(game_id: game.id, user_id: game.player_2.id, 
       game_board_tile_id: second_player_tile.id, card_id: second_player_card.id)
     expect(second_player_move.valid?).to be_truthy, "Second player move should be valid. Errors: #{second_player_move.errors.full_messages.join(', ')}"
@@ -109,16 +109,16 @@ module GamesSpecHelper
     expect(second_player_tile.claiming_user_id).to eq game.player_2.id
     puts "| 4.5 | Second player move applied"
 
-    [[3,1], [2,2]].each do |position|
+    [[-1,1], [-2,2]].each do |position|
       specific_t = game.find_tile(position[0], position[1])
       expect(specific_t.claiming_user_id).to eq(game.player_2.id), "Tile (#{position}) should be claimed by player 2."
       expect(specific_t.current_card_id).to be_nil, "Tile (#{position}) should not have card yet."
     end
     puts "| 4.6 | Second player tiles claimed"
 
-    middle_tile = game.find_tile(2, 2)
-    expect(middle_tile.claiming_user_id).to eq(game.player_2.id), "Middle tile (2, 2) should be claimed by player second player."
-    puts "| 4.7 | Middle tile (2, 2) claimed by player 2."
+    middle_tile = game.find_tile(-2, 2)
+    expect(middle_tile.claiming_user_id).to eq(game.player_2.id), "Middle tile (-2, 2) should be claimed by player second player."
+    puts "| 4.7 | Middle tile (-2, 2) claimed by player 2."
 
     game
   end
