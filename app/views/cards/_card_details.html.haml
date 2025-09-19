@@ -1,0 +1,62 @@
+%div.accordion-item.d-flex.justify-content-start(id="card_details_#{card.id}")
+  .align-middle.mb-3.p-2
+    = render partial: 'cards/card', locals:{ card: @card, show_detail_button: false }
+    %br
+    = render partial:'cards/card_tile_selection_grid', locals: { card: card, editable: false }
+  .p-2
+    %table.table.table-striped
+      %tbody
+        %tr
+          %td.align-middle.fw-bold Card Number:
+          %td.ms-2= card.card_number
+        %tr
+          %td.align-middle.fw-bold Category:
+          %td.ms-2= card.category
+        %tr
+          %td.align-middle.fw-bold Name:
+          %td.ms-2= card.name
+        %tr
+          %td.align-middle.fw-bold Type:
+          %td.ms-2= card.type == 'ReplacementCard' ? 'Replacement' : 'Normal'
+        %tr
+          %td.align-middle.fw-bold Pawn Rank:
+          %td.ms-2= card.pawn_rank == -1 ? '---' : card.pawn_rank
+        %tr
+          %td.align-middle.fw-bold Power:
+          %td.ms-2= card.power
+        %tr
+          %td.align-middle.fw-bold Description:
+          %td.ms-2
+            - if card.description.present?
+              %span= card.description
+            - else
+              %span.text-muted No description available.
+  .p-2
+    %ul(class="nav nav-tabs")
+      %li(class="nav-item")
+        .nav-link.bg-subtle-gray.text-muted.fw-bold Abilities
+    - if card.card_abilities.blank?
+      %p.ms-3.text-secondary
+        No abilities defined.
+    - else
+      %div.bg-subtle-gray.p-2
+        %table.table.table-bordered.border-secondary.mt-3
+          %tbody
+            - card.card_abilities.each do |card_ability|
+              %tr
+                %td
+                  %strong Type: 
+                  = card_ability.type&.gsub(/Ability$/, '') || 'Not specified'
+                %td
+                  %strong When: 
+                  = card_ability.when&.titleize || 'Not specified'
+              %tr
+                %td
+                  %strong Which Cards: 
+                  = card_ability.which&.titleize || 'Not specified'
+                %td
+                  %strong Effect: 
+                  = card_ability.action_type&.titleize || 'Not specified'
+                  - if card_ability.action_value.present?
+                    %span.fw-bold= " (#{card_ability.action_value})"
+                    %span.ms-2.text-muted= card_ability.type&.gsub(/Ability$/, '') || 'Not specified'

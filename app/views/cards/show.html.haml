@@ -5,7 +5,7 @@
 - if current_user.can? :manage, Card
   = render partial:'form', locals:{ card: @card }
 - else
-  = render partial: 'cards/card', locals:{ card: @card }
+  = render partial: 'card_details', locals:{ card: @card }
 
 
 = render 'shared/bs/offcanvas'

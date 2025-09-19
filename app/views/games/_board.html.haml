@@ -14,11 +14,11 @@
         - player_1_score = total_scores_for_all_rows.dig(row, :player_1) || 0
         - player_2_score = total_scores_for_all_rows.dig(row, :player_2) || 0
         %tr(class="board-row" data-row="#{row}")
-          %td(id="player_1_row_#{row}_total_score" class="board-tile row-total-score-wrapper inset-shadow")
+          %td(id="player_1_row_#{row}_total_score" class="board-tile row-total-score-wrapper-1 inset-shadow")
             = raw row_player_score_label(game, row, 1, player_1_score, player_2_score)
           - 1.upto(game.board.columns) do |col|
             - board_tile_index += 1
             - board_tile = game.find_tile(col, row)
             = render partial:'game_board_tiles/table_cell', locals:{ game_board_tile: board_tile, game: game, board_tile_index: board_tile_index }
-          %td(id="player_2_row_#{row}_total_score" class="board-tile row-total-score-wrapper")
+          %td(id="player_2_row_#{row}_total_score" class="board-tile row-total-score-wrapper-2 inset-shadow")
             = raw row_player_score_label(game, row, 2, player_1_score, player_2_score)

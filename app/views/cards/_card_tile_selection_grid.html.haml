@@ -1,8 +1,12 @@
 :ruby
-  # Required locals: (card:)
+  # Required locals: 
+  #   card <Card>
+  # Optional:
+  #   editable: default to true
+  editable = true unless defined?(editable) && editable == false
   tiles_map = card.card_tiles_map
 %form(method="post" action="/board_tiles" id="card_#{card.card_number}_form" class="card-tile-selector-form")
-  %div.d-flex.flow-row.mb-3
+  %div.d-flex.flow-row.mb-3.justify-content-center
     %table.card-tile-selector
       %tbody
         - -2.upto(2) do|y|
@@ -12,9 +16,10 @@
                 - if x != 0 || y != 0
                   - k = [x,y]
                   - cur_tile_value = tiles_map[k]
-                  - args = { id: "card_tile_#{card.card_number}_#{x}_#{y}", value: "#{cur_tile_value}", class: "form-check-input card-tile-checkbox", data:{card_number: card.card_number }, title: "Tile at #{x},#{y}" }
+                  - args = { id: "card_tile_#{card.card_number}_#{x}_#{y}", value: "#{cur_tile_value}", disabled: editable ? nil : 'disabled', class: "form-check-input card-tile-checkbox", data:{card_number: card.card_number }, title: "Tile at #{x},#{y}" }
                   - args.merge!(checked: true) if cur_tile_value.present?
                   = check_box_tag("card_tiles[#{x}_#{y}]", args)
+  - if editable
     %div.p-2.card-tile-selector.bg-light-box
       %h6 
         Choose color and  which tiles to affect

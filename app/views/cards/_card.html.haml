@@ -3,16 +3,19 @@
   # Optional: 
   #   which_player
   #   card_css_class: default to 'card'
+  #   show_detail_button: default to true
   # TODO: 
   # [ ] render some graphics for extra power effects such as ally card's enfeeblement
   which_player = 1 unless defined?(which_player)
   cards_folder = (which_player == 2 ? 'cards_flopped' : 'cards')
   card_css_class = 'card' unless defined?(card_css_class) && card_css_class.present?
+  show_detail_button = true unless defined?(show_detail_button) && show_detail_button == false
 = content_tag(:div, class: "#{card_css_class}", id: "player_#{which_player}_card_#{card.card_number}", data: card_data_attr(card, which_player).merge({ player: which_player}) ) do
   %i.bi.bi-slash-circle.d-none
   .card-extra-image
     = image_tag(asset_path("#{cards_folder}/#{card.card_number}.png"), class: 'card-image', title: "Card ##{card.card_number}")
-  .card-detail-image.d-none
-    %button(class="btn p-0 align-top bi bi-zoom-in card-detail-link" type="button" data-bs-toggle="offcanvas" data-bs-target="#detail_offcanvas" aria-controls="offcanvasRight" data-image-url="#{asset_path("detailed_cards/#{card.card_number}.png")}" data-card-id="#{card.id}") &nbsp;
+  - if show_detail_button
+    .card-detail-image.d-none
+      %button(class="btn p-0 align-top bi bi-zoom-in card-detail-link" type="button" data-bs-toggle="offcanvas" data-bs-target="#detail_offcanvas" aria-controls="offcanvasRight" data-image-url="#{asset_path("detailed_cards/#{card.card_number}.png")}" data-card-id="#{card.id}") &nbsp;
 
   %i.bi.bi-slash-circle.d-none

@@ -246,7 +246,7 @@ $user-2-bg-color: rgb(196, 81, 81);
   bottom: 0.3em;
   gap: 0.2em;
   z-index: 80;
-  opacity: 0.7;
+  opacity: 0.6;
   text-align: center;
   vertical-align: middle;
   &:hover {
@@ -313,19 +313,26 @@ $user-2-bg-color: rgb(196, 81, 81);
   color: purple;
 }
 
-.row-total-score-wrapper {
+.row-total-score-wrapper-1 {
   @extend .vmiddle-wrapper;
   @extend .text-center;
   background-color: #122f68;
   border: inset 0.25em #0b0f5d;
+}
+.row-total-score-wrapper-2 {
+  @extend .vmiddle-wrapper;
+  @extend .text-center;
+  background-color: #681d12;
+  border: inset 0.25em #3b0505;
 }
 .row-total-score {
   font-weight: bold;
   font-size: 3em;
   border-radius: 3em;
   border: groove 0.1em #ffbf12;
-  color: #ffbf12;
+  color: gold;
   padding: 0 0.2em;
+  min-width: 1.6em;
 }
 .row-total-score-dark {
   @extend .row-total-score;
@@ -335,10 +342,10 @@ $user-2-bg-color: rgb(196, 81, 81);
   opacity: 0.9;
 }
 .row-total-score-player-1 {
-  background-color: var(--user-1-bg-color);
+  background-color: rgb(37, 134, 62);
 }
 .row-total-score-player-2 {
-  background-color: var(--user-2-bg-color);
+  background-color: rgb(62, 134, 37);
 }
 
 .card > .card-extra-image {
@@ -399,11 +406,11 @@ $user-2-bg-color: rgb(196, 81, 81);
 
 .card[data-player="1"] {
   border-color: var(--player-1-color);
-  background-color: var(--player-1-bg-color);
+  background-color: var(--player-1-color);
 }
 .card[data-player="2"] {
   border-color: var(--player-2-color);
-  background-color: var(--player-2-bg-color);
+  background-color: var(--player-2-color);
 }
 .card-dropped {
   background: transparent;
