@@ -116,7 +116,6 @@ class Game < ActiveRecord::Base
         self.game_board_tiles_map[game_move.game_board_tile.row].sort!(&:column)
       end
 
-      game_move.move_order = self.game_moves.where("id != ?", game_move.id).order(:move_order).last&.move_order.to_i + 1
       game_move.save unless dry_run
 
       if dry_run
@@ -135,6 +134,10 @@ class Game < ActiveRecord::Base
     dry_run = options[:dry_run] || false
 
     game_move.save unless dry_run
+
+    # TODO: check if both players passed in succession, then end the game.
+    # If so, set status to COMPLETED, determine winner_user_id.
+
 
     # Go to the next turn
     go_to_next_turn!

@@ -79,6 +79,7 @@ module GamesSpecHelper
     puts "| 4.2 | Game move"
 
     game.proceed_with_game_move(game_move, dry_run: false)
+    expect(game_move.move_order).to eq(1)
 
     # Check that the tile is claimed.
     first_player_tile.reload
@@ -107,6 +108,7 @@ module GamesSpecHelper
     second_player_tile.reload
     expect(second_player_tile.current_card_id).to eq second_player_card.id
     expect(second_player_tile.claiming_user_id).to eq game.player_2.id
+    expect(second_player_move.move_order).to eq(2)
     puts "| 4.5 | Second player move applied"
 
     [[-1,1], [-2,2]].each do |position|

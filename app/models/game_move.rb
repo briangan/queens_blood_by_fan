@@ -13,6 +13,8 @@ class GameMove < ApplicationRecord
 
   validate :check_user_turn_and_tile
 
+  before_create :set_move_order
+
   # after_create :apply_game_move # leave to separate call to game.proceed_with_game_move
 
   # Additional validations can be added here as needed
@@ -37,7 +39,7 @@ class GameMove < ApplicationRecord
         errors.add(:game_board_tile_id, I18n.t('game.game_moves.errors.cannot_play_on_opponents_tile'))
         return false
       elsif game_board_tile.current_card_id && !self.card.can_replace_card_on_tile?
-        errors.add(:card_id, I18n.t('game.game_moves.errors.card_cannot_replace'))
+        errors.add(:card_id, I18n.t('game.game_moves.errors.cannot_replace_card_on_tile'))
         return false
       end
     end
@@ -46,6 +48,12 @@ class GameMove < ApplicationRecord
       return false
     end
     true
+  end
+
+  protected
+
+  def set_move_order
+    self.move_order = game.game_moves.order(:move_order).last&.move_order.to_i + 1
   end
 
   # This method is called ONLY after the game move is created.
