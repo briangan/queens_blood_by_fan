@@ -10,8 +10,16 @@
   .col.text-center
     - if game.in_progress?
       %h4.mt-0.mb-3
-        #{game.game_moves.count} Moves
+        - if current_user.admin?
+          %a(class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false") #{game.game_moves.count} Moves
+          %ul.dropdown-menu
+            - game.game_moves.includes(:user, :game_board_tile).each do |move|
+              %li
+                = "#{move.move_order}. #{move.type} by #{move.user.username}  to #{move.game_board_tile.to_s}"
+        - else
+          #{game.game_moves.count} Moves
         &nbsp;
+    Dropdown link
   .col.text-begin
     %span(id="user_2_turn_cursor" class="bi bi-arrow-down-square-fill user-2-color text-xlg#{' d-none' unless game.player_2 && game.player_2&.id == game.current_turn_user_id}")
       = t('game.turn.this_players_turn')

@@ -42,6 +42,8 @@ en:
     game_moves:
       errors:
         not_your_turn: "It's not your turn."
+        invalid_move_for_completed_game: "Cannot make a move in a completed game."
+        invalid_move_for_cancelled_game: "Cannot make a move in a cancelled game."
         invalid_move: "This move is not valid."
         tile_not_claimed: "This tile is not claimed by you."
         card_not_in_hand: "You do not have this card in your hand."

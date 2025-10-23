@@ -1,3 +1,8 @@
+##
+# == Schema Information
+#
+# Attributes: game_id, card_id, user_id
+#
 class GameCard < ApplicationRecord
   belongs_to :game, optional: true, dependent: :destroy
   belongs_to :card, optional: true

@@ -46,6 +46,11 @@ class Game < ActiveRecord::Base
     game_users.find{|gu| gu.user_id != user_id }&.user_id
   end
 
+  # For 2-player game, return the other player's user_id.
+  def next_player_user_id
+    the_other_player_user_id(current_turn_user_id)
+  end
+
   def create_game_board_tiles!
     tiles = []
     1.upto(columns) do |x|
@@ -133,14 +138,29 @@ class Game < ActiveRecord::Base
   def pass_and_process(game_move, options = {})
     dry_run = options[:dry_run] || false
 
+    # validate if game status is WAITING or IN_PROGRESS and if it's the player's turn.
+    if %w(WAITING IN_PROGRESS).exclude?(self.status)
+      game_move.errors.add(:base, t('game_moves.errors.invalid_move_for_' + self.status.downcase + '_game'))
+      return false
+    end
+    if game_move.user_id != current_turn_user_id
+      game_move.errors.add(:base, t('game_moves.errors.not_your_turn'))
+      return false
+    end
+
     game_move.save unless dry_run
 
     # TODO: check if both players passed in succession, then end the game.
     # If so, set status to COMPLETED, determine winner_user_id.
+    if self.game_moves.order('created_at DESC').limit(2).all? { |gm| gm.is_a?(PassMove) }
+      self.status = 'COMPLETED'
+      self.winner_user_id = game_move.user_id 
+      self.save unless dry_run
 
-
-    # Go to the next turn
-    go_to_next_turn!
+    else
+      # Go to the next turn
+      go_to_next_turn!
+    end
   end
 
   # Either start 1st turn for nil @current_turn_user_id or switch to next player.

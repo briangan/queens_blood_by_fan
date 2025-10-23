@@ -210,6 +210,13 @@ describe Game, type: :feature do
       expect(last_move.user_id).to eq(game.player_2.id), "Last game move should be by second player"
       puts "| 5.11 | Pass move applied"
 
+      second_move = PassMove.new(game_id: game.id, user_id: game.player_1.id)
+      game.proceed_with_game_move(second_move, dry_run: false)
+      game.reload
+      expect(game.status).to eq('COMPLETED'), "Game should be COMPLETED after two consecutive PassMoves"
+      expect(game.winner_user_id).to eq(game.player_1.id), "First player should be the winner"
+      puts "| 5.12 | Second pass move applied, game completed"
+
     end
 
     it 'Should Have After CardEvent Ability in Affected Card' do

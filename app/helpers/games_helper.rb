@@ -65,6 +65,6 @@ module GamesHelper
     player_2_score ||= total_scores.dig(row_number, game.player_2.id) || 0
     has_higher_score = (which_player_number == 1 && player_1_score > player_2_score) || (which_player_number == 2 && player_2_score > player_1_score)
     tag.span((which_player_number == 2 ? player_2_score : player_1_score), class: "row-total-score#{'-dark' unless has_higher_score} row-total-score-player-1", 'data-bs-toggle'=>'tooltip',
-      'data-bs-title'=>"Row #{row_number} total score for Player 1")
+      'data-bs-title'=>"Row #{row_number} total score for Player #{which_player_number}")
   end
 end
