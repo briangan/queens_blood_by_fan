@@ -10,6 +10,15 @@ class GamesController < ::InheritedResources::Base
     
   end
 
+  def show
+    @game = resource
+    if @game.completed?
+      render :show_completed
+    else
+      super
+    end
+  end
+
   def create
     p = params.require(:game).permit(:board_id)
     @game = Game.new(p)
@@ -43,11 +52,11 @@ class GamesController < ::InheritedResources::Base
   end
 
   def create_game_move
-    p = params.permit(:id, :game_board_tile_id, :card_id)
+    p = params.permit(:id, :game_board_tile_id, :card_id, :type)
     @game ||= resource
     @game_board_tile = p[:game_board_tile_id] ? @game.game_board_tiles.where(id: p[:game_board_tile_id]).first : nil
 
-    @game_move = GameMove.new(game_id: @game.id, user_id: current_user.id, game_board_tile_id: @game_board_tile&.id, card_id: p[:card_id])
+    @game_move = make_game_move_from_params(@game, @game_board_tile, p)
     if @game.current_turn_user_id == current_user.id && @game_move.valid?
       @changed_tiles = @game.proceed_with_game_move(@game_move) # , dry_run: true)
 
@@ -62,10 +71,8 @@ class GamesController < ::InheritedResources::Base
       end
     else
       @game_board_tile.current_card_id = nil if @game_board_tile
-      @changed_tiles = [] # [@game_board_tile].compact
-      # logger.info "| changd_tiles: #{@changed_tiles.collect(&:attributes).to_yaml }"
+      @changed_tiles = []
       flash[:warning] = @game_move.errors.full_messages.join(', ')
-      flash[:warning] << "  It's not your turn to make this move." if @game.current_turn_user_id != current_user.id
       logger.warn "| create_game_move failed: #{flash[:warning]}"
 
       respond_to do |format|
@@ -92,12 +99,27 @@ class GamesController < ::InheritedResources::Base
   protected
 
   def authorize_player!
-    unless resource.game_users.where(user_id: current_user.id).exists?
-      flash[:alert] = 'You are not a player of this game.'
-      respond_to do|format|
+    your_game_user = resource.game_users.where(user_id: current_user.id).first
+    if your_game_user.nil?
+      flash[:alert] = t('game.players.you_are_not_a_player')
+
+    elsif resource.current_turn_user_id != current_user.id
+      flash[:alert] = t('game.players.not_your_turn')
+
+    end
+
+    if flash[:alert].present?
+      respond_to do |format|
         format.js { render template: 'shared/show_alert_modal', status: :ok }
-        format.html { redirect_to games_path }
+        format.html { redirect_to game_path(id: resource, t: Time.now.to_i) }
       end
     end
+  end
+
+  ## Create a game move from parameters, depending on the type of move.
+  # @return <GameMove or PassMove>
+  def make_game_move_from_params(game, game_board_tile, params)
+    klass = params[:type] == 'pass' ? PassMove : GameMove
+    klass.new(game_id: game.id, user_id: current_user.id, game_board_tile_id: game_board_tile&.id, card_id: params[:card_id])
   end
 end

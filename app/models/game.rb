@@ -90,6 +90,7 @@ class Game < ActiveRecord::Base
   # @return <Array of GameBoardTile> affected tiles.
   def proceed_with_game_move(game_move, options = {})
     dry_run = options[:dry_run] || false
+    
     changed_tiles = []
     player_number = game_move.user_id == player_2.id ? 2 : 1
     x_sign = player_number == 2 ? -1 : 1
@@ -100,6 +101,8 @@ class Game < ActiveRecord::Base
     end
     if game_move.valid?
       # Proceed with the move.
+      validate_game_and_user_for_move(game_move)
+    
       game_move.save unless dry_run
 
       game_move.game_board_tile.attributes = { current_card_id: game_move.card.id, claiming_user_id: game_move.user_id, claimed_at: Time.now, power_value: game_move.card.power }
@@ -138,15 +141,7 @@ class Game < ActiveRecord::Base
   def pass_and_process(game_move, options = {})
     dry_run = options[:dry_run] || false
 
-    # validate if game status is WAITING or IN_PROGRESS and if it's the player's turn.
-    if %w(WAITING IN_PROGRESS).exclude?(self.status)
-      game_move.errors.add(:base, t('game_moves.errors.invalid_move_for_' + self.status.downcase + '_game'))
-      return false
-    end
-    if game_move.user_id != current_turn_user_id
-      game_move.errors.add(:base, t('game_moves.errors.not_your_turn'))
-      return false
-    end
+    validate_game_and_user_for_move(game_move)
 
     game_move.save unless dry_run
 
@@ -161,6 +156,7 @@ class Game < ActiveRecord::Base
       # Go to the next turn
       go_to_next_turn!
     end
+    []
   end
 
   # Either start 1st turn for nil @current_turn_user_id or switch to next player.
@@ -306,6 +302,18 @@ class Game < ActiveRecord::Base
 
       # If the board has changed, we need to copy the board tiles to the game board tiles.
       copy_from_board_to_game_board_tiles!
+    end
+  end
+
+  def validate_game_and_user_for_move(game_move)
+    # validate if game status is WAITING or IN_PROGRESS and if it's the player's turn.
+    if %w(WAITING IN_PROGRESS).exclude?(self.status)
+      game_move.errors.add(:base, t('game_moves.errors.invalid_move_for_' + self.status.downcase + '_game'))
+      return false
+    end
+    if game_move.user_id != current_turn_user_id
+      game_move.errors.add(:base, t('game_moves.errors.not_your_turn'))
+      return false
     end
   end
 end

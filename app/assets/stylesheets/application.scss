@@ -183,6 +183,10 @@ $user-2-bg-color: rgb(196, 81, 81);
   color: var(--active-border-color, turquoise);
 }
 
+.striped-children *:nth-child(odd) {
+  background-color: #e8e8e8;
+}
+
 // Vertically center text using margins
 .vmiddle-wrapper{
   position: relative;

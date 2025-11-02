@@ -123,6 +123,10 @@ Currently this is a publicly free to access source code repository, so you are f
 * Initial Game
   - [ ] Randomly out initial cards, and ask players to skip some
 
+* Game Move
+  - [x] Pass move created
+  - [ ] Cancel game move
+
 * Check next turn
   - [ ] when not your turn, overlay cards wrapper w/ another layer
   - [ ] option to pass

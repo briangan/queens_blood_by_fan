@@ -35,6 +35,8 @@ en:
   game:
     cards:
       pick_and_place: "When it's your turn, pick a card and place onto one of your claimed tiles in the board."
+    players:
+      you_are_not_a_player: "You are not a player of this game."
     turn:
       your_turn: "Your Turn"
       opponents_turn: "Opponent's Turn"

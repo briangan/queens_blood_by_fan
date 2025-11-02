@@ -22,38 +22,40 @@ describe Game, type: :feature do
       expect(game.game_moves.count).to eq 0
       expect(game.game_users.collect(&:user_id).include?(game.current_turn_user_id)).to be true
 
-      the_following_user_id = game.current_turn_user_id == game.player_1.id ? game.player_2.id : game.player_1.id
+      the_following_user_id = game.next_player_user_id
 
+      puts "| 2.1 | Game move order"
       expect(game.game_users.where(user_id: game.current_turn_user_id).first&.move_order).to eq 1
       expect(game.game_users.where(user_id: the_following_user_id).first&.move_order).to be > 1
 
       prepare_cards_and_decks_for_user(game.player_1 )
       prepare_cards_and_decks_for_user(game.player_2 )
 
-      # Falty game moves
+      # Faulty game moves
+      puts "| 2.2 | Faulty game moves"
       valid_game_board_tile = game.game_board_tiles.where(claiming_user_id: game.current_turn_user_id).first
       first_player_card = game.current_turn_user.cards.where(pawn_rank: valid_game_board_tile.pawn_value).first
 
       game_move = GameMove.new(game_id: game.id, user_id: the_following_user_id, 
         game_board_tile_id: valid_game_board_tile.id, card_id: first_player_card.id)
       expect(game_move.valid?).to be(false), "Game move should be invalid. Errors: #{game_move.errors.full_messages.join(', ')}"
-      puts "| 3.1 | Game move is first_tile"
+      puts "| 3.1 | Game move: current_turn_user_id mismatches the_following_user_id"
 
       game_move = GameMove.new(game_id: game.id, user_id: game.current_turn_user_id, 
         game_board_tile_id: 0, card_id: first_player_card.id)
       expect(game_move.valid?).to be(false), "Game move should be invalid. Errors: #{game_move.errors.full_messages.join(', ')}"
-      puts "| 3.2 | Game move is first_tile"
+      puts "| 3.2 | Game move: invalid game_board_tile_id"
 
       game_move = GameMove.new(game_id: game.id, user_id: game.current_turn_user_id, 
         game_board_tile_id: valid_game_board_tile.id, card_id: 0)
       expect(game_move.valid?).to be(false), "Game move should be invalid. Errors: #{game_move.errors.full_messages.join(', ')}"
-      puts "| 3.3 | Game move is invalid"
+      puts "| 3.3 | Game move: invalid card_id"
 
       other_valid_game_board_tile = game.game_board_tiles.where(claiming_user_id: the_following_user_id).first
       game_move = GameMove.new(game_id: game.id, user_id: game.current_turn_user_id, 
         game_board_tile_id: other_valid_game_board_tile.id, card_id: first_player_card.id)
       expect(game_move.valid?).to be(false), "Game move should be invalid. Errors: #{game_move.errors.full_messages.join(', ')}"
-      puts "| 3.4 | Game move is invalid"
+      puts "| 3.4 | Game move: the card used is not the_following_user_id's"
 
       game_move = GameMove.new(game_id: game.id, user_id: game.current_turn_user_id, 
         game_board_tile_id: valid_game_board_tile.id, card_id: first_player_card.id)
@@ -64,7 +66,7 @@ describe Game, type: :feature do
       game_move = GameMove.new(game_id: game.id, user_id: game.current_turn_user_id, 
         game_board_tile_id: valid_game_board_tile.id, card_id: first_player_card.id)
       expect(game_move.valid?).to be(false), "Game move should be invalid. Errors: #{game_move.errors.full_messages.join(', ')}"
-      puts "| 3.6 | Game move invalid"
+      puts "| 3.6 | Game move: tile already has a card placed"
 
       first_replacement_card = game.current_turn_user.cards.where(type: 'ReplacementCard').first
       if first_replacement_card.nil?

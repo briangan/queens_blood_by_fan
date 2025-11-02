@@ -55,14 +55,20 @@
           - player_1_locals = { which_player: player_number, card_css_class: "card small-card card-selectable" }
           = render partial:'cards/card', collection: best_set_of_cards_for_player(current_user, @game), as: :card, locals: player_1_locals
           .clearfix
-- if @game.players.count >= 2
+- if @game.players.count >= 2 && !@game.completed?
   %hr
+  - if @game.game_users.collect(&:user_id).include?(current_user&.id)
+    .text-end
+      - if @game.current_turn_user_id == current_user.id
+        = link_to create_game_move_game_path(id: @game.id, type: 'pass'), class:'btn btn-secondary', id:'game_move_pass_button' do
+          %i.bi.bi-backspace-reverse-fill
+          Pass
+        &nbsp;&nbsp;
+      - if Rails.env.development?
+        = link_to reset_game_path(@game), class:'btn btn-danger', data:{ confirm: 'Are you sure you want to reset the game?' } do
+          %i.bi.bi-arrow-clockwise 
+          Reset Game
   = turbo_frame_tag 'game_board_frame' do
     = render partial:'board', locals:{ game: @game }
 %br/
-- if @game.game_users.collect(&:user_id).include?(current_user&.id)
-  .text-end
-    = link_to reset_game_path(@game), class:'btn btn-sm btn-danger', data:{ confirm: 'Are you sure you want to reset the game?' } do
-      %i.bi.bi-arrow-clockwise 
-      Reset Game
 = render 'shared/bs/offcanvas'
