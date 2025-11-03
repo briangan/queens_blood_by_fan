@@ -129,12 +129,12 @@ Currently this is a publicly free to access source code repository, so you are f
 
 * Check next turn
   - [ ] when not your turn, overlay cards wrapper w/ another layer
-  - [ ] option to pass
-  - [ ] both side passing to end game
+  - [x] option to pass
+  - [x] both side passing to end game; and broadcast in JS
 
 * After create move
-  - [ ] check if 2 players have passed consecutively, then game over
-  - [ ] calculate total based on winning lanes; then who wins
+  - [x] check if 2 players have passed consecutively, then game over
+  - [x] calculate total based on winning lanes; then who wins
   - [ ] close up game
 
 ## Users
