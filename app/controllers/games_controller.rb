@@ -71,7 +71,7 @@ class GamesController < ::InheritedResources::Base
 
       respond_to do |format|
         format.turbo_stream
-        format.js { render template: 'games/broadcast_game_move' }
+        format.js { render template: @game.completed? ? 'games/broadcast_completed_game' : 'games/broadcast_game_move' }
         format.html { redirect_to game_path(id: @game.id, t: Time.now.to_i) }
       end
     else

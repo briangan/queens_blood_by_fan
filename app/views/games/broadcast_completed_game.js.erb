@@ -1,0 +1,20 @@
+<%
+=begin
+  Instead of individual updates to multiple components via JS like create_game_move.js.erb, 
+  this uses ActionCable to pass onto all subscribers then 2 higher level components: game_current_player_frame, user_cards_frame, game_actions_panel_frame, game_board_frame, 
+  and calls the few necessary JS functions to update the UI.
+=end
+  # Erase cached game_actions_panel_frame
+  @game ||= Game.includes(:game_users, :game_board_tiles => [:current_card]).find(params[:id])
+
+  completed_game_results_content = render 'games/completed_game_results', game: @game
+
+  ActionCable.server.broadcast("game_#{@game.id}_channel", { action: "show_completed", selector: "#game_current_player_frame", html: completed_game_results_content })
+
+  board_content = render partial:'board', locals:{ game: @game }
+  show_board_notice_s = ''
+  flash.to_hash.each_pair do|t, m|
+    show_board_notice_s += "showBoardNotice('#{ j m }', '#{ t }'); "
+  end
+  ActionCable.server.broadcast("game_#{@game.id}_channel", { action: "update_board", selector: "#game_board_frame", html: board_content, js: show_board_notice_s })
+-%>

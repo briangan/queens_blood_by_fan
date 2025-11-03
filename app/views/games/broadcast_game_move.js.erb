@@ -5,7 +5,7 @@
   and calls the few necessary JS functions to update the UI.
 =end
   # Erase cached game_board_tiles
-  @game = Game.includes(:game_users, :game_board_tiles => [:current_card]).find(params[:id])
+  @game ||= Game.includes(:game_users, :game_board_tiles => [:current_card]).find(params[:id])
   players_and_turn_content = render 'games/players_and_current_turn', game: @game
   ActionCable.server.broadcast("game_#{@game.id}_channel", { action: "update_board", selector: "#game_current_player_frame", html: players_and_turn_content })
 

@@ -97,7 +97,7 @@ class Game < ActiveRecord::Base
     self.class.logger.info "| proceed_with_game_move (dry_run? #{dry_run}), valid? #{game_move.valid?}:\n#{game_move.attributes.as_json }"
     # Check if the move is valid (which internally checks user turn and tile and card).
     if game_move.is_a?(PassMove)
-      return pass_and_process(game_move, options.merge(dry_run: true) )
+      return pass_and_process(game_move, options)
     end
     if game_move.valid?
       # Proceed with the move.
@@ -140,6 +140,7 @@ class Game < ActiveRecord::Base
   # Process a PassMove.
   def pass_and_process(game_move, options = {})
     dry_run = options[:dry_run] || false
+    move_before_pass = self.game_moves.order('move_order DESC, created_at DESC').first
 
     validate_game_and_user_for_move(game_move)
 
@@ -147,7 +148,7 @@ class Game < ActiveRecord::Base
 
     # Check if both players passed in succession, then end the game.
     # If so, set status to COMPLETED, determine winner_user_id.
-    if self.game_moves.order('created_at DESC').limit(2).all? { |gm| gm.is_a?(PassMove) }
+    if move_before_pass.is_a?(PassMove) && move_before_pass.user_id != game_move.user_id
       self.status = 'COMPLETED'
       self.winner_user_id = game_move.user_id 
       self.save unless dry_run

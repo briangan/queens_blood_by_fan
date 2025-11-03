@@ -5,16 +5,17 @@
   player_number = which_player_number_for_current_user(@game)
   add_to_javascript_packs 'cards'
 
-= form_for @game, url: create_game_move_game_path, method: :post, remote: true, html:{ id:"game_move_form" }, data: { turbo: false } do|f|
-  = hidden_field_tag :format, :js
-  = hidden_field_tag :authenticity_token, form_authenticity_token
-  = hidden_field_tag :game_board_tile_id, nil, id: 'game_move_game_board_tile_id'
-  = hidden_field_tag :card_id, nil, id: 'game_move_card_id'
-  = hidden_field_tag :current_turn_user_id, @game.current_turn_user_id, id: 'game_current_turn_user_id'
-  = hidden_field_tag :current_turn_player_number, @game.current_turn_player_number, id: 'game_current_turn_player_number'
-  - if @game.game_users.collect(&:user_id).include?(current_user&.id)
-    = submit_tag('Make Move', class:'btn btn-primary d-none', id:'game_move_submit_button')
-  = turbo_frame_tag 'game_current_player_frame' do
+= turbo_frame_tag 'game_current_player_frame' do
+  = form_for @game, url: create_game_move_game_path, method: :post, remote: true, html:{ id:"game_move_form" }, data: { turbo: false } do|f|
+    = hidden_field_tag :format, :js
+    = hidden_field_tag :authenticity_token, form_authenticity_token
+    = hidden_field_tag :game_board_tile_id, nil, id: 'game_move_game_board_tile_id'
+    = hidden_field_tag :card_id, nil, id: 'game_move_card_id'
+    = hidden_field_tag :current_turn_user_id, @game.current_turn_user_id, id: 'game_current_turn_user_id'
+    = hidden_field_tag :current_turn_player_number, @game.current_turn_player_number, id: 'game_current_turn_player_number'
+    - if @game.game_users.collect(&:user_id).include?(current_user&.id)
+      = submit_tag('Make Move', class:'btn btn-primary d-none', id:'game_move_submit_button')
+    
     = render 'games/players_and_current_turn', game: @game
 = turbo_frame_tag 'user_cards_frame' do
   .row

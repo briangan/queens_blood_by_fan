@@ -38,6 +38,12 @@ $(document).on("turbolinks:load", function() {
           $("#player_1_row_total_score").html(data.player_1_score_label);
           $("#player_2_row_total_score").html(data.player_2_score_label);
         }
+        else if (data.action === "show_completed" && data.html) {
+          $("#user_cards_frame").html('');
+          $("#game_current_player_frame").html('');
+          $("#game_actions_panel_frame").html('');
+          $("#game_current_player_frame").html(data.html);
+        } 
       } // received
     });
   }

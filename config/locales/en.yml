@@ -43,8 +43,10 @@ en:
       this_players_turn: "This Player's Turn"
     game_moves:
       pass: "Pass"
+      passing: "Passing .."
       pass_and_end_game: "Pass and End Game"
       reset_game: "Reset Game"
+      resetting_game: "Resetting Game .."
       are_you_sure_reset_game: "Are you sure you want to reset the game?"
       errors:
         not_your_turn: "It's not your turn."
