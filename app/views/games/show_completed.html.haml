@@ -1,36 +1,4 @@
 :ruby
-  total_scores_for_all_rows = @game.total_scores_for_all_rows
-  player_1_total = 0
-  player_2_total = 0
-  total_scores_for_all_rows.each do |row, scores|
-    - if scores[:player_1] == scores[:player_2]
-        player_1_total += scores[:player_1]
-        player_2_total += scores[:player_2]
-      elsif scores[:player_1] > scores[:player_2]
-        player_1_total += scores[:player_1]
-      else
-        player_2_total += scores[:player_2]
-      end
-  end
-.text-center
-  %h2 
-    Game Over.  
-    - if player_1_total == player_2_total
-      %span.text-info It's a Tie!
-    - else
-      And the winner is
-      %span(class="user-#{@game.winner_user_id == @game.player_1.id ? '1' : '2'}-color") #{@game.winner.username}!
-%br/
-.row
-  .col-md-6.text-center
-    %h3.user-1-color
-      Player 1 (#{@game.player_1.username}):
-    %h4
-      = raw row_player_score_label(@game, 1, 1, player_1_total, player_2_total)
-  .col-md-6.text-center
-    %h3.user-2-color
-      Player 2 (#{@game.player_2.username}):
-    %h4
-      = raw row_player_score_label(@game, 1, 2, player_1_total, player_2_total)
-= turbo_frame_tag 'game_board_frame' do
-  = render partial:'board', locals:{ game: @game }
+= render partial:'completed_game_results', locals:{ game: @game }
+%hr/
+= render partial:'board', locals:{ game: @game }

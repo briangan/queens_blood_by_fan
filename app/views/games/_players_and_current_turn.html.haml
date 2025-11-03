@@ -10,7 +10,7 @@
   .col.text-center
     - if game.in_progress?
       %h4.mt-0.mb-3
-        - if current_user.admin?
+        - if current_user.admin? || true # Temporarily show move list to all users
           %a(class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false") #{game.game_moves.count} Moves
           %ul.dropdown-menu.striped-children
             - game.game_moves.includes(:user, :game_board_tile).each do |move|

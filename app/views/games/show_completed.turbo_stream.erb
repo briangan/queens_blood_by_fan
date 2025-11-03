@@ -1,0 +1,7 @@
+<%= turbo_stream.update 'game_actions_panel_frame' do %>
+  &nbsp;
+<% end %>
+<%= turbo_stream.update 'game_board_frame' do %>
+  <% board_content = render partial:'board', locals:{ game: @game } %>
+  <%= raw board_content %>
+<% end %>

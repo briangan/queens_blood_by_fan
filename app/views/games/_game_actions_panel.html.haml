@@ -1,0 +1,15 @@
+:ruby
+  # Required locals:
+  #   game <Game>
+
+- if game.game_users.collect(&:user_id).include?(current_user&.id)
+  .text-end
+    - if game.current_turn_user_id == current_user.id
+      = link_to create_game_move_game_path(id: game.id, type: 'pass', format:'turbo_stream'), class:'btn btn-secondary', id:'game_move_pass_button' do
+        %i.bi.bi-backspace-reverse-fill
+        = t("game.game_moves.pass#{game.game_moves.last.is_a?(PassMove) ? '_and_end_game' : ''}")
+      &nbsp;&nbsp;
+    - if Rails.env.development?
+      = link_to reset_game_path(game), class:'btn btn-danger', data:{ confirm: t('game.game_moves.are_you_sure_reset_game') } do
+        %i.bi.bi-arrow-clockwise
+        = t("game.game_moves.reset_game")

@@ -12,12 +12,15 @@
     switchTurnToPlayer(<%= @game.current_turn_user_id %>, <%= @game.current_turn_player_number %>);
   </script>
 <% end %>
+<%= turbo_frame_tag 'game_actions_panel_frame' do %>
+  <hr/>
+  <%= raw render partial:'game_actions_panel', locals:{ game: @game } %>
+<% end %>
 <%= turbo_stream.update 'game_board_frame' do %>
   <% board_content = render partial:'board', locals:{ game: @game } %>
   <%= raw board_content %>
   <script>
     setupBoardInteractions();
     showBoardNotice("<%= j flash[:warning] %>", 'warning');
-    <% end %>
   </script>
 <% end %>

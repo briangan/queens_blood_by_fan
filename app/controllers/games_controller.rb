@@ -13,7 +13,12 @@ class GamesController < ::InheritedResources::Base
   def show
     @game = resource
     if @game.completed?
-      render :show_completed
+      # TODO: broadcast completed game state to players
+      respond_to do |format|
+        format.turbo_stream { render :show_completed }
+        format.js { render template: 'games/broadcast_game_move' }
+        format.html { render :show_completed }
+      end
     else
       super
     end
