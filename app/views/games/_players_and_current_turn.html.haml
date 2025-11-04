@@ -15,7 +15,7 @@
           %ul.dropdown-menu.striped-children
             - game.game_moves.includes(:user, :game_board_tile).each do |move|
               %li.p-2
-                = "#{move.move_order}. #{move.type} by #{move.user.username}  to #{move.game_board_tile.to_s}"
+                = "#{move.move_order}. #{move.type} by #{move.user.username} #{move.game_board_tile ? " to #{move.game_board_tile.to_s}" : ''}"
         - else
           #{game.game_moves.count} Moves
         &nbsp;
