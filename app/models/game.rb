@@ -99,6 +99,11 @@ class Game < ActiveRecord::Base
     if game_move.is_a?(PassMove)
       return pass_and_process(game_move, options)
     end
+    if game_move.is_a?(CancelMove)
+      self.cancel(game_move.user_id)
+      return []
+    end
+
     if game_move.valid?
       # Proceed with the move.
       validate_game_and_user_for_move(game_move)
@@ -186,6 +191,17 @@ class Game < ActiveRecord::Base
     self.game_board_tiles.delete_all
     self.copy_from_board_to_game_board_tiles!
     self.go_to_next_turn! if self.current_turn_user_id.nil?
+  end
+
+  # @return <CancelMove> existing or newly created CancelMove.
+  def cancel(user_id)
+    existing_cancel_move = self.game_moves.where(type: 'CancelMove').first
+    existing_cancel_move ||= CancelMove.create(game_id: self.id, user_id: user_id)
+
+    unless self.cancelled?
+      self.update(current_turn_user_id: nil, winner_user_id: nil, status: 'CANCELLED')
+    end
+    existing_cancel_move
   end
 
   ##

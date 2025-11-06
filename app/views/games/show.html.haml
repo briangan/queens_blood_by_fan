@@ -60,7 +60,6 @@
   - if @game.players.count >= 2 && !@game.completed?
     %hr
     = render partial:'game_actions_panel', locals:{ game: @game }
-%br/
 = turbo_frame_tag 'game_board_frame' do
   - if @game.players.count >= 2
     = render partial:'board', locals:{ game: @game }

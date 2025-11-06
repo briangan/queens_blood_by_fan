@@ -41,6 +41,7 @@ en:
       your_turn: "Your Turn"
       opponents_turn: "Opponent's Turn"
       this_players_turn: "This Player's Turn"
+    back_to_games_list: "Back to Games List"
     game_moves:
       pass: "Pass"
       passing: "Passing .."
@@ -48,6 +49,7 @@ en:
       reset_game: "Reset Game"
       resetting_game: "Resetting Game .."
       are_you_sure_reset_game: "Are you sure you want to reset the game?"
+      are_you_sure_cancel_game: "Are you sure you want to cancel the game?"
       errors:
         not_your_turn: "It's not your turn."
         invalid_move_for_completed_game: "Cannot make a move in a completed game."

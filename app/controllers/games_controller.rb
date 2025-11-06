@@ -13,12 +13,15 @@ class GamesController < ::InheritedResources::Base
   def show
     @game = resource
     if @game.completed?
-      # TODO: broadcast completed game state to players
+      # broadcast completed game state to players
       respond_to do |format|
         format.turbo_stream { render :show_completed }
         format.js { render template: 'games/broadcast_game_move' }
         format.html { render :show_completed }
       end
+
+    elsif @game.cancelled?
+      render :show_cancelled
     else
       super
     end
@@ -62,7 +65,7 @@ class GamesController < ::InheritedResources::Base
     @game_board_tile = p[:game_board_tile_id] ? @game.game_board_tiles.where(id: p[:game_board_tile_id]).first : nil
 
     @game_move = make_game_move_from_params(@game, @game_board_tile, p)
-    if @game.current_turn_user_id == current_user.id && @game_move.valid?
+    if (@game_move.is_a?(CancelMove) || @game.current_turn_user_id == current_user.id) && @game_move.valid?
       @changed_tiles = @game.proceed_with_game_move(@game_move) # , dry_run: true)
 
       logger.info "| changed_tiles: #{@changed_tiles.collect(&:attributes).as_json }"
@@ -107,10 +110,6 @@ class GamesController < ::InheritedResources::Base
     your_game_user = resource.game_users.where(user_id: current_user.id).first
     if your_game_user.nil?
       flash[:alert] = t('game.players.you_are_not_a_player')
-
-    elsif resource.current_turn_user_id != current_user.id
-      flash[:alert] = t('game.players.not_your_turn')
-
     end
 
     if flash[:alert].present?
@@ -124,7 +123,14 @@ class GamesController < ::InheritedResources::Base
   ## Create a game move from parameters, depending on the type of move.
   # @return <GameMove or PassMove>
   def make_game_move_from_params(game, game_board_tile, params)
-    klass = params[:type] == 'pass' ? PassMove : GameMove
+    klass = case params[:type]
+      when 'pass'
+        PassMove
+      when 'cancel'
+        CancelMove
+      else
+        GameMove
+      end
     klass.new(game_id: game.id, user_id: current_user.id, game_board_tile_id: game_board_tile&.id, card_id: params[:card_id])
   end
 end

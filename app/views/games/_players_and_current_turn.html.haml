@@ -8,7 +8,7 @@
       = t('game.turn.this_players_turn')
       -#= game.player_1.id == current_user.id ? ' Your Turn' : " #{game.player_1.username}'s Turn"
   .col.text-center
-    - if game.in_progress?
+    - unless game.waiting?
       %h4.mt-0.mb-3
         - if current_user.admin? || true # Temporarily show move list to all users
           %a(class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false") #{game.game_moves.count} Moves

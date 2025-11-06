@@ -327,6 +327,26 @@ describe Game, type: :feature do
       expect(first_player_above_tile.power_value).to eq( expected_spawned_tile_power )
       expect(first_player_above_tile.affected_tiles_to_abilities.collect(&:card_ability_id).sort).to eq( [ca.id] )
     end
+
+    it 'Cancel a Game in Progress' do
+      game = prepare_game(:game, 5, 3)
+      game.go_to_next_turn! 
+      game.reload
+
+      prepare_cards_and_decks_for_user(game.player_1 )
+      prepare_cards_and_decks_for_user(game.player_2 )
+
+      expect(game.status).to eq('IN_PROGRESS'), "Game should be IN_PROGRESS"
+
+      game.cancel!(game.player_1.id)
+      game.reload
+
+      expect(game.status).to eq('CANCELLED'), "Game should be CANCELLED"
+      expect(game.winner_user_id).to be_nil, "Cancelled game should not have a winner"
+      cancel_move = game.game_moves.where(type: 'CancelMove').first
+      expect(cancel_move).not_to be_nil, "Cancelled game should have a CancelMove recorded"
+      puts "| 8.1 | Game cancelled successfully"
+    end
   end
 
   ################################################

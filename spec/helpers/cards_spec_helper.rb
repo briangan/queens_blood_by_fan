@@ -15,7 +15,7 @@ module CardsSpecHelper
     record_counts = {} # Class name => count
     File.open( Rails.root.join('db', 'seeds.rb'), 'r') do |f|
       f.each_line do |line|
-        if (class_name = line.match(/([a-z_]+)\.create/i).try(:[], 1) ).present?
+        if (class_name = line.match(/([a-z_]+)\.(find_or_)?create/i).try(:[], 1) ).present?
           record_counts[class_name] ||= 0
           record_counts[class_name] += 1
         end

@@ -1,4 +1,7 @@
 ##
+# Model representing a move made by a user with associated GameBoardTitle and Card.
+# However, because of the conditional validation option for game_board_tile_id and card_id, 
+# inherited classes would not have these validations enforced.
 # Attribute :move_order is they factor to determine whether already applied to game. 
 class GameMove < ApplicationRecord
   belongs_to :game_board_tile, optional: true, dependent: :destroy
@@ -6,19 +9,27 @@ class GameMove < ApplicationRecord
   belongs_to :card, optional: true
   belongs_to :user, optional: true
 
-  validates :game_board_tile_id, presence: true, unless: -> { self.is_a?(PassMove) }
+  validates :game_board_tile_id, presence: true, if: -> { self.class == GameMove}
   validates :game_id, presence: true
-  validates :card_id, presence: true, unless: -> { self.is_a?(PassMove) }
+  validates :card_id, presence: true, if: -> { self.class == GameMove }
   validates :user_id, presence: true
 
   validate :check_user_turn_and_tile
+  validate :check_user_set_to_play
 
   before_create :set_move_order
 
   # after_create :apply_game_move # leave to separate call to game.proceed_with_game_move
 
+  # Whether the set user_id is a player in the game.
+  def check_user_set_to_play
+    the_game = self.game || Game.find_by(id: self.game_id)
+    if the_game&.id && the_game.game_users.collect(&:user_id).exclude?(self.user_id)
+      errors.add(:user_id, I18n.t('game.players.not_a_player_in_game'))
+    end
+  end
+
   # Additional validations can be added here as needed
-  
   def check_user_turn_and_tile
     if game.current_turn_user_id != user_id
       errors.add(:user_id, I18n.t('game.game_moves.errors.not_your_turn'))
