@@ -43,7 +43,14 @@ $(document).on("turbolinks:load", function() {
           $("#game_current_player_frame").html('');
           $("#game_actions_panel_frame").html('');
           $("#game_current_player_frame").html(data.html);
-        } 
+        }
+        else if (data.action === "show_cancelled") {
+          $("#user_cards_frame").html(data.html);
+          $("#game_current_player_frame").html('');
+          $("#game_actions_panel_frame").html('');
+          $("#game_current_player_frame").html('');
+          $("#game_board_frame").html('');
+        }
       } // received
     });
   }

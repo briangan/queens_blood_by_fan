@@ -1,0 +1,13 @@
+:ruby
+  # Required locals:
+  #   game <Game>
+  last_cancel_move = game.game_moves.where(type:'CancelMove').last
+%br/
+%br/
+.text-center
+  %h2.text-danger
+    This game was cancelled#{last_cancel_move ? " by #{last_cancel_move.user.username}" : ""}.
+%br/
+%hr/
+.text-center
+  = link_to t('game.back_to_games_list'), games_path, class:'btn btn-primary'

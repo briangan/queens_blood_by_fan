@@ -74,7 +74,7 @@ class GamesController < ::InheritedResources::Base
 
       respond_to do |format|
         format.turbo_stream
-        format.js { render template: @game.completed? ? 'games/broadcast_completed_game' : 'games/broadcast_game_move' }
+        format.js { render template: broadcast_template_by_game_status(@game) }
         format.html { redirect_to game_path(id: @game.id, t: Time.now.to_i) }
       end
     else
@@ -132,5 +132,15 @@ class GamesController < ::InheritedResources::Base
         GameMove
       end
     klass.new(game_id: game.id, user_id: current_user.id, game_board_tile_id: game_board_tile&.id, card_id: params[:card_id])
+  end
+
+  def broadcast_template_by_game_status(game)
+    if game.completed?
+      'games/broadcast_completed_game'
+    elsif game.cancelled?
+      'games/broadcast_cancelled_game'
+    else
+      'games/broadcast_game_move'
+    end
   end
 end

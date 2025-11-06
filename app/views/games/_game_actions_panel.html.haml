@@ -6,13 +6,13 @@
   .row(id="game_actions_panel")
     .col.text-end
       - if game.current_turn_user_id == current_user.id
-        = link_to create_game_move_game_path(id: game.id, type: 'pass', id: game.id), remote: true, disable_with: t('game.game_moves.passing'), class:'btn btn-info' do
+        = link_to create_game_move_game_path(id: game.id, type: 'pass'), remote: true, disable_with: t('game.game_moves.passing'), class:'btn btn-info' do
           %i.bi.bi-backspace-reverse-fill
           = t("game.game_moves.pass#{game.game_moves.last.is_a?(PassMove) ? '_and_end_game' : ''}")
         &nbsp;&nbsp;
       - unless game.cancelled? || game.completed?
         &nbsp;&nbsp;
-        = link_to create_game_move_game_path(game_id: game.id, type: 'cancel'), class:'btn btn-danger', data:{ confirm: t('game.game_moves.are_you_sure_cancel_game') } do
+        = link_to create_game_move_game_path(game_id: game.id, type: 'cancel'), remote: true, disable_with: t('game.game_moves.cancelling'), class:'btn btn-danger', data:{ confirm: t('game.game_moves.are_you_sure_cancel_game') } do
           %i.bi.bi-x-circle-fill
           = t("game.game_moves.cancel_game")
         &nbsp;&nbsp;

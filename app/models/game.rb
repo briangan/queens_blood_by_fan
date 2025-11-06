@@ -100,7 +100,7 @@ class Game < ActiveRecord::Base
       return pass_and_process(game_move, options)
     end
     if game_move.is_a?(CancelMove)
-      self.cancel(game_move.user_id)
+      self.cancel(game_move.user_id, options)
       return []
     end
 
@@ -194,12 +194,17 @@ class Game < ActiveRecord::Base
   end
 
   # @return <CancelMove> existing or newly created CancelMove.
-  def cancel(user_id)
+  def cancel(user_id, options = {})
+    dry_run = options[:dry_run] || false
     existing_cancel_move = self.game_moves.where(type: 'CancelMove').first
-    existing_cancel_move ||= CancelMove.create(game_id: self.id, user_id: user_id)
+    if existing_cancel_move.nil?
+      existing_cancel_move = CancelMove.new(game_id: self.id, user_id: user_id)
+      existing_cancel_move.save unless dry_run
+    end
 
     unless self.cancelled?
-      self.update(current_turn_user_id: nil, winner_user_id: nil, status: 'CANCELLED')
+      self.attributes = { current_turn_user_id: nil, winner_user_id: nil, status: 'CANCELLED' }
+      self.save unless dry_run
     end
     existing_cancel_move
   end

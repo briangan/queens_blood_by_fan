@@ -48,6 +48,8 @@ en:
       pass_and_end_game: "Pass and End Game"
       reset_game: "Reset Game"
       resetting_game: "Resetting Game .."
+      cancel_game: "Cancel Game"
+      cancelling: "Cancelling .."
       are_you_sure_reset_game: "Are you sure you want to reset the game?"
       are_you_sure_cancel_game: "Are you sure you want to cancel the game?"
       errors:
