@@ -78,6 +78,7 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'rspec'
   gem 'rspec-rails'
+  gem 'shoulda-matchers'
   gem 'factory_bot_rails'
   gem 'guard-rspec', require: false
 

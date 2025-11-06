@@ -345,6 +345,7 @@ describe Game, type: :feature do
       expect(game.winner_user_id).to be_nil, "Cancelled game should not have a winner"
       cancel_move = game.game_moves.where(type: 'CancelMove').first
       expect(cancel_move).not_to be_nil, "Cancelled game should have a CancelMove recorded"
+      expect(cancel_move.user_id).to eq(game.player_1.id), "CancelMove should be by the cancelling player"
       puts "| 8.1 | Game cancelled successfully"
     end
   end
