@@ -15,14 +15,14 @@ FactoryBot.define do
   factory :basic_card, aliases: [:security_officer_card], class:'Card' do
     name { 'Security Officer' }
     card_number { '1' }
-    prawn { 1 }
+    pawn_rank { 1 }
     power { 1 }
   end
 
   factory :card_with_enhance_abilitiy, class:'Card' do
     name { 'Security Officer' }
     card_number { '1' }
-    prawn { 1 }
+    pawn_rank { 1 }
     power { 1 }
   end
 

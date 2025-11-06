@@ -338,7 +338,7 @@ describe Game, type: :feature do
 
       expect(game.status).to eq('IN_PROGRESS'), "Game should be IN_PROGRESS"
 
-      game.cancel!(game.player_1.id)
+      game.cancel(game.player_1.id)
       game.reload
 
       expect(game.status).to eq('CANCELLED'), "Game should be CANCELLED"
