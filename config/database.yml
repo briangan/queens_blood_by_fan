@@ -7,7 +7,7 @@
 default: &pg_default
   adapter: postgresql
   encoding: unicode
-  sslmode: require
+  # sslmode: require
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   host: <%= ENV['PG_DATABASE_HOST'] || 'localhost' %>
   port: <%= ENV['PG_DATABASE_PORT'] || '5432' %>

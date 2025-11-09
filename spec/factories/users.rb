@@ -1,6 +1,6 @@
 FactoryBot.define do
 
-  factory :user_1, aliases:[:brian], class:'User' do
+  factory :user_1, aliases:[:default, :brian], class:'User' do
     email { 'brian@me.com' } 
     username { 'brian' }
     rank { 0 }
