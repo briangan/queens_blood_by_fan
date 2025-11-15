@@ -148,7 +148,3 @@ class Card < ApplicationRecord
     self.pawn_rank = -1 if pawn_rank.nil? || type == 'ReplacementCard'
   end
 end
-
-class Replacement
-
-end
