@@ -13,6 +13,7 @@
     <%= turbo_include_tags %>
 
     <%= yield :more_head %>
+    <%# = javascript_importmap_tags %>
   </head>
 
   <body data-current-user-id="<%= current_user&.id %>" data-game-id="<%= @game&.id %>">
