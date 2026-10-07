@@ -120,12 +120,18 @@ Currently this is a publicly free to access source code repository, so you are f
   - Fetch data of added card when triggered, such as Card #94 Vincent.  Added card is not in numbered card list.  Thus, how to save the condition in data/DB to interpret adding or spawning which card.
 
 ## Game Play
+
 * Initial Game
   - [ ] Randomly out initial cards, and ask players to skip some
+  - Upon 2nd player's request to join the game, checkings before starting game
+    [ ] Whether the same 2 players already has a game in progress
+    [ ] Display some game history and stats between the 2 players
 
 * Game Move
+  - [ ] While watching opponent's making a move, disable any action by this player.
+  - [ ] Allow 3rd person view only on existing game in play by other 2 players.
   - [x] Pass move created
-  - [ ] Cancel game move
+  - [x] Cancel game move
 
 * Check next turn
   - [ ] when not your turn, overlay cards wrapper w/ another layer
@@ -142,13 +148,12 @@ Currently this is a publicly free to access source code repository, so you are f
   - [x] added cancancan, added roles, key controller actions added w/ authorize_user
 
 ## User Interactions
-* action streaming - broadcast
+* Action Streaming - broadcast
   - [x] broadcast to the other player
   - [ ] move broadcast to background job
-
-## Game Play
-* While watching opponent's making a move, disable any action by this player.
-* Allow third person view only on existing game in play by other 2 players.
+* Game Detail page
+  - [ ] move players vs tabs to top of board
+  - [ ] combine player's turn w/ action button panel
 
 ## Front End
 * Playing Cards

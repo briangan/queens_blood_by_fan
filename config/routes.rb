@@ -19,11 +19,17 @@ Rails.application.routes.draw do
   end
   resources :boards
 
+  get "/_health", to: -> _env {
+    [200, { "content-type" => "text/html" }, ["I'm alive"]]
+  }
+
   # Streaming #################
   
   mount ActionCable.server => '/cable'
   
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   match 'access_denied', to: 'home#access_denied', via: [:get, :post]
+
+  get 'readme', to: 'home#readme', as: 'readme'
   root 'home#index'
 end

@@ -6,6 +6,10 @@
 
 # Ignore bundler config.
 /.bundle
+/.vscode
+/.idea
+/.DS_Store
+/.
 
 # Ignore the default SQLite database.
 /db/development.sqlite3
@@ -44,3 +48,10 @@ yarn-debug.log*
 .yarn-integrity
 .keep
 .browserlistrc
+
+/public/packs
+/public/packs-test
+/node_modules
+/yarn-error.log
+yarn-debug.log*
+.yarn-integrity
