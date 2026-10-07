@@ -1,8 +1,17 @@
+import jQuery from "jquery"
+
+// Set globals BEFORE importing plugins
+window.jQuery = jQuery
+window.$ = jQuery
+
+// Also set the global scope for module environments
+if (typeof global !== 'undefined') {
+  global.jQuery = jQuery
+  global.$ = jQuery
+}
+
 // Import jQuery UI widgets needed for drag and drop functionality
-import "jquery-ui/ui/widget"
-import "jquery-ui/ui/widgets/mouse"
-import "jquery-ui/ui/widgets/draggable"
-import "jquery-ui/ui/widgets/droppable"
+import "../jquery-ui.min"
 
 function getMainBoard() {
   let mainBoard = $(".board-wrapper > table > tbody").first();
@@ -53,6 +62,7 @@ function shouldDragRevertDragToTile() {
 
 /* Action Handlers *************************************/
 function dropCardHandler(event, ui) {
+  console.log(" dropCardHandler of ui " + ui);
   placedCardOntoTile(ui.draggable, $(this));
 }
 
@@ -371,5 +381,5 @@ function setupBoardInteractions() {
 $(document).on("turbolinks:load", function(){
   setupCardInteractions();
   setupBoardInteractions();
-
+  console.log("Loaded in turbolinks:load.  Got droppable? " + $(".droppable").length )
 });

@@ -3,9 +3,6 @@
 // a relevant structure within app/javascript and only use these pack files to reference
 // that code so it'll be compiled.
 
-import Rails from "@rails/ujs"
-import Turbolinks from "turbolinks"
-import * as ActiveStorage from "@rails/activestorage"
 import jQuery from "jquery"
 
 // Set globals BEFORE importing plugins
@@ -18,10 +15,13 @@ if (typeof global !== 'undefined') {
   global.$ = jQuery
 }
 
+
+import Rails from "@rails/ujs"
+import Turbolinks from "turbolinks"
+import * as ActiveStorage from "@rails/activestorage"
+
 // Import jQuery UI and plugins after jQuery is set up
-import "jquery-ui/ui/widgets/draggable"
-import "jquery-ui/ui/widgets/droppable"
-import "jquery-ui/ui/widgets/datepicker"
+import "../jquery-ui.min"
 import "../best_in_place"
 import "../best_in_place.jquery-ui"
 import "../best_in_place.purr"

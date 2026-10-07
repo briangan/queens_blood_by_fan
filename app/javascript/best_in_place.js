@@ -22,6 +22,9 @@
 //= require jquery.autosize
 
 import jQuery from "jquery"
+window.jQuery = jQuery
+window.$ = jQuery
+import "jquery-ui.min"
 
 function BestInPlaceEditor(e) {
     'use strict';

@@ -7,6 +7,11 @@
  */
 /*global BestInPlaceEditor */
 
+import jQuery from "jquery"
+window.jQuery = jQuery
+window.$ = jQuery
+import "jquery-ui.min"
+
 BestInPlaceEditor.defaults.purrErrorContainer =  "<span class='bip-flash-error'></span>";
 
 jQuery(document).on('best_in_place:error', function (event, request, error) {
